@@ -1,0 +1,236 @@
+scalar EpochTime
+
+type Announcement {
+  id: ID!
+  description: String
+  sortDescription: String
+  url: String
+  imageUrl: String
+  publishedAt: EpochTime
+  createdAt: EpochTime!
+  updatedAt: EpochTime!
+}
+
+type PageInfo {
+  startCursor: ID!
+  endCursor: ID!
+  hasNextPage: Boolean!
+}
+
+type Club {
+  id: ID!
+  email: String
+  location: Location
+  name: String
+  imageUrl: String
+  description: String
+  codeOfConduct: String
+  sortDescription: String
+  users: [UserWithRole!]
+  events: [Event!]
+  githubUrl: String
+  clubUrl: String
+  createdAt: EpochTime!
+  updatedAt: EpochTime!
+}
+
+type ClubWithRole {
+  id: ID!
+  email: String
+  location: Location
+  name: String
+  imageUrl: String
+  description: String
+  codeOfConduct: String
+  sortDescription: String
+  users: [User!]
+  events: [Event!]
+  role: Role
+  githubUrl: String
+  clubUrl: String
+  createdAt: EpochTime!
+  updatedAt: EpochTime!
+}
+
+type Event {
+  id: ID!
+  title: String!
+  startDate: EpochTime
+  endDate: EpochTime
+  location: Location
+  imageUrl: String
+  description: String
+  sortDescription: String
+  club: Club
+  publishedAt: EpochTime
+  createdAt: EpochTime!
+  updatedAt: EpochTime!
+}
+
+type Job {
+  id: ID!
+  description: String
+  sortDescription: String
+  url: String
+  imageUrl: String
+  publishedAt: EpochTime
+  createdAt: EpochTime!
+  updatedAt: EpochTime!
+}
+
+type Location {
+  id: ID!
+  address: String
+  lat: String
+  lng: String
+  createdAt: EpochTime!
+  updatedAt: EpochTime!
+}
+
+enum RoleName {
+  admin
+  member
+  club_owner
+  guest
+  undefined
+}
+
+type Role {
+  id: ID!
+  name: RoleName
+}
+
+type User {
+  id: ID!
+  email: String!
+  password: String!
+  userName: String!
+  firstName: String!
+  lastName: String!
+  imageUrl: String
+  receiveNewsletter: Boolean
+  description: String
+  sortDescription: String
+  clubs: [ClubWithRole!]
+  githubUrl: String
+  personalUrl: String
+  createdAt: EpochTime!
+  updatedAt: EpochTime!
+}
+
+type UserWithRole {
+  id: ID!
+  email: String!
+  password: String!
+  userName: String!
+  firstName: String!
+  lastName: String!
+  imageUrl: String
+  receiveNewsletter: Boolean
+  description: String
+  sortDescription: String
+  clubs: [ClubWithRole!]
+  githubUrl: String
+  personalUrl: String
+  createdAt: EpochTime!
+  updatedAt: EpochTime!
+  role: Role
+}
+
+interface WithPagination {
+  pageInfo: PageInfo!
+}
+
+type Users implements WithPagination {
+  users: [User!]
+  pageInfo: PageInfo!
+}
+
+type Clubs implements WithPagination {
+  clubs: [Club!]
+  pageInfo: PageInfo!
+}
+
+type Events implements WithPagination {
+  events: [Event!]
+  pageInfo: PageInfo!
+}
+
+type Jobs implements WithPagination {
+  jobs: [Job!]
+  pageInfo: PageInfo!
+}
+
+type Announcements implements WithPagination {
+  announcements: [Announcement!]
+  pageInfo: PageInfo!
+}
+
+type Query {
+  user(id: ID!): User
+  users(limit: Int = 10, before: ID, after: ID, first: Int): Users
+  clubs(
+    limit: Int = 10
+    userID: ID
+    ids: [ID]
+    before: ID
+    after: ID
+    first: Int
+  ): Clubs
+  club(id: ID!): Club
+  events(limit: Int = 10, clubId: ID, before: ID, after: ID, first: Int): Events
+  event(id: ID!): Event
+  jobs(limit: Int = 10, before: ID, after: ID, first: Int): Jobs
+  announcements(
+    limit: Int = 10
+    before: ID
+    after: ID
+    first: Int
+  ): Announcements
+}
+
+input UserInput {
+  email: String!
+  password: String!
+  userName: String!
+  firstName: String!
+  lastName: String!
+  imageUrl: String!
+  receiveNewsletter: Boolean!
+  description: String
+  sortDescription: String
+  clubs: [ID!]
+  githubUrl: String
+  personalUrl: String
+}
+input ClubInput {
+  email: String!
+  location: LocationInput
+  name: String!
+  imageUrl: String
+  description: String!
+  codeOfConduct: String
+  sortDescription: String
+  users: [ID!]
+  events: [ID!]
+  githubUrl: String
+  clubUrl: String
+}
+
+input LocationInput {
+  id: ID
+  address: String
+  lat: String
+  lng: String
+}
+
+type Mutation {
+  createUser(input: UserInput!): User
+  createClub(input: ClubInput!): Club
+  createLocation(input: LocationInput): Location
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

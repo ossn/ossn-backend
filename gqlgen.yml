@@ -1,0 +1,34 @@
+# .gqlgen.yml example
+#
+# Refer to https://gqlgen.com/config/
+# for detailed .gqlgen.yml documentation.
+
+schema:
+  - schema.graphql
+exec:
+  filename: generated.go
+model:
+  filename: models/generated.go
+models:
+  Event:
+    model: github.com/ossn/ossn-backend/models.Event
+  Announcement:
+    model: github.com/ossn/ossn-backend/models.Announcement
+  Role:
+    model: github.com/ossn/ossn-backend/models.Role
+  Location:
+    model: github.com/ossn/ossn-backend/models.Location
+  Job:
+    model: github.com/ossn/ossn-backend/models.Job
+  User:
+    model: github.com/ossn/ossn-backend/models.User
+  UserWithRole:
+    model: github.com/ossn/ossn-backend/models.UserWithRole
+  Club:
+    model: github.com/ossn/ossn-backend/models.Club
+  ClubWithRole:
+    model: github.com/ossn/ossn-backend/models.ClubWithRole
+
+resolver:
+  filename: resolver.go
+  type: Resolver
