@@ -36,7 +36,7 @@ func init() {
 
 	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
-		// panic(err)
+		panic(err)
 	}
 	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("club_id", "clubs(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
@@ -55,44 +55,56 @@ func init() {
 		// panic(err)
 	}
 	fmt.Println("Migration finished")
-	// seed()
+	seed()
 
 }
 
 func seed() {
 	user := &User{Email: "test1@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username"}
-	err := DBSession.Create(user).Error
+	err := DBSession.Create(&Announcement{}).Error
+	if err != nil {
+		return
+	}
+	err = DBSession.Create(&Job{}).Error
+	if err != nil {
+		return
+	}
+	err = DBSession.Create(user).Error
 	if err != nil {
 		panic(err)
 	}
-	str := "test.com"
+
 	st := "an address"
 	loc := &Location{Address: &st}
-	club := &Club{ClubURL: &str, Location: loc}
 	err = DBSession.Create(loc).Error
 	if err != nil {
-		panic(err)
+		return
 	}
-	err = DBSession.Debug().Create(club).Error
+
+	str := "test1.com"
+	club := &Club{ClubURL: &str, Location: loc}
+	err = DBSession.Create(club).Error
 	if err != nil {
-		panic(err)
+		return
 	}
 	err = DBSession.Create(&ClubUserRole{ClubID: club.ID, UserID: user.ID, Role: "user"}).Error
 	if err != nil {
-		panic(err)
+		return
 	}
-	// DBSession.Model(user).Association("Clubs").Append(club)
-	// DBSession.Create(&User{Clubs: })
-	err = DBSession.Create(&Job{}).Error
+
+	user = &User{Email: "test@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username1"}
+	err = DBSession.Create(user).Error
 	if err != nil {
-		panic(err)
+		return
 	}
-	err = DBSession.Create(&Event{Title: "test event"}).Error
+
+	err = DBSession.Create(&ClubUserRole{ClubID: club.ID, UserID: user.ID, Role: "admin"}).Error
 	if err != nil {
-		panic(err)
+		return
 	}
-	err = DBSession.Create(&Announcement{}).Error
+
+	err = DBSession.Create(&Event{Title: "test event", ClubID: &club.ID}).Error
 	if err != nil {
-		panic(err)
+		return
 	}
 }
