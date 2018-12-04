@@ -3,9 +3,9 @@
 package models
 
 import (
-	fmt "fmt"
-	io "io"
-	strconv "strconv"
+	"fmt"
+	"io"
+	"strconv"
 )
 
 type Announcements struct {
@@ -27,6 +27,24 @@ type ClubInput struct {
 	Events          []string       `json:"events"`
 	GithubURL       *string        `json:"githubUrl"`
 	ClubURL         *string        `json:"clubUrl"`
+}
+
+type ClubWithRole struct {
+	ID              string    `json:"id"`
+	Email           *string   `json:"email"`
+	Location        *Location `json:"location"`
+	Name            *string   `json:"name"`
+	ImageURL        *string   `json:"imageUrl"`
+	Description     *string   `json:"description"`
+	CodeOfConduct   *string   `json:"codeOfConduct"`
+	SortDescription *string   `json:"sortDescription"`
+	Users           []*User   `json:"users"`
+	Events          []*Event  `json:"events"`
+	Role            *Role     `json:"role"`
+	GithubURL       *string   `json:"githubUrl"`
+	ClubURL         *string   `json:"clubUrl"`
+	CreatedAt       string    `json:"createdAt"`
+	UpdatedAt       string    `json:"updatedAt"`
 }
 
 type Clubs struct {
@@ -63,6 +81,10 @@ type PageInfo struct {
 	HasNextPage bool   `json:"hasNextPage"`
 }
 
+type Role struct {
+	Name *RoleName `json:"name"`
+}
+
 type UserInput struct {
 	Email             string   `json:"email"`
 	Password          string   `json:"password"`
@@ -76,6 +98,24 @@ type UserInput struct {
 	Clubs             []string `json:"clubs"`
 	GithubURL         *string  `json:"githubUrl"`
 	PersonalURL       *string  `json:"personalUrl"`
+}
+
+type UserWithRole struct {
+	ID                string          `json:"id"`
+	Email             string          `json:"email"`
+	UserName          string          `json:"userName"`
+	FirstName         string          `json:"firstName"`
+	LastName          string          `json:"lastName"`
+	ImageURL          *string         `json:"imageUrl"`
+	ReceiveNewsletter *bool           `json:"receiveNewsletter"`
+	Description       *string         `json:"description"`
+	SortDescription   *string         `json:"sortDescription"`
+	Clubs             []*ClubWithRole `json:"clubs"`
+	GithubURL         *string         `json:"githubUrl"`
+	PersonalURL       *string         `json:"personalUrl"`
+	CreatedAt         string          `json:"createdAt"`
+	UpdatedAt         string          `json:"updatedAt"`
+	Role              *Role           `json:"role"`
 }
 
 type Users struct {

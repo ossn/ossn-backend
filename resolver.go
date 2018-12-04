@@ -1,12 +1,10 @@
-//go:generate gorunpkg github.com/99designs/gqlgen
-
+//go:generate go run scripts/gqlgen.go -v
 package ossn_backend
 
 import (
-	context "context"
-	"fmt"
+	"context"
 
-	models "github.com/ossn/ossn-backend/models"
+	"github.com/ossn/ossn-backend/models"
 )
 
 type Resolver struct{}
@@ -16,9 +14,6 @@ func (r *Resolver) Announcement() AnnouncementResolver {
 }
 func (r *Resolver) Club() ClubResolver {
 	return &clubResolver{r}
-}
-func (r *Resolver) ClubWithRole() ClubWithRoleResolver {
-	return &clubWithRoleResolver{r}
 }
 func (r *Resolver) Event() EventResolver {
 	return &eventResolver{r}
@@ -35,14 +30,8 @@ func (r *Resolver) Mutation() MutationResolver {
 func (r *Resolver) Query() QueryResolver {
 	return &queryResolver{r}
 }
-func (r *Resolver) Role() RoleResolver {
-	return &roleResolver{r}
-}
 func (r *Resolver) User() UserResolver {
 	return &userResolver{r}
-}
-func (r *Resolver) UserWithRole() UserWithRoleResolver {
-	return &userWithRoleResolver{r}
 }
 
 type announcementResolver struct{ *Resolver }
@@ -54,10 +43,10 @@ func (r *announcementResolver) PublishedAt(ctx context.Context, obj *models.Anno
 	return obj.PublishedAtToString()
 }
 func (r *announcementResolver) CreatedAt(ctx context.Context, obj *models.Announcement) (string, error) {
-	return obj.CreatedAtToString()
+	return obj.CreatedAtToString(), nil
 }
 func (r *announcementResolver) UpdatedAt(ctx context.Context, obj *models.Announcement) (string, error) {
-	return obj.UpdatedAtToString()
+	return obj.UpdatedAtToString(), nil
 }
 
 type clubResolver struct{ *Resolver }
@@ -68,45 +57,41 @@ func (r *clubResolver) ID(ctx context.Context, obj *models.Club) (string, error)
 func (r *clubResolver) Name(ctx context.Context, obj *models.Club) (*string, error) {
 	return obj.Title, nil
 }
+func (r *clubResolver) Users(ctx context.Context, obj *models.Club) ([]*models.UserWithRole, error) {
+	// clubUserRole := []models.ClubUserRole{}
+	// usersWithRole := []*models.UserWithRole{}
+	// err := models.DBSession.Preload("User").Where("", obj.ID).Find(&clubUserRole).Error
+	// if err != nil {
+	// 	return clubWithRole, err
+	// }
+
+	// for _, club := range clubUserRole {
+	// 	c := &club.Club
+	// 	usersWithRole = append(usersWithRole, &models.UserWithRole{
+	// 		ID:            c.ID.String(),
+	// 		Email:         c.Email,
+	// 		Location:      c.Location,
+	// 		Name:          c.Title,
+	// 		ImageURL:      c.ImageURL,
+	// 		Role:          &models.Role{Name: models.TurnStringToRolename(club.Role)},
+	// 		GithubURL:     c.GithubURL,
+	// 		UpdatedAt:     c.UpdatedAtToString(),
+	// 		CreatedAt:     c.CreatedAtToString(),
+	// 		Description:   c.Description,
+	// 		CodeOfConduct: c.CodeOfConduct,
+	// 		ClubURL:       c.ClubURL,
+	// 		Events:        c.Events,
+	// 		// Users:         c.Users,
+	// 	})
+	// }
+	// return usersWithRole, nil
+	panic("a")
+}
 func (r *clubResolver) CreatedAt(ctx context.Context, obj *models.Club) (string, error) {
-	return obj.CreatedAtToString()
+	return obj.CreatedAtToString(), nil
 }
 func (r *clubResolver) UpdatedAt(ctx context.Context, obj *models.Club) (string, error) {
-	return obj.UpdatedAtToString()
-}
-
-func (r *clubResolver) Events(ctx context.Context, obj *models.Club) ([]models.Event, error) {
-	//TODO
-	return []models.Event{}, nil
-}
-
-func (r *clubResolver) Users(ctx context.Context, obj *models.Club) ([]models.UserWithRole, error) {
-	//TODO
-	return []models.UserWithRole{}, nil
-}
-
-type clubWithRoleResolver struct{ *Resolver }
-
-func (r *clubWithRoleResolver) ID(ctx context.Context, obj *models.ClubWithRole) (string, error) {
-	return obj.Club.IDToString()
-}
-func (r *clubWithRoleResolver) Users(ctx context.Context, obj *models.ClubWithRole) ([]models.User, error) {
-	users := []models.User{}
-	for index := range obj.Users {
-		users = append(users, obj.Users[index].User)
-	}
-	return users, nil
-}
-func (r *clubWithRoleResolver) CreatedAt(ctx context.Context, obj *models.ClubWithRole) (string, error) {
-	return obj.Club.CreatedAtToString()
-}
-func (r *clubWithRoleResolver) UpdatedAt(ctx context.Context, obj *models.ClubWithRole) (string, error) {
-	return obj.Club.UpdatedAtToString()
-}
-
-func (r *clubWithRoleResolver) Events(ctx context.Context, obj *models.ClubWithRole) ([]models.Event, error) {
-	//TODO
-	return []models.Event{}, nil
+	return obj.UpdatedAtToString(), nil
 }
 
 type eventResolver struct{ *Resolver }
@@ -124,10 +109,10 @@ func (r *eventResolver) PublishedAt(ctx context.Context, obj *models.Event) (*st
 	return obj.PublishedAtToString()
 }
 func (r *eventResolver) CreatedAt(ctx context.Context, obj *models.Event) (string, error) {
-	return obj.CreatedAtToString()
+	return obj.CreatedAtToString(), nil
 }
 func (r *eventResolver) UpdatedAt(ctx context.Context, obj *models.Event) (string, error) {
-	return obj.UpdatedAtToString()
+	return obj.UpdatedAtToString(), nil
 }
 
 type jobResolver struct{ *Resolver }
@@ -139,10 +124,10 @@ func (r *jobResolver) PublishedAt(ctx context.Context, obj *models.Job) (*string
 	return obj.PublishedAtToString()
 }
 func (r *jobResolver) CreatedAt(ctx context.Context, obj *models.Job) (string, error) {
-	return obj.CreatedAtToString()
+	return obj.CreatedAtToString(), nil
 }
 func (r *jobResolver) UpdatedAt(ctx context.Context, obj *models.Job) (string, error) {
-	return obj.UpdatedAtToString()
+	return obj.UpdatedAtToString(), nil
 }
 
 type locationResolver struct{ *Resolver }
@@ -151,10 +136,10 @@ func (r *locationResolver) ID(ctx context.Context, obj *models.Location) (string
 	return obj.IDToString()
 }
 func (r *locationResolver) CreatedAt(ctx context.Context, obj *models.Location) (string, error) {
-	return obj.CreatedAtToString()
+	return obj.CreatedAtToString(), nil
 }
 func (r *locationResolver) UpdatedAt(ctx context.Context, obj *models.Location) (string, error) {
-	return obj.UpdatedAtToString()
+	return obj.UpdatedAtToString(), nil
 }
 
 type mutationResolver struct{ *Resolver }
@@ -196,6 +181,7 @@ func (r *queryResolver) Club(ctx context.Context, id string) (*models.Club, erro
 	err := models.DBSession.Where("id =?", id).First(club).Error
 	return club, err
 }
+
 func (r *queryResolver) Events(ctx context.Context, limit *int, clubId *string, before *string, after *string, first *int) (*models.Events, error) {
 	event := []models.Event{}
 	err := models.DBSession.Limit(getLimit(limit)).Order("published_at").Find(&event).Error
@@ -210,10 +196,11 @@ func (r *queryResolver) Event(ctx context.Context, id string) (*models.Event, er
 	err := models.DBSession.Where("id =?", id).First(event).Error
 	return event, err
 }
+
 func (r *queryResolver) Jobs(ctx context.Context, limit *int, before *string, after *string, first *int) (*models.Jobs, error) {
 
 	jobs := []models.Job{}
-	fmt.Println(jobs)
+
 	err := models.DBSession.Limit(getLimit(limit)).Order("published_at").Find(&jobs).Error
 	if err != nil {
 		return nil, err
@@ -221,6 +208,7 @@ func (r *queryResolver) Jobs(ctx context.Context, limit *int, before *string, af
 
 	return &models.Jobs{Jobs: jobs, PageInfo: models.PageInfo{}}, err
 }
+
 func (r *queryResolver) Announcements(ctx context.Context, limit *int, before *string, after *string, first *int) (*models.Announcements, error) {
 	annanc := []models.Announcement{}
 	err := models.DBSession.Limit(getLimit(limit)).Order("published_at").Find(&annanc).Error
@@ -231,57 +219,48 @@ func (r *queryResolver) Announcements(ctx context.Context, limit *int, before *s
 	return &models.Announcements{Announcements: annanc, PageInfo: models.PageInfo{}}, err
 }
 
-type roleResolver struct{ *Resolver }
-
-func (r *roleResolver) ID(ctx context.Context, obj *models.Role) (string, error) {
-	return obj.IDToString()
-}
-func (r *roleResolver) Name(ctx context.Context, obj *models.Role) (*models.RoleName, error) {
-	switch obj.Name {
-	case models.RoleNameAdmin.String():
-		str := models.RoleNameAdmin
-		return &str, nil
-	case models.RoleNameClubOwner.String():
-		str := models.RoleNameClubOwner
-		return &str, nil
-	case models.RoleNameGuest.String():
-		str := models.RoleNameGuest
-		return &str, nil
-	case models.RoleNameMember.String():
-		str := models.RoleNameMember
-		return &str, nil
-	}
-	return nil, nil
-}
-
 type userResolver struct{ *Resolver }
 
 func (r *userResolver) ID(ctx context.Context, obj *models.User) (string, error) {
 	return obj.IDToString()
 }
+func (r *userResolver) Clubs(ctx context.Context, obj *models.User) ([]*models.ClubWithRole, error) {
+	clubUserRole := []models.ClubUserRole{}
+	clubWithRole := []*models.ClubWithRole{}
+	err := models.DBSession.Preload("Club").Preload("Club.Location").Preload("Club.Events").Where("user_id = ?", obj.ID).Find(&clubUserRole).Error
+	if err != nil {
+		return clubWithRole, err
+	}
+
+	for _, club := range clubUserRole {
+		c := &club.Club
+		users := []*models.User{}
+		err := models.DBSession.Raw("SELECT * FROM users where id IN (SELECT user_id from club_user_roles where club_id = ?)", c.ID).Scan(&users).Error
+		if err != nil {
+			return clubWithRole, err
+		}
+		clubWithRole = append(clubWithRole, &models.ClubWithRole{
+			ID:            c.ID.String(),
+			Email:         c.Email,
+			Location:      c.Location,
+			Name:          c.Title,
+			ImageURL:      c.ImageURL,
+			Role:          &models.Role{Name: models.TurnStringToRolename(club.Role)},
+			GithubURL:     c.GithubURL,
+			UpdatedAt:     c.UpdatedAtToString(),
+			CreatedAt:     c.CreatedAtToString(),
+			Description:   c.Description,
+			CodeOfConduct: c.CodeOfConduct,
+			ClubURL:       c.ClubURL,
+			Events:        c.Events,
+			Users:         users,
+		})
+	}
+	return clubWithRole, nil
+}
 func (r *userResolver) CreatedAt(ctx context.Context, obj *models.User) (string, error) {
-	return obj.CreatedAtToString()
+	return obj.CreatedAtToString(), nil
 }
 func (r *userResolver) UpdatedAt(ctx context.Context, obj *models.User) (string, error) {
-	return obj.UpdatedAtToString()
-}
-
-func (r *userResolver) Clubs(ctx context.Context, obj *models.User) ([]models.ClubWithRole, error) {
-	return []models.ClubWithRole{}, nil
-}
-
-type userWithRoleResolver struct{ *Resolver }
-
-func (r *userWithRoleResolver) ID(ctx context.Context, obj *models.UserWithRole) (string, error) {
-	return obj.User.IDToString()
-}
-func (r *userWithRoleResolver) CreatedAt(ctx context.Context, obj *models.UserWithRole) (string, error) {
-	return obj.User.CreatedAtToString()
-}
-func (r *userWithRoleResolver) UpdatedAt(ctx context.Context, obj *models.UserWithRole) (string, error) {
-	return obj.User.UpdatedAtToString()
-}
-
-func (r *userWithRoleResolver) Clubs(ctx context.Context, obj *models.UserWithRole) ([]models.ClubWithRole, error) {
-	return []models.ClubWithRole{}, nil
+	return obj.UpdatedAtToString(), nil
 }

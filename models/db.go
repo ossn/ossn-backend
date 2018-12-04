@@ -24,24 +24,75 @@ func init() {
 	}
 	// Migrate the schema
 	DBSession.Raw("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
-	DBSession.AutoMigrate(
+	DBSession.Debug().AutoMigrate(
 		&Event{},
 		&Announcement{},
 		&Location{},
 		&Club{},
 		&Job{},
-		&Role{},
+		&ClubUserRole{},
 		&User{},
 	)
 
-	user := &User{Email: "test@test.com", FirstName: "Test", LastName: "Test", Password: "test123"}
-	DBSession.Create(user)
+	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
+	if err != nil {
+		// panic(err)
+	}
+	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("club_id", "clubs(id)", "CASCADE", "CASCADE").Error
+	if err != nil {
+		// panic(err)
+	}
+	err = DBSession.Model(&Event{}).AddForeignKey("location_id", "locations(id)", "RESTRICT", "CASCADE").Error
+	if err != nil {
+		// panic(err)
+	}
+	err = DBSession.Model(&Event{}).AddForeignKey("club_id", "clubs(id)", "CASCADE", "CASCADE").Error
+	if err != nil {
+		// panic(err)
+	}
+	err = DBSession.Model(&Club{}).AddForeignKey("location_id", "locations(id)", "CASCADE", "CASCADE").Error
+	if err != nil {
+		// panic(err)
+	}
+	fmt.Println("Migration finished")
+	// seed()
+
+}
+
+func seed() {
+	user := &User{Email: "test1@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username"}
+	err := DBSession.Create(user).Error
+	if err != nil {
+		panic(err)
+	}
 	str := "test.com"
-	club := &Club{ClubURL: &str}
-	DBSession.Create(club)
-	DBSession.Model(user).Association("Clubs").Append(club)
+	st := "an address"
+	loc := &Location{Address: &st}
+	club := &Club{ClubURL: &str, Location: loc}
+	err = DBSession.Create(loc).Error
+	if err != nil {
+		panic(err)
+	}
+	err = DBSession.Debug().Create(club).Error
+	if err != nil {
+		panic(err)
+	}
+	err = DBSession.Create(&ClubUserRole{ClubID: club.ID, UserID: user.ID, Role: "user"}).Error
+	if err != nil {
+		panic(err)
+	}
+	// DBSession.Model(user).Association("Clubs").Append(club)
 	// DBSession.Create(&User{Clubs: })
-	DBSession.Create(&Job{})
-	DBSession.Create(&Event{Title: "test event"})
-	DBSession.Create(&Announcement{})
+	err = DBSession.Create(&Job{}).Error
+	if err != nil {
+		panic(err)
+	}
+	err = DBSession.Create(&Event{Title: "test event"}).Error
+	if err != nil {
+		panic(err)
+	}
+	err = DBSession.Create(&Announcement{}).Error
+	if err != nil {
+		panic(err)
+	}
 }

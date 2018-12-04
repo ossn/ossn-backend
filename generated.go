@@ -3,17 +3,18 @@
 package ossn_backend
 
 import (
-	bytes "bytes"
-	context "context"
-	fmt "fmt"
-	strconv "strconv"
-	sync "sync"
+	"bytes"
+	"context"
+	"errors"
+	"fmt"
+	"strconv"
+	"sync"
 
-	graphql "github.com/99designs/gqlgen/graphql"
-	introspection "github.com/99designs/gqlgen/graphql/introspection"
-	models "github.com/ossn/ossn-backend/models"
-	gqlparser "github.com/vektah/gqlparser"
-	ast "github.com/vektah/gqlparser/ast"
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/ossn/ossn-backend/models"
+	"github.com/vektah/gqlparser"
+	"github.com/vektah/gqlparser/ast"
 )
 
 // NewExecutableSchema creates an ExecutableSchema from the ResolverRoot interface.
@@ -34,15 +35,12 @@ type Config struct {
 type ResolverRoot interface {
 	Announcement() AnnouncementResolver
 	Club() ClubResolver
-	ClubWithRole() ClubWithRoleResolver
 	Event() EventResolver
 	Job() JobResolver
 	Location() LocationResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
-	Role() RoleResolver
 	User() UserResolver
-	UserWithRole() UserWithRoleResolver
 }
 
 type DirectiveRoot struct {
@@ -174,14 +172,12 @@ type ComplexityRoot struct {
 	}
 
 	Role struct {
-		Id   func(childComplexity int) int
 		Name func(childComplexity int) int
 	}
 
 	User struct {
 		Id                func(childComplexity int) int
 		Email             func(childComplexity int) int
-		Password          func(childComplexity int) int
 		UserName          func(childComplexity int) int
 		FirstName         func(childComplexity int) int
 		LastName          func(childComplexity int) int
@@ -199,7 +195,6 @@ type ComplexityRoot struct {
 	UserWithRole struct {
 		Id                func(childComplexity int) int
 		Email             func(childComplexity int) int
-		Password          func(childComplexity int) int
 		UserName          func(childComplexity int) int
 		FirstName         func(childComplexity int) int
 		LastName          func(childComplexity int) int
@@ -233,20 +228,10 @@ type ClubResolver interface {
 
 	Name(ctx context.Context, obj *models.Club) (*string, error)
 
-	Users(ctx context.Context, obj *models.Club) ([]models.UserWithRole, error)
-	Events(ctx context.Context, obj *models.Club) ([]models.Event, error)
+	Users(ctx context.Context, obj *models.Club) ([]*models.UserWithRole, error)
 
 	CreatedAt(ctx context.Context, obj *models.Club) (string, error)
 	UpdatedAt(ctx context.Context, obj *models.Club) (string, error)
-}
-type ClubWithRoleResolver interface {
-	ID(ctx context.Context, obj *models.ClubWithRole) (string, error)
-
-	Users(ctx context.Context, obj *models.ClubWithRole) ([]models.User, error)
-	Events(ctx context.Context, obj *models.ClubWithRole) ([]models.Event, error)
-
-	CreatedAt(ctx context.Context, obj *models.ClubWithRole) (string, error)
-	UpdatedAt(ctx context.Context, obj *models.ClubWithRole) (string, error)
 }
 type EventResolver interface {
 	ID(ctx context.Context, obj *models.Event) (string, error)
@@ -286,25 +271,13 @@ type QueryResolver interface {
 	Jobs(ctx context.Context, limit *int, before *string, after *string, first *int) (*models.Jobs, error)
 	Announcements(ctx context.Context, limit *int, before *string, after *string, first *int) (*models.Announcements, error)
 }
-type RoleResolver interface {
-	ID(ctx context.Context, obj *models.Role) (string, error)
-	Name(ctx context.Context, obj *models.Role) (*models.RoleName, error)
-}
 type UserResolver interface {
 	ID(ctx context.Context, obj *models.User) (string, error)
 
-	Clubs(ctx context.Context, obj *models.User) ([]models.ClubWithRole, error)
+	Clubs(ctx context.Context, obj *models.User) ([]*models.ClubWithRole, error)
 
 	CreatedAt(ctx context.Context, obj *models.User) (string, error)
 	UpdatedAt(ctx context.Context, obj *models.User) (string, error)
-}
-type UserWithRoleResolver interface {
-	ID(ctx context.Context, obj *models.UserWithRole) (string, error)
-
-	Clubs(ctx context.Context, obj *models.UserWithRole) ([]models.ClubWithRole, error)
-
-	CreatedAt(ctx context.Context, obj *models.UserWithRole) (string, error)
-	UpdatedAt(ctx context.Context, obj *models.UserWithRole) (string, error)
 }
 
 func field_Mutation_createUser_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
@@ -1472,13 +1445,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Announcements(childComplexity, args["limit"].(*int), args["before"].(*string), args["after"].(*string), args["first"].(*int)), true
 
-	case "Role.id":
-		if e.complexity.Role.Id == nil {
-			break
-		}
-
-		return e.complexity.Role.Id(childComplexity), true
-
 	case "Role.name":
 		if e.complexity.Role.Name == nil {
 			break
@@ -1499,13 +1465,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Email(childComplexity), true
-
-	case "User.password":
-		if e.complexity.User.Password == nil {
-			break
-		}
-
-		return e.complexity.User.Password(childComplexity), true
 
 	case "User.userName":
 		if e.complexity.User.UserName == nil {
@@ -1604,13 +1563,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.UserWithRole.Email(childComplexity), true
-
-	case "UserWithRole.password":
-		if e.complexity.UserWithRole.Password == nil {
-			break
-		}
-
-		return e.complexity.UserWithRole.Password(childComplexity), true
 
 	case "UserWithRole.userName":
 		if e.complexity.UserWithRole.UserName == nil {
@@ -2217,11 +2169,7 @@ func (ec *executionContext) _Club(ctx context.Context, sel ast.SelectionSet, obj
 				wg.Done()
 			}(i, field)
 		case "events":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._Club_events(ctx, field, obj)
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._Club_events(ctx, field, obj)
 		case "githubUrl":
 			out.Values[i] = ec._Club_githubUrl(ctx, field, obj)
 		case "clubUrl":
@@ -2497,7 +2445,7 @@ func (ec *executionContext) _Club_users(ctx context.Context, field graphql.Colle
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]models.UserWithRole)
+	res := resTmp.([]*models.UserWithRole)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 
@@ -2513,7 +2461,7 @@ func (ec *executionContext) _Club_users(ctx context.Context, field graphql.Colle
 		idx1 := idx1
 		rctx := &graphql.ResolverContext{
 			Index:  &idx1,
-			Result: &res[idx1],
+			Result: res[idx1],
 		}
 		ctx := graphql.WithResolverContext(ctx, rctx)
 		f := func(idx1 int) {
@@ -2522,7 +2470,11 @@ func (ec *executionContext) _Club_users(ctx context.Context, field graphql.Colle
 			}
 			arr1[idx1] = func() graphql.Marshaler {
 
-				return ec._UserWithRole(ctx, field.Selections, &res[idx1])
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._UserWithRole(ctx, field.Selections, res[idx1])
 			}()
 		}
 		if isLen1 {
@@ -2549,12 +2501,12 @@ func (ec *executionContext) _Club_events(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Club().Events(rctx, obj)
+		return obj.Events, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]models.Event)
+	res := resTmp.([]*models.Event)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 
@@ -2570,7 +2522,7 @@ func (ec *executionContext) _Club_events(ctx context.Context, field graphql.Coll
 		idx1 := idx1
 		rctx := &graphql.ResolverContext{
 			Index:  &idx1,
-			Result: &res[idx1],
+			Result: res[idx1],
 		}
 		ctx := graphql.WithResolverContext(ctx, rctx)
 		f := func(idx1 int) {
@@ -2579,7 +2531,11 @@ func (ec *executionContext) _Club_events(ctx context.Context, field graphql.Coll
 			}
 			arr1[idx1] = func() graphql.Marshaler {
 
-				return ec._Event(ctx, field.Selections, &res[idx1])
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._Event(ctx, field.Selections, res[idx1])
 			}()
 		}
 		if isLen1 {
@@ -2709,7 +2665,6 @@ var clubWithRoleImplementors = []string{"ClubWithRole"}
 func (ec *executionContext) _ClubWithRole(ctx context.Context, sel ast.SelectionSet, obj *models.ClubWithRole) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, clubWithRoleImplementors)
 
-	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
 	invalid := false
 	for i, field := range fields {
@@ -2719,14 +2674,10 @@ func (ec *executionContext) _ClubWithRole(ctx context.Context, sel ast.Selection
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("ClubWithRole")
 		case "id":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._ClubWithRole_id(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._ClubWithRole_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "email":
 			out.Values[i] = ec._ClubWithRole_email(ctx, field, obj)
 		case "location":
@@ -2742,17 +2693,9 @@ func (ec *executionContext) _ClubWithRole(ctx context.Context, sel ast.Selection
 		case "sortDescription":
 			out.Values[i] = ec._ClubWithRole_sortDescription(ctx, field, obj)
 		case "users":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._ClubWithRole_users(ctx, field, obj)
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._ClubWithRole_users(ctx, field, obj)
 		case "events":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._ClubWithRole_events(ctx, field, obj)
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._ClubWithRole_events(ctx, field, obj)
 		case "role":
 			out.Values[i] = ec._ClubWithRole_role(ctx, field, obj)
 		case "githubUrl":
@@ -2760,28 +2703,20 @@ func (ec *executionContext) _ClubWithRole(ctx context.Context, sel ast.Selection
 		case "clubUrl":
 			out.Values[i] = ec._ClubWithRole_clubUrl(ctx, field, obj)
 		case "createdAt":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._ClubWithRole_createdAt(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._ClubWithRole_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "updatedAt":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._ClubWithRole_updatedAt(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._ClubWithRole_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-	wg.Wait()
+
 	if invalid {
 		return graphql.Null
 	}
@@ -2801,7 +2736,7 @@ func (ec *executionContext) _ClubWithRole_id(ctx context.Context, field graphql.
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.ClubWithRole().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -2890,10 +2825,14 @@ func (ec *executionContext) _ClubWithRole_name(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return graphql.MarshalString(res)
+
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -3021,12 +2960,12 @@ func (ec *executionContext) _ClubWithRole_users(ctx context.Context, field graph
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.ClubWithRole().Users(rctx, obj)
+		return obj.Users, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]models.User)
+	res := resTmp.([]*models.User)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 
@@ -3042,7 +2981,7 @@ func (ec *executionContext) _ClubWithRole_users(ctx context.Context, field graph
 		idx1 := idx1
 		rctx := &graphql.ResolverContext{
 			Index:  &idx1,
-			Result: &res[idx1],
+			Result: res[idx1],
 		}
 		ctx := graphql.WithResolverContext(ctx, rctx)
 		f := func(idx1 int) {
@@ -3051,7 +2990,11 @@ func (ec *executionContext) _ClubWithRole_users(ctx context.Context, field graph
 			}
 			arr1[idx1] = func() graphql.Marshaler {
 
-				return ec._User(ctx, field.Selections, &res[idx1])
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._User(ctx, field.Selections, res[idx1])
 			}()
 		}
 		if isLen1 {
@@ -3078,12 +3021,12 @@ func (ec *executionContext) _ClubWithRole_events(ctx context.Context, field grap
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.ClubWithRole().Events(rctx, obj)
+		return obj.Events, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]models.Event)
+	res := resTmp.([]*models.Event)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 
@@ -3099,7 +3042,7 @@ func (ec *executionContext) _ClubWithRole_events(ctx context.Context, field grap
 		idx1 := idx1
 		rctx := &graphql.ResolverContext{
 			Index:  &idx1,
-			Result: &res[idx1],
+			Result: res[idx1],
 		}
 		ctx := graphql.WithResolverContext(ctx, rctx)
 		f := func(idx1 int) {
@@ -3108,7 +3051,11 @@ func (ec *executionContext) _ClubWithRole_events(ctx context.Context, field grap
 			}
 			arr1[idx1] = func() graphql.Marshaler {
 
-				return ec._Event(ctx, field.Selections, &res[idx1])
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._Event(ctx, field.Selections, res[idx1])
 			}()
 		}
 		if isLen1 {
@@ -3140,11 +3087,15 @@ func (ec *executionContext) _ClubWithRole_role(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(models.Role)
+	res := resTmp.(*models.Role)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 
-	return ec._Role(ctx, field.Selections, &res)
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._Role(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -3216,7 +3167,7 @@ func (ec *executionContext) _ClubWithRole_createdAt(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.ClubWithRole().CreatedAt(rctx, obj)
+		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -3243,7 +3194,7 @@ func (ec *executionContext) _ClubWithRole_updatedAt(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.ClubWithRole().UpdatedAt(rctx, obj)
+		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -5182,7 +5133,7 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.introspectType(args["name"].(string)), nil
+		return ec.introspectType(args["name"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5211,7 +5162,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.introspectSchema(), nil
+		return ec.introspectSchema()
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5233,7 +5184,6 @@ var roleImplementors = []string{"Role"}
 func (ec *executionContext) _Role(ctx context.Context, sel ast.SelectionSet, obj *models.Role) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, roleImplementors)
 
-	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
 	invalid := false
 	for i, field := range fields {
@@ -5242,57 +5192,17 @@ func (ec *executionContext) _Role(ctx context.Context, sel ast.SelectionSet, obj
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Role")
-		case "id":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._Role_id(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
 		case "name":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._Role_name(ctx, field, obj)
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._Role_name(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-	wg.Wait()
+
 	if invalid {
 		return graphql.Null
 	}
 	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _Role_id(ctx context.Context, field graphql.CollectedField, obj *models.Role) graphql.Marshaler {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
-	rctx := &graphql.ResolverContext{
-		Object: "Role",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Role().ID(rctx, obj)
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return graphql.MarshalID(res)
 }
 
 // nolint: vetshadow
@@ -5308,7 +5218,7 @@ func (ec *executionContext) _Role_name(ctx context.Context, field graphql.Collec
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Role().Name(rctx, obj)
+		return obj.Name, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5349,11 +5259,6 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			}(i, field)
 		case "email":
 			out.Values[i] = ec._User_email(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "password":
-			out.Values[i] = ec._User_password(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
@@ -5460,33 +5365,6 @@ func (ec *executionContext) _User_email(ctx context.Context, field graphql.Colle
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Email, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return graphql.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _User_password(ctx context.Context, field graphql.CollectedField, obj *models.User) graphql.Marshaler {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
-	rctx := &graphql.ResolverContext{
-		Object: "User",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Password, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -5711,7 +5589,7 @@ func (ec *executionContext) _User_clubs(ctx context.Context, field graphql.Colle
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]models.ClubWithRole)
+	res := resTmp.([]*models.ClubWithRole)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 
@@ -5727,7 +5605,7 @@ func (ec *executionContext) _User_clubs(ctx context.Context, field graphql.Colle
 		idx1 := idx1
 		rctx := &graphql.ResolverContext{
 			Index:  &idx1,
-			Result: &res[idx1],
+			Result: res[idx1],
 		}
 		ctx := graphql.WithResolverContext(ctx, rctx)
 		f := func(idx1 int) {
@@ -5736,7 +5614,11 @@ func (ec *executionContext) _User_clubs(ctx context.Context, field graphql.Colle
 			}
 			arr1[idx1] = func() graphql.Marshaler {
 
-				return ec._ClubWithRole(ctx, field.Selections, &res[idx1])
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._ClubWithRole(ctx, field.Selections, res[idx1])
 			}()
 		}
 		if isLen1 {
@@ -5866,7 +5748,6 @@ var userWithRoleImplementors = []string{"UserWithRole"}
 func (ec *executionContext) _UserWithRole(ctx context.Context, sel ast.SelectionSet, obj *models.UserWithRole) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, userWithRoleImplementors)
 
-	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
 	invalid := false
 	for i, field := range fields {
@@ -5876,21 +5757,12 @@ func (ec *executionContext) _UserWithRole(ctx context.Context, sel ast.Selection
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("UserWithRole")
 		case "id":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._UserWithRole_id(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
-		case "email":
-			out.Values[i] = ec._UserWithRole_email(ctx, field, obj)
+			out.Values[i] = ec._UserWithRole_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
-		case "password":
-			out.Values[i] = ec._UserWithRole_password(ctx, field, obj)
+		case "email":
+			out.Values[i] = ec._UserWithRole_email(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
@@ -5918,40 +5790,28 @@ func (ec *executionContext) _UserWithRole(ctx context.Context, sel ast.Selection
 		case "sortDescription":
 			out.Values[i] = ec._UserWithRole_sortDescription(ctx, field, obj)
 		case "clubs":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._UserWithRole_clubs(ctx, field, obj)
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._UserWithRole_clubs(ctx, field, obj)
 		case "githubUrl":
 			out.Values[i] = ec._UserWithRole_githubUrl(ctx, field, obj)
 		case "personalUrl":
 			out.Values[i] = ec._UserWithRole_personalUrl(ctx, field, obj)
 		case "createdAt":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._UserWithRole_createdAt(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._UserWithRole_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "updatedAt":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._UserWithRole_updatedAt(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._UserWithRole_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "role":
 			out.Values[i] = ec._UserWithRole_role(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-	wg.Wait()
+
 	if invalid {
 		return graphql.Null
 	}
@@ -5971,7 +5831,7 @@ func (ec *executionContext) _UserWithRole_id(ctx context.Context, field graphql.
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.UserWithRole().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -5999,33 +5859,6 @@ func (ec *executionContext) _UserWithRole_email(ctx context.Context, field graph
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Email, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return graphql.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _UserWithRole_password(ctx context.Context, field graphql.CollectedField, obj *models.UserWithRole) graphql.Marshaler {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
-	rctx := &graphql.ResolverContext{
-		Object: "UserWithRole",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Password, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -6245,12 +6078,12 @@ func (ec *executionContext) _UserWithRole_clubs(ctx context.Context, field graph
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.UserWithRole().Clubs(rctx, obj)
+		return obj.Clubs, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]models.ClubWithRole)
+	res := resTmp.([]*models.ClubWithRole)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 
@@ -6266,7 +6099,7 @@ func (ec *executionContext) _UserWithRole_clubs(ctx context.Context, field graph
 		idx1 := idx1
 		rctx := &graphql.ResolverContext{
 			Index:  &idx1,
-			Result: &res[idx1],
+			Result: res[idx1],
 		}
 		ctx := graphql.WithResolverContext(ctx, rctx)
 		f := func(idx1 int) {
@@ -6275,7 +6108,11 @@ func (ec *executionContext) _UserWithRole_clubs(ctx context.Context, field graph
 			}
 			arr1[idx1] = func() graphql.Marshaler {
 
-				return ec._ClubWithRole(ctx, field.Selections, &res[idx1])
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._ClubWithRole(ctx, field.Selections, res[idx1])
 			}()
 		}
 		if isLen1 {
@@ -6358,7 +6195,7 @@ func (ec *executionContext) _UserWithRole_createdAt(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.UserWithRole().CreatedAt(rctx, obj)
+		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -6385,7 +6222,7 @@ func (ec *executionContext) _UserWithRole_updatedAt(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.UserWithRole().UpdatedAt(rctx, obj)
+		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -6417,11 +6254,15 @@ func (ec *executionContext) _UserWithRole_role(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(models.Role)
+	res := resTmp.(*models.Role)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 
-	return ec._Role(ctx, field.Selections, &res)
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._Role(ctx, field.Selections, res)
 }
 
 var usersImplementors = []string{"Users", "WithPagination"}
@@ -6833,7 +6674,7 @@ func (ec *executionContext) ___EnumValue_isDeprecated(ctx context.Context, field
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.IsDeprecated, nil
+		return obj.IsDeprecated(), nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -6860,15 +6701,19 @@ func (ec *executionContext) ___EnumValue_deprecationReason(ctx context.Context, 
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.DeprecationReason, nil
+		return obj.DeprecationReason(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return graphql.MarshalString(res)
+
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
 }
 
 var __FieldImplementors = []string{"__Field"}
@@ -7079,7 +6924,7 @@ func (ec *executionContext) ___Field_isDeprecated(ctx context.Context, field gra
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.IsDeprecated, nil
+		return obj.IsDeprecated(), nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -7106,15 +6951,19 @@ func (ec *executionContext) ___Field_deprecationReason(ctx context.Context, fiel
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.DeprecationReason, nil
+		return obj.DeprecationReason(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return graphql.MarshalString(res)
+
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
 }
 
 var __InputValueImplementors = []string{"__InputValue"}
@@ -8323,12 +8172,18 @@ func (ec *executionContext) FieldMiddleware(ctx context.Context, obj interface{}
 	return res
 }
 
-func (ec *executionContext) introspectSchema() *introspection.Schema {
-	return introspection.WrapSchema(parsedSchema)
+func (ec *executionContext) introspectSchema() (*introspection.Schema, error) {
+	if ec.DisableIntrospection {
+		return nil, errors.New("introspection disabled")
+	}
+	return introspection.WrapSchema(parsedSchema), nil
 }
 
-func (ec *executionContext) introspectType(name string) *introspection.Type {
-	return introspection.WrapTypeFromDef(parsedSchema, parsedSchema.Types[name])
+func (ec *executionContext) introspectType(name string) (*introspection.Type, error) {
+	if ec.DisableIntrospection {
+		return nil, errors.New("introspection disabled")
+	}
+	return introspection.WrapTypeFromDef(parsedSchema, parsedSchema.Types[name]), nil
 }
 
 var parsedSchema = gqlparser.MustLoadSchema(
@@ -8360,8 +8215,8 @@ type Club {
   description: String
   codeOfConduct: String
   sortDescription: String
-  users: [UserWithRole!]
-  events: [Event!]
+  users: [UserWithRole]
+  events: [Event]
   githubUrl: String
   clubUrl: String
   createdAt: EpochTime!
@@ -8377,8 +8232,8 @@ type ClubWithRole {
   description: String
   codeOfConduct: String
   sortDescription: String
-  users: [User!]
-  events: [Event!]
+  users: [User]
+  events: [Event]
   role: Role
   githubUrl: String
   clubUrl: String
@@ -8430,14 +8285,12 @@ enum RoleName {
 }
 
 type Role {
-  id: ID!
   name: RoleName
 }
 
 type User {
   id: ID!
   email: String!
-  password: String!
   userName: String!
   firstName: String!
   lastName: String!
@@ -8445,7 +8298,7 @@ type User {
   receiveNewsletter: Boolean
   description: String
   sortDescription: String
-  clubs: [ClubWithRole!]
+  clubs: [ClubWithRole]
   githubUrl: String
   personalUrl: String
   createdAt: EpochTime!
@@ -8455,7 +8308,6 @@ type User {
 type UserWithRole {
   id: ID!
   email: String!
-  password: String!
   userName: String!
   firstName: String!
   lastName: String!
@@ -8463,7 +8315,7 @@ type UserWithRole {
   receiveNewsletter: Boolean
   description: String
   sortDescription: String
-  clubs: [ClubWithRole!]
+  clubs: [ClubWithRole]
   githubUrl: String
   personalUrl: String
   createdAt: EpochTime!

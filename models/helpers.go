@@ -19,16 +19,16 @@ func (m *Model) IDToString() (string, error) {
 	return m.ID.String(), nil
 }
 
-func (m *Model) CreatedAtToString() (string, error) {
-	return strconv.FormatInt(m.CreatedAt.Unix(), 10), nil
+func (m *Model) CreatedAtToString() string {
+	return strconv.FormatInt(m.CreatedAt.Unix(), 10)
 }
 
-func (m *Model) UpdatedAtToString() (string, error) {
-	return strconv.FormatInt(m.UpdatedAt.Unix(), 10), nil
+func (m *Model) UpdatedAtToString() string {
+	return strconv.FormatInt(m.UpdatedAt.Unix(), 10)
 }
-func (m *Model) DeletedAtToString() (*string, error) {
+func (m *Model) DeletedAtToString() *string {
 	str := strconv.FormatInt(m.DeletedAt.Unix(), 10)
-	return &str, nil
+	return &str
 }
 
 func (m *Model) BeforeCreate(scope *gorm.Scope) error {
@@ -38,4 +38,26 @@ func (m *Model) BeforeCreate(scope *gorm.Scope) error {
 	}
 	scope.SetColumn("ID", uuid)
 	return nil
+}
+
+func TurnStringToRolename(name string) *RoleName {
+	switch name {
+	case "admin":
+		str := RoleNameAdmin
+		return &str
+
+	case "member":
+		str := RoleNameMember
+		return &str
+
+	case "club_owner":
+		str := RoleNameClubOwner
+		return &str
+	case "guest":
+		str := RoleNameGuest
+		return &str
+	default:
+		return nil
+
+	}
 }
