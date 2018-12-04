@@ -36,7 +36,7 @@ func init() {
 
 	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
-		panic(err)
+		// panic(err)
 	}
 	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("club_id", "clubs(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
