@@ -58,34 +58,42 @@ func (r *clubResolver) Name(ctx context.Context, obj *models.Club) (*string, err
 	return obj.Title, nil
 }
 func (r *clubResolver) Users(ctx context.Context, obj *models.Club) ([]*models.UserWithRole, error) {
-	// clubUserRole := []models.ClubUserRole{}
-	// usersWithRole := []*models.UserWithRole{}
-	// err := models.DBSession.Preload("User").Where("", obj.ID).Find(&clubUserRole).Error
-	// if err != nil {
-	// 	return clubWithRole, err
-	// }
 
-	// for _, club := range clubUserRole {
-	// 	c := &club.Club
-	// 	usersWithRole = append(usersWithRole, &models.UserWithRole{
-	// 		ID:            c.ID.String(),
-	// 		Email:         c.Email,
-	// 		Location:      c.Location,
-	// 		Name:          c.Title,
-	// 		ImageURL:      c.ImageURL,
-	// 		Role:          &models.Role{Name: models.TurnStringToRolename(club.Role)},
-	// 		GithubURL:     c.GithubURL,
-	// 		UpdatedAt:     c.UpdatedAtToString(),
-	// 		CreatedAt:     c.CreatedAtToString(),
-	// 		Description:   c.Description,
-	// 		CodeOfConduct: c.CodeOfConduct,
-	// 		ClubURL:       c.ClubURL,
-	// 		Events:        c.Events,
-	// 		// Users:         c.Users,
-	// 	})
-	// }
-	// return usersWithRole, nil
-	panic("a")
+	clubUserRole := []*models.ClubUserRole{}
+	usersWithRole := []*models.UserWithRole{}
+
+	err := models.DBSession.Preload("User").Where("club_id = ?", obj.ID).Find(&clubUserRole).Error
+	if err != nil {
+		return usersWithRole, err
+	}
+
+	for _, user := range clubUserRole {
+		u := &user.User
+		// TODO: Improve this
+		clubs := []*models.ClubWithRole{}
+		err := models.DBSession.Raw("SELECT * FROM users where id IN (SELECT user_id from club_user_roles where club_id = ?)", u.ID).Scan(&clubs).Error
+		if err != nil {
+			return usersWithRole, err
+		}
+		usersWithRole = append(usersWithRole, &models.UserWithRole{
+			ID:                u.ID.String(),
+			Email:             u.Email,
+			ImageURL:          u.ImageURL,
+			Role:              &models.Role{Name: models.TurnStringToRolename(user.Role)},
+			GithubURL:         u.GithubURL,
+			UpdatedAt:         u.UpdatedAtToString(),
+			CreatedAt:         u.CreatedAtToString(),
+			Description:       u.Description,
+			Clubs:             clubs,
+			UserName:          u.UserName,
+			FirstName:         u.FirstName,
+			LastName:          u.LastName,
+			ReceiveNewsletter: u.ReceiveNewsletter,
+			SortDescription:   u.SortDescription,
+			PersonalURL:       u.PersonalURL,
+		})
+	}
+	return usersWithRole, nil
 }
 func (r *clubResolver) CreatedAt(ctx context.Context, obj *models.Club) (string, error) {
 	return obj.CreatedAtToString(), nil
@@ -169,7 +177,22 @@ func (r *queryResolver) Users(ctx context.Context, limit *int, before *string, a
 func (r *queryResolver) Clubs(ctx context.Context, limit *int, userID *string, ids []*string, before *string, after *string, first *int) (*models.Clubs, error) {
 
 	clubs := []models.Club{}
-	err := models.DBSession.Limit(getLimit(limit)).Find(&clubs).Error
+
+	query := models.DBSession.Limit(getLimit(limit))
+	i := []string{}
+	for _, id := range ids {
+		if id != nil {
+			i = append(i, *id)
+		}
+	}
+	if len(i) > 0 {
+		query = query.Where("id in (?)", i)
+	}
+	if userID != nil {
+		query = query.Where("id in (SELECT club_id from club_user_roles where user_id = ?)", userID)
+	}
+
+	err := query.Find(&clubs).Error
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +207,11 @@ func (r *queryResolver) Club(ctx context.Context, id string) (*models.Club, erro
 
 func (r *queryResolver) Events(ctx context.Context, limit *int, clubId *string, before *string, after *string, first *int) (*models.Events, error) {
 	event := []models.Event{}
-	err := models.DBSession.Limit(getLimit(limit)).Order("published_at").Find(&event).Error
+	query := models.DBSession.Limit(getLimit(limit)).Order("published_at")
+	if clubId != nil {
+		query = query.Where("club_id =", clubId)
+	}
+	err := query.Find(&event).Error
 	if err != nil {
 		return nil, err
 	}
@@ -227,6 +254,7 @@ func (r *userResolver) ID(ctx context.Context, obj *models.User) (string, error)
 func (r *userResolver) Clubs(ctx context.Context, obj *models.User) ([]*models.ClubWithRole, error) {
 	clubUserRole := []models.ClubUserRole{}
 	clubWithRole := []*models.ClubWithRole{}
+
 	err := models.DBSession.Preload("Club").Preload("Club.Location").Preload("Club.Events").Where("user_id = ?", obj.ID).Find(&clubUserRole).Error
 	if err != nil {
 		return clubWithRole, err
