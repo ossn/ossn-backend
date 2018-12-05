@@ -2,10 +2,11 @@ package models
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/jinzhu/gorm"
-	// _ "github.com/jinzhu/gorm/dialects/postgres"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	// _ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 var DBSession *gorm.DB
@@ -13,17 +14,15 @@ var DBSession *gorm.DB
 func init() {
 
 	var err error
-	DBSession, err = gorm.Open("sqlite3", "test.db")
-	// password := os.Getenv("DB_PASSWORD")
-	// host := os.Getenv("DB_HOST")
-	// user := os.Getenv("DB_USER")
-	// DBSession, err = gorm.Open("postgres", "postgres://"+user+":"+password+"@"+host+"/ossn_backend?sslmode=disable")
+	password := os.Getenv("DB_PASSWORD")
+	host := os.Getenv("DB_HOST")
+	user := os.Getenv("DB_USER")
+	DBSession, err = gorm.Open("postgres", "postgres://"+user+":"+password+"@"+host+"/ossn_backend?sslmode=disable")
 	if err != nil {
 		fmt.Println(err)
 		panic("failed to connect database")
 	}
 	// Migrate the schema
-	DBSession.Raw("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 	DBSession.Debug().AutoMigrate(
 		&Event{},
 		&Announcement{},
@@ -54,7 +53,6 @@ func init() {
 	if err != nil {
 		// panic(err)
 	}
-	fmt.Println("Migration finished")
 	seed()
 
 }
@@ -71,7 +69,7 @@ func seed() {
 	}
 	err = DBSession.Create(user).Error
 	if err != nil {
-		panic(err)
+		return
 	}
 
 	st := "an address"

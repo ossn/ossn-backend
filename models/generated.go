@@ -76,9 +76,10 @@ type LocationInput struct {
 }
 
 type PageInfo struct {
-	StartCursor string `json:"startCursor"`
-	EndCursor   string `json:"endCursor"`
-	HasNextPage bool   `json:"hasNextPage"`
+	StartCursor     string `json:"startCursor"`
+	EndCursor       string `json:"endCursor"`
+	HasNextPage     bool   `json:"hasNextPage"`
+	HasPreviousPage bool   `json:"hasPreviousPage"`
 }
 
 type Role struct {

@@ -3,6 +3,7 @@ package ossn_backend
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/ossn/ossn-backend/models"
 )
@@ -76,7 +77,7 @@ func (r *clubResolver) Users(ctx context.Context, obj *models.Club) ([]*models.U
 			return usersWithRole, err
 		}
 		usersWithRole = append(usersWithRole, &models.UserWithRole{
-			ID:                u.ID.String(),
+			ID:                strconv.Itoa(u.ID),
 			Email:             u.Email,
 			ImageURL:          u.ImageURL,
 			Role:              &models.Role{Name: models.TurnStringToRolename(user.Role)},
@@ -169,16 +170,16 @@ func (r *queryResolver) User(ctx context.Context, id string) (*models.User, erro
 	err := models.DBSession.Where("id = ?", id).First(user).Error
 	return user, err
 }
-func (r *queryResolver) Users(ctx context.Context, limit *int, before *string, after *string, first *int) (*models.Users, error) {
+func (r *queryResolver) Users(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Users, error) {
 	users := []models.User{}
-	err := models.DBSession.Limit(getLimit(limit)).Find(&users).Error
+	err := models.DBSession.Limit(getLimit(min(first, limit))).Find(&users).Error
 	return &models.Users{Users: users, PageInfo: models.PageInfo{}}, err
 }
-func (r *queryResolver) Clubs(ctx context.Context, limit *int, userID *string, ids []*string, before *string, after *string, first *int) (*models.Clubs, error) {
+func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, limit *int) (*models.Clubs, error) {
 
 	clubs := []models.Club{}
 
-	query := models.DBSession.Limit(getLimit(limit))
+	query := models.DBSession.Limit(getLimit(min(first, limit)))
 	i := []string{}
 	for _, id := range ids {
 		if id != nil {
@@ -205,9 +206,9 @@ func (r *queryResolver) Club(ctx context.Context, id string) (*models.Club, erro
 	return club, err
 }
 
-func (r *queryResolver) Events(ctx context.Context, limit *int, clubId *string, before *string, after *string, first *int) (*models.Events, error) {
+func (r *queryResolver) Events(ctx context.Context, first *int, clubId *string, before *string, after *string, limit *int) (*models.Events, error) {
 	event := []models.Event{}
-	query := models.DBSession.Limit(getLimit(limit)).Order("published_at")
+	query := models.DBSession.Limit(getLimit(min(first, limit))).Order("published_at")
 	if clubId != nil {
 		query = query.Where("club_id =", clubId)
 	}
@@ -224,11 +225,11 @@ func (r *queryResolver) Event(ctx context.Context, id string) (*models.Event, er
 	return event, err
 }
 
-func (r *queryResolver) Jobs(ctx context.Context, limit *int, before *string, after *string, first *int) (*models.Jobs, error) {
+func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Jobs, error) {
 
 	jobs := []models.Job{}
 
-	err := models.DBSession.Limit(getLimit(limit)).Order("published_at").Find(&jobs).Error
+	err := models.DBSession.Limit(getLimit(min(first, limit))).Order("published_at").Find(&jobs).Error
 	if err != nil {
 		return nil, err
 	}
@@ -236,9 +237,9 @@ func (r *queryResolver) Jobs(ctx context.Context, limit *int, before *string, af
 	return &models.Jobs{Jobs: jobs, PageInfo: models.PageInfo{}}, err
 }
 
-func (r *queryResolver) Announcements(ctx context.Context, limit *int, before *string, after *string, first *int) (*models.Announcements, error) {
+func (r *queryResolver) Announcements(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Announcements, error) {
 	annanc := []models.Announcement{}
-	err := models.DBSession.Limit(getLimit(limit)).Order("published_at").Find(&annanc).Error
+	err := models.DBSession.Limit(getLimit(min(first, limit))).Order("published_at").Find(&annanc).Error
 	if err != nil {
 		return nil, err
 	}
@@ -268,7 +269,7 @@ func (r *userResolver) Clubs(ctx context.Context, obj *models.User) ([]*models.C
 			return clubWithRole, err
 		}
 		clubWithRole = append(clubWithRole, &models.ClubWithRole{
-			ID:            c.ID.String(),
+			ID:            strconv.Itoa(c.ID),
 			Email:         c.Email,
 			Location:      c.Location,
 			Name:          c.Title,

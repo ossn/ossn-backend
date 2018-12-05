@@ -15,6 +15,7 @@ type PageInfo {
   startCursor: ID!
   endCursor: ID!
   hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
 }
 
 type Club {
@@ -165,24 +166,24 @@ type Announcements implements WithPagination {
 
 type Query {
   user(id: ID!): User
-  users(limit: Int = 10, before: ID, after: ID, first: Int): Users
+  users(first: Int = 10, before: ID, after: ID, limit: Int): Users
   clubs(
-    limit: Int = 10
+    first: Int = 10
     userID: ID
     ids: [ID]
     before: ID
     after: ID
-    first: Int
+    limit: Int
   ): Clubs
   club(id: ID!): Club
-  events(limit: Int = 10, clubId: ID, before: ID, after: ID, first: Int): Events
+  events(first: Int = 10, clubId: ID, before: ID, after: ID, limit: Int): Events
   event(id: ID!): Event
-  jobs(limit: Int = 10, before: ID, after: ID, first: Int): Jobs
+  jobs(first: Int = 10, before: ID, after: ID, limit: Int): Jobs
   announcements(
-    limit: Int = 10
+    first: Int = 10
     before: ID
     after: ID
-    first: Int
+    limit: Int
   ): Announcements
 }
 

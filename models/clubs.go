@@ -1,12 +1,10 @@
 package models
 
-import "github.com/satori/go.uuid"
-
 type Club struct {
-	Model
-	Email           *string         `json:"email" gorm:"UNIQUE;"`
-	Location        *Location       `json:"location" gorm:"foreignkey:LocationID"`
-	LocationID      *uuid.UUID      `gorm:"type:uuid"`
+	*Model
+	Email           *string   `json:"email" gorm:"UNIQUE;"`
+	Location        *Location `json:"location" gorm:"foreignkey:LocationID"`
+	LocationID      *int
 	Title           *string         `json:"name"`
 	ImageURL        *string         `json:"imageUrl" sql:"type:text;"`
 	Description     *string         `json:"description" sql:"type:text;"`

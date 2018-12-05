@@ -2,21 +2,16 @@ package models
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/jinzhu/gorm"
-	"github.com/satori/go.uuid"
 )
 
 type Model struct {
-	ID        uuid.UUID `gorm:"primary_key;type:uuid;"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time
+	*gorm.Model
 }
 
 func (m *Model) IDToString() (string, error) {
-	return m.ID.String(), nil
+	return strconv.Itoa(m.ID), nil
 }
 
 func (m *Model) CreatedAtToString() string {
@@ -29,15 +24,6 @@ func (m *Model) UpdatedAtToString() string {
 func (m *Model) DeletedAtToString() *string {
 	str := strconv.FormatInt(m.DeletedAt.Unix(), 10)
 	return &str
-}
-
-func (m *Model) BeforeCreate(scope *gorm.Scope) error {
-	uuid, err := uuid.NewV4()
-	if err != nil {
-		return err
-	}
-	scope.SetColumn("ID", uuid)
-	return nil
 }
 
 func TurnStringToRolename(name string) *RoleName {

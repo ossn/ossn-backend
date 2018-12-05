@@ -155,20 +155,21 @@ type ComplexityRoot struct {
 	}
 
 	PageInfo struct {
-		StartCursor func(childComplexity int) int
-		EndCursor   func(childComplexity int) int
-		HasNextPage func(childComplexity int) int
+		StartCursor     func(childComplexity int) int
+		EndCursor       func(childComplexity int) int
+		HasNextPage     func(childComplexity int) int
+		HasPreviousPage func(childComplexity int) int
 	}
 
 	Query struct {
 		User          func(childComplexity int, id string) int
-		Users         func(childComplexity int, limit *int, before *string, after *string, first *int) int
-		Clubs         func(childComplexity int, limit *int, userID *string, ids []*string, before *string, after *string, first *int) int
+		Users         func(childComplexity int, first *int, before *string, after *string, limit *int) int
+		Clubs         func(childComplexity int, first *int, userID *string, ids []*string, before *string, after *string, limit *int) int
 		Club          func(childComplexity int, id string) int
-		Events        func(childComplexity int, limit *int, clubId *string, before *string, after *string, first *int) int
+		Events        func(childComplexity int, first *int, clubId *string, before *string, after *string, limit *int) int
 		Event         func(childComplexity int, id string) int
-		Jobs          func(childComplexity int, limit *int, before *string, after *string, first *int) int
-		Announcements func(childComplexity int, limit *int, before *string, after *string, first *int) int
+		Jobs          func(childComplexity int, first *int, before *string, after *string, limit *int) int
+		Announcements func(childComplexity int, first *int, before *string, after *string, limit *int) int
 	}
 
 	Role struct {
@@ -263,13 +264,13 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	User(ctx context.Context, id string) (*models.User, error)
-	Users(ctx context.Context, limit *int, before *string, after *string, first *int) (*models.Users, error)
-	Clubs(ctx context.Context, limit *int, userID *string, ids []*string, before *string, after *string, first *int) (*models.Clubs, error)
+	Users(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Users, error)
+	Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, limit *int) (*models.Clubs, error)
 	Club(ctx context.Context, id string) (*models.Club, error)
-	Events(ctx context.Context, limit *int, clubId *string, before *string, after *string, first *int) (*models.Events, error)
+	Events(ctx context.Context, first *int, clubId *string, before *string, after *string, limit *int) (*models.Events, error)
 	Event(ctx context.Context, id string) (*models.Event, error)
-	Jobs(ctx context.Context, limit *int, before *string, after *string, first *int) (*models.Jobs, error)
-	Announcements(ctx context.Context, limit *int, before *string, after *string, first *int) (*models.Announcements, error)
+	Jobs(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Jobs, error)
+	Announcements(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Announcements, error)
 }
 type UserResolver interface {
 	ID(ctx context.Context, obj *models.User) (string, error)
@@ -348,7 +349,7 @@ func field_Query_user_args(rawArgs map[string]interface{}) (map[string]interface
 func field_Query_users_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 *int
-	if tmp, ok := rawArgs["limit"]; ok {
+	if tmp, ok := rawArgs["first"]; ok {
 		var err error
 		var ptr1 int
 		if tmp != nil {
@@ -360,7 +361,7 @@ func field_Query_users_args(rawArgs map[string]interface{}) (map[string]interfac
 			return nil, err
 		}
 	}
-	args["limit"] = arg0
+	args["first"] = arg0
 	var arg1 *string
 	if tmp, ok := rawArgs["before"]; ok {
 		var err error
@@ -390,7 +391,7 @@ func field_Query_users_args(rawArgs map[string]interface{}) (map[string]interfac
 	}
 	args["after"] = arg2
 	var arg3 *int
-	if tmp, ok := rawArgs["first"]; ok {
+	if tmp, ok := rawArgs["limit"]; ok {
 		var err error
 		var ptr1 int
 		if tmp != nil {
@@ -402,7 +403,7 @@ func field_Query_users_args(rawArgs map[string]interface{}) (map[string]interfac
 			return nil, err
 		}
 	}
-	args["first"] = arg3
+	args["limit"] = arg3
 	return args, nil
 
 }
@@ -410,7 +411,7 @@ func field_Query_users_args(rawArgs map[string]interface{}) (map[string]interfac
 func field_Query_clubs_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 *int
-	if tmp, ok := rawArgs["limit"]; ok {
+	if tmp, ok := rawArgs["first"]; ok {
 		var err error
 		var ptr1 int
 		if tmp != nil {
@@ -422,7 +423,7 @@ func field_Query_clubs_args(rawArgs map[string]interface{}) (map[string]interfac
 			return nil, err
 		}
 	}
-	args["limit"] = arg0
+	args["first"] = arg0
 	var arg1 *string
 	if tmp, ok := rawArgs["userID"]; ok {
 		var err error
@@ -490,7 +491,7 @@ func field_Query_clubs_args(rawArgs map[string]interface{}) (map[string]interfac
 	}
 	args["after"] = arg4
 	var arg5 *int
-	if tmp, ok := rawArgs["first"]; ok {
+	if tmp, ok := rawArgs["limit"]; ok {
 		var err error
 		var ptr1 int
 		if tmp != nil {
@@ -502,7 +503,7 @@ func field_Query_clubs_args(rawArgs map[string]interface{}) (map[string]interfac
 			return nil, err
 		}
 	}
-	args["first"] = arg5
+	args["limit"] = arg5
 	return args, nil
 
 }
@@ -525,7 +526,7 @@ func field_Query_club_args(rawArgs map[string]interface{}) (map[string]interface
 func field_Query_events_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 *int
-	if tmp, ok := rawArgs["limit"]; ok {
+	if tmp, ok := rawArgs["first"]; ok {
 		var err error
 		var ptr1 int
 		if tmp != nil {
@@ -537,7 +538,7 @@ func field_Query_events_args(rawArgs map[string]interface{}) (map[string]interfa
 			return nil, err
 		}
 	}
-	args["limit"] = arg0
+	args["first"] = arg0
 	var arg1 *string
 	if tmp, ok := rawArgs["clubId"]; ok {
 		var err error
@@ -581,7 +582,7 @@ func field_Query_events_args(rawArgs map[string]interface{}) (map[string]interfa
 	}
 	args["after"] = arg3
 	var arg4 *int
-	if tmp, ok := rawArgs["first"]; ok {
+	if tmp, ok := rawArgs["limit"]; ok {
 		var err error
 		var ptr1 int
 		if tmp != nil {
@@ -593,7 +594,7 @@ func field_Query_events_args(rawArgs map[string]interface{}) (map[string]interfa
 			return nil, err
 		}
 	}
-	args["first"] = arg4
+	args["limit"] = arg4
 	return args, nil
 
 }
@@ -616,7 +617,7 @@ func field_Query_event_args(rawArgs map[string]interface{}) (map[string]interfac
 func field_Query_jobs_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 *int
-	if tmp, ok := rawArgs["limit"]; ok {
+	if tmp, ok := rawArgs["first"]; ok {
 		var err error
 		var ptr1 int
 		if tmp != nil {
@@ -628,7 +629,7 @@ func field_Query_jobs_args(rawArgs map[string]interface{}) (map[string]interface
 			return nil, err
 		}
 	}
-	args["limit"] = arg0
+	args["first"] = arg0
 	var arg1 *string
 	if tmp, ok := rawArgs["before"]; ok {
 		var err error
@@ -658,7 +659,7 @@ func field_Query_jobs_args(rawArgs map[string]interface{}) (map[string]interface
 	}
 	args["after"] = arg2
 	var arg3 *int
-	if tmp, ok := rawArgs["first"]; ok {
+	if tmp, ok := rawArgs["limit"]; ok {
 		var err error
 		var ptr1 int
 		if tmp != nil {
@@ -670,7 +671,7 @@ func field_Query_jobs_args(rawArgs map[string]interface{}) (map[string]interface
 			return nil, err
 		}
 	}
-	args["first"] = arg3
+	args["limit"] = arg3
 	return args, nil
 
 }
@@ -678,7 +679,7 @@ func field_Query_jobs_args(rawArgs map[string]interface{}) (map[string]interface
 func field_Query_announcements_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 *int
-	if tmp, ok := rawArgs["limit"]; ok {
+	if tmp, ok := rawArgs["first"]; ok {
 		var err error
 		var ptr1 int
 		if tmp != nil {
@@ -690,7 +691,7 @@ func field_Query_announcements_args(rawArgs map[string]interface{}) (map[string]
 			return nil, err
 		}
 	}
-	args["limit"] = arg0
+	args["first"] = arg0
 	var arg1 *string
 	if tmp, ok := rawArgs["before"]; ok {
 		var err error
@@ -720,7 +721,7 @@ func field_Query_announcements_args(rawArgs map[string]interface{}) (map[string]
 	}
 	args["after"] = arg2
 	var arg3 *int
-	if tmp, ok := rawArgs["first"]; ok {
+	if tmp, ok := rawArgs["limit"]; ok {
 		var err error
 		var ptr1 int
 		if tmp != nil {
@@ -732,7 +733,7 @@ func field_Query_announcements_args(rawArgs map[string]interface{}) (map[string]
 			return nil, err
 		}
 	}
-	args["first"] = arg3
+	args["limit"] = arg3
 	return args, nil
 
 }
@@ -1349,6 +1350,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PageInfo.HasNextPage(childComplexity), true
 
+	case "PageInfo.hasPreviousPage":
+		if e.complexity.PageInfo.HasPreviousPage == nil {
+			break
+		}
+
+		return e.complexity.PageInfo.HasPreviousPage(childComplexity), true
+
 	case "Query.user":
 		if e.complexity.Query.User == nil {
 			break
@@ -1371,7 +1379,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Users(childComplexity, args["limit"].(*int), args["before"].(*string), args["after"].(*string), args["first"].(*int)), true
+		return e.complexity.Query.Users(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int)), true
 
 	case "Query.clubs":
 		if e.complexity.Query.Clubs == nil {
@@ -1383,7 +1391,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Clubs(childComplexity, args["limit"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["first"].(*int)), true
+		return e.complexity.Query.Clubs(childComplexity, args["first"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int)), true
 
 	case "Query.club":
 		if e.complexity.Query.Club == nil {
@@ -1407,7 +1415,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Events(childComplexity, args["limit"].(*int), args["clubId"].(*string), args["before"].(*string), args["after"].(*string), args["first"].(*int)), true
+		return e.complexity.Query.Events(childComplexity, args["first"].(*int), args["clubId"].(*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int)), true
 
 	case "Query.event":
 		if e.complexity.Query.Event == nil {
@@ -1431,7 +1439,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Jobs(childComplexity, args["limit"].(*int), args["before"].(*string), args["after"].(*string), args["first"].(*int)), true
+		return e.complexity.Query.Jobs(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int)), true
 
 	case "Query.announcements":
 		if e.complexity.Query.Announcements == nil {
@@ -1443,7 +1451,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Announcements(childComplexity, args["limit"].(*int), args["before"].(*string), args["after"].(*string), args["first"].(*int)), true
+		return e.complexity.Query.Announcements(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int)), true
 
 	case "Role.name":
 		if e.complexity.Role.Name == nil {
@@ -4660,6 +4668,11 @@ func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
+		case "hasPreviousPage":
+			out.Values[i] = ec._PageInfo_hasPreviousPage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4739,6 +4752,33 @@ func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field gra
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.HasNextPage, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return graphql.MarshalBoolean(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _PageInfo_hasPreviousPage(ctx context.Context, field graphql.CollectedField, obj *models.PageInfo) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rctx := &graphql.ResolverContext{
+		Object: "PageInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HasPreviousPage, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -4888,7 +4928,7 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Users(rctx, args["limit"].(*int), args["before"].(*string), args["after"].(*string), args["first"].(*int))
+		return ec.resolvers.Query().Users(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -4923,7 +4963,7 @@ func (ec *executionContext) _Query_clubs(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Clubs(rctx, args["limit"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["first"].(*int))
+		return ec.resolvers.Query().Clubs(rctx, args["first"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -4993,7 +5033,7 @@ func (ec *executionContext) _Query_events(ctx context.Context, field graphql.Col
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Events(rctx, args["limit"].(*int), args["clubId"].(*string), args["before"].(*string), args["after"].(*string), args["first"].(*int))
+		return ec.resolvers.Query().Events(rctx, args["first"].(*int), args["clubId"].(*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5063,7 +5103,7 @@ func (ec *executionContext) _Query_jobs(ctx context.Context, field graphql.Colle
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Jobs(rctx, args["limit"].(*int), args["before"].(*string), args["after"].(*string), args["first"].(*int))
+		return ec.resolvers.Query().Jobs(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5098,7 +5138,7 @@ func (ec *executionContext) _Query_announcements(ctx context.Context, field grap
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Announcements(rctx, args["limit"].(*int), args["before"].(*string), args["after"].(*string), args["first"].(*int))
+		return ec.resolvers.Query().Announcements(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -8204,6 +8244,7 @@ type PageInfo {
   startCursor: ID!
   endCursor: ID!
   hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
 }
 
 type Club {
@@ -8354,24 +8395,24 @@ type Announcements implements WithPagination {
 
 type Query {
   user(id: ID!): User
-  users(limit: Int = 10, before: ID, after: ID, first: Int): Users
+  users(first: Int = 10, before: ID, after: ID, limit: Int): Users
   clubs(
-    limit: Int = 10
+    first: Int = 10
     userID: ID
     ids: [ID]
     before: ID
     after: ID
-    first: Int
+    limit: Int
   ): Clubs
   club(id: ID!): Club
-  events(limit: Int = 10, clubId: ID, before: ID, after: ID, first: Int): Events
+  events(first: Int = 10, clubId: ID, before: ID, after: ID, limit: Int): Events
   event(id: ID!): Event
-  jobs(limit: Int = 10, before: ID, after: ID, first: Int): Jobs
+  jobs(first: Int = 10, before: ID, after: ID, limit: Int): Jobs
   announcements(
-    limit: Int = 10
+    first: Int = 10
     before: ID
     after: ID
-    first: Int
+    limit: Int
   ): Announcements
 }
 
