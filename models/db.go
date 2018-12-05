@@ -17,7 +17,8 @@ func init() {
 	password := os.Getenv("DB_PASSWORD")
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
-	DBSession, err = gorm.Open("postgres", "postgres://"+user+":"+password+"@"+host+"/ossn_backend?sslmode=disable")
+	database := os.Getenv("DB_NAME")
+	DBSession, err = gorm.Open("postgres", "postgres://"+user+":"+password+"@"+host+"/"+database+"?sslmode=disable")
 	if err != nil {
 		fmt.Println(err)
 		panic("failed to connect database")
