@@ -11,7 +11,7 @@ type Model struct {
 }
 
 func (m *Model) IDToString() (string, error) {
-	return strconv.Itoa(m.ID), nil
+	return strconv.FormatUint(uint64(m.ID), 10), nil
 }
 
 func (m *Model) CreatedAtToString() string {

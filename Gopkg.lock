@@ -47,11 +47,11 @@
   version = "v0.5.0"
 
 [[projects]]
-  digest = "1:57072e5ce133ed6023e6ff49d9f19dcfb09f0fc8da693b1a8ac2eaa038ac858f"
+  digest = "1:7e63b12cdd7bef2c411d736cb67e28134d39f5d236aa1bfb8f3d55e3ad709eca"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
-    "dialects/sqlite",
+    "dialects/postgres",
   ]
   pruneopts = "UT"
   revision = "472c70caa40267cb89fd8facb07fe6454b578626"
@@ -66,12 +66,16 @@
   revision = "04140366298a54a039076d798123ffa108fff46c"
 
 [[projects]]
-  digest = "1:4a49346ca45376a2bba679ca0e83bec949d780d4e927931317904bad482943ec"
-  name = "github.com/mattn/go-sqlite3"
-  packages = ["."]
+  digest = "1:b18ffc558326ebaed3b4a175617f1e12ed4e3f53d6ebfe5ba372a3de16d22278"
+  name = "github.com/lib/pq"
+  packages = [
+    ".",
+    "hstore",
+    "oid",
+  ]
   pruneopts = "UT"
-  revision = "c7c4067b79cc51e6dfdcef5c702e74b1e0fa7c75"
-  version = "v1.10.0"
+  revision = "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
@@ -80,14 +84,6 @@
   pruneopts = "UT"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
-
-[[projects]]
-  branch = "master"
-  digest = "1:a3b8912deeef29007fab9a13a9f21b9e9b59c621a2ed61e2fe7b37320a71fbd5"
-  name = "github.com/satori/go.uuid"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "b2ce2384e17bbe0c6d34077efa39dbab3e09123b"
 
 [[projects]]
   digest = "1:b24d38b282bacf9791408a080f606370efa3d364e4b5fd9ba0f7b87786d3b679"
@@ -115,7 +111,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:8129dcb41cf0046c9af4cd0032b67dd229e69a1e4ccee88b6436fc5b0ee5b2ce"
+  digest = "1:58f72149812c22b9433c02e0d8e58e7a793a666e2af1bdefa0d363fa7965f50b"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -127,7 +123,7 @@
     "internal/gopathwalk",
   ]
   pruneopts = "UT"
-  revision = "e5f3ab76ea4b26ebea349e4994ee72d38250c9b0"
+  revision = "22934f0fdb6201c132a3dc6120150dcb1646d74c"
 
 [[projects]]
   digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
@@ -146,8 +142,7 @@
     "github.com/99designs/gqlgen/graphql/introspection",
     "github.com/99designs/gqlgen/handler",
     "github.com/jinzhu/gorm",
-    "github.com/jinzhu/gorm/dialects/sqlite",
-    "github.com/satori/go.uuid",
+    "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",
   ]

@@ -77,7 +77,7 @@ func (r *clubResolver) Users(ctx context.Context, obj *models.Club) ([]*models.U
 			return usersWithRole, err
 		}
 		usersWithRole = append(usersWithRole, &models.UserWithRole{
-			ID:                strconv.Itoa(u.ID),
+			ID:                strconv.FormatUint(uint64(u.ID), 10),
 			Email:             u.Email,
 			ImageURL:          u.ImageURL,
 			Role:              &models.Role{Name: models.TurnStringToRolename(user.Role)},
@@ -399,7 +399,7 @@ func (r *userResolver) Clubs(ctx context.Context, obj *models.User) ([]*models.C
 			return clubWithRole, err
 		}
 		clubWithRole = append(clubWithRole, &models.ClubWithRole{
-			ID:            strconv.Itoa(c.ID),
+			ID:            strconv.FormatUint(uint64(c.ID), 10),
 			Email:         c.Email,
 			Location:      c.Location,
 			Name:          c.Title,
