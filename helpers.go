@@ -10,3 +10,18 @@ func getLimit(limit *int) int {
 	}
 	return l
 }
+
+func min(limit *int, first *int) *int {
+	switch {
+	case limit == nil:
+		return first
+	case first == nil:
+		return limit
+	case *limit > *first:
+		return first
+	case *limit < *first:
+		return limit
+	default:
+		return first
+	}
+}
