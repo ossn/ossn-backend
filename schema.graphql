@@ -16,6 +16,7 @@ type PageInfo {
   endCursor: ID!
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
+  totalCount: Int!
 }
 
 type Club {

@@ -58,8 +58,14 @@ func init() {
 }
 
 func seed() {
+	star := "test.com"
+	c := &Club{ClubURL: &star}
+	err := DBSession.Create(c).Error
+	if err != nil {
+		return
+	}
 	user := &User{Email: "test1@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username"}
-	err := DBSession.Create(&Announcement{}).Error
+	err = DBSession.Create(&Announcement{}).Error
 	if err != nil {
 		return
 	}

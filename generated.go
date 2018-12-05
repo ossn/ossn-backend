@@ -159,6 +159,7 @@ type ComplexityRoot struct {
 		EndCursor       func(childComplexity int) int
 		HasNextPage     func(childComplexity int) int
 		HasPreviousPage func(childComplexity int) int
+		TotalCount      func(childComplexity int) int
 	}
 
 	Query struct {
@@ -1356,6 +1357,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.PageInfo.HasPreviousPage(childComplexity), true
+
+	case "PageInfo.totalCount":
+		if e.complexity.PageInfo.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.PageInfo.TotalCount(childComplexity), true
 
 	case "Query.user":
 		if e.complexity.Query.User == nil {
@@ -4673,6 +4681,11 @@ func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
+		case "totalCount":
+			out.Values[i] = ec._PageInfo_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4790,6 +4803,33 @@ func (ec *executionContext) _PageInfo_hasPreviousPage(ctx context.Context, field
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return graphql.MarshalBoolean(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _PageInfo_totalCount(ctx context.Context, field graphql.CollectedField, obj *models.PageInfo) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rctx := &graphql.ResolverContext{
+		Object: "PageInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return graphql.MarshalInt(res)
 }
 
 var queryImplementors = []string{"Query"}
@@ -8245,6 +8285,7 @@ type PageInfo {
   endCursor: ID!
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
+  totalCount: Int!
 }
 
 type Club {
