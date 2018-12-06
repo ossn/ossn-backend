@@ -34,7 +34,7 @@
   version = "1.9.2"
 
 [[constraint]]
-  name = "github.com/satori/go.uuid"
+  name = "github.com/qor/admin"
   branch = "master"
 
 [[constraint]]
