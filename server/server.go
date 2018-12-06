@@ -6,6 +6,7 @@ import (
 	os "os"
 
 	"github.com/ossn/ossn-backend/models"
+	"github.com/rs/cors"
 
 	handler "github.com/99designs/gqlgen/handler"
 	ossn_backend "github.com/ossn/ossn-backend"
@@ -20,9 +21,11 @@ func main() {
 		port = defaultPort
 	}
 
-	http.Handle("/", handler.Playground("GraphQL playground", "/query"))
-	http.Handle("/query", handler.GraphQL(ossn_backend.NewExecutableSchema(ossn_backend.Config{Resolvers: &ossn_backend.Resolver{}})))
+	mux := http.NewServeMux()
+	mux.Handle("/", handler.Playground("GraphQL playground", "/query"))
+	mux.Handle("/query", handler.GraphQL(ossn_backend.NewExecutableSchema(ossn_backend.Config{Resolvers: &ossn_backend.Resolver{}})))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	handler := cors.Default().Handler(mux)
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
