@@ -170,11 +170,15 @@ func (r *queryResolver) User(ctx context.Context, id string) (*models.User, erro
 	err := models.DBSession.Where("id = ?", id).First(user).Error
 	return user, err
 }
-func (r *queryResolver) Users(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Users, error) {
+func (r *queryResolver) Users(ctx context.Context, first *int, before *string, after *string, limit *int, search *string) (*models.Users, error) {
 	query := models.DBSession
 	query, err := parseParams(query, min(first, limit), after, before)
 	if err != nil {
 		return nil, err
+	}
+	if search != nil {
+		str := "%" + *search + "%"
+		query = query.Where("user_name LIKE ?", str).Or("first_name LIKE ?", str).Or("last_name LIKE ?", str)
 	}
 	users := []models.User{}
 	count := 0
@@ -199,7 +203,7 @@ func (r *queryResolver) Users(ctx context.Context, first *int, before *string, a
 	}, err
 }
 
-func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, limit *int) (*models.Clubs, error) {
+func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, limit *int, search *string) (*models.Clubs, error) {
 	query := models.DBSession
 	query, err := parseParams(query, min(first, limit), after, before)
 	if err != nil {
@@ -211,6 +215,9 @@ func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, i
 		if id != nil {
 			i = append(i, *id)
 		}
+	}
+	if search != nil {
+		query = query.Where("title LIKE ?", "%"+*search+"%")
 	}
 	if len(i) > 0 {
 		query = query.Where("id in (?)", i)

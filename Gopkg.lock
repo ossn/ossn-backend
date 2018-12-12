@@ -60,6 +60,14 @@
   version = "v1.4.0"
 
 [[projects]]
+  digest = "1:7f21be04e0b759244c9c113397963c3c42270844114e3ea55de42cd16d0ab8bc"
+  name = "github.com/gosimple/slug"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "d8eda97f6ce6a447aa8ed204694bb5ce84f36b71"
+  version = "v1.4.1"
+
+[[projects]]
   digest = "1:8ec8d88c248041a6df5f6574b87bc00e7e0b493881dad2e7ef47b11dc69093b5"
   name = "github.com/hashicorp/golang-lru"
   packages = [
@@ -126,6 +134,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:1fc201f179a7d45f944655de3cdbfb0a8a226fd525569454e31ca87f9e4bb677"
+  name = "github.com/microcosm-cc/bluemonday"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "82c7118e8ccf7403d4860175d97bb635e8e28239"
+  version = "v1.0.1"
+
+[[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -158,7 +174,8 @@
   revision = "781378b69454a545d08058d8154aca40d079e7ab"
 
 [[projects]]
-  digest = "1:bb9577a85af789d19c87a02b1ff89dfc1c6027cb56080d255d4ac7dc2e5411c7"
+  branch = "master"
+  digest = "1:db822e0a41a1fd989c54a6252372baf4a2897257a50f69131bb30696b3cf9777"
   name = "github.com/qor/qor"
   packages = [
     ".",
@@ -166,8 +183,7 @@
     "utils",
   ]
   pruneopts = "UT"
-  revision = "d1402d1caffb8f9c05d73fa5bfaae2853c4191fb"
-  version = "v1.0"
+  revision = "49b2dd4f5840f58f43d6d83fdd32baf56ffb24b2"
 
 [[projects]]
   digest = "1:4d7e309108709883ce2067c488982206ecc25b81835dd6911c6f63fecb4e767c"
@@ -178,12 +194,12 @@
   version = "v1.0"
 
 [[projects]]
-  digest = "1:dcb3a1c2516be16359ba7933bdfaac7daaf969b347230ab1f4cdbd9a594fe6d2"
+  branch = "master"
+  digest = "1:be8425925ff99bd3fb026add07beb8069fed5c8e199b1cd55a871f832d9f6688"
   name = "github.com/qor/roles"
   packages = ["."]
   pruneopts = "UT"
-  revision = "f1e05694734518c0ce2dc21151e0ecfccf4db8f4"
-  version = "v1.0"
+  revision = "d6375609fe3e5da46ad3a574fae244fb633e79c1"
 
 [[projects]]
   branch = "master"
@@ -196,6 +212,22 @@
   ]
   pruneopts = "UT"
   revision = "8206b0adab706a6ef3ee6fabba2584d34429a26a"
+
+[[projects]]
+  digest = "1:1a44c28f6de12e934afea5ff48ccd61a779526dc587afb60f30ebbfae838c2fd"
+  name = "github.com/qor/validations"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "87c1296c75e72a8f3247beab65c48c50b7b66a7a"
+  version = "v1.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:e6a29574542c00bb18adb1bfbe629ff88c468c2af2e2e953d3e58eda07165086"
+  name = "github.com/rainycape/unidecode"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c"
 
 [[projects]]
   digest = "1:b0c25f00bad20d783d259af2af8666969e2fc343fa0dc9efe52936bbd67fb758"
@@ -238,6 +270,17 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:1a1ecfa7b54ca3f7a0115ab5c578d7d6a5d8b605839c549e80260468c42f8be7"
+  name = "golang.org/x/net"
+  packages = [
+    "html",
+    "html/atom",
+  ]
+  pruneopts = "UT"
+  revision = "610586996380ceef02dd726cc09df7e00a3f8e56"
+
+[[projects]]
   digest = "1:740cec287074ade445ab57356e36f54d3e0d33c0d0ebf77047934da33af2c1c0"
   name = "golang.org/x/text"
   packages = [
@@ -250,7 +293,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:58f72149812c22b9433c02e0d8e58e7a793a666e2af1bdefa0d363fa7965f50b"
+  digest = "1:d9e353117da692eea5030b88167d54d51e77a5cbb515ff107cfd9b981ed06219"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -262,7 +305,7 @@
     "internal/gopathwalk",
   ]
   pruneopts = "UT"
-  revision = "3576414c54a492fc48cd913814eb209914c717f0"
+  revision = "59cd96f77e7ec4d6e1fc7489f61915a82879680d"
 
 [[projects]]
   digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"

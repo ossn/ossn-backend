@@ -164,8 +164,8 @@ type ComplexityRoot struct {
 
 	Query struct {
 		User          func(childComplexity int, id string) int
-		Users         func(childComplexity int, first *int, before *string, after *string, limit *int) int
-		Clubs         func(childComplexity int, first *int, userID *string, ids []*string, before *string, after *string, limit *int) int
+		Users         func(childComplexity int, first *int, before *string, after *string, limit *int, search *string) int
+		Clubs         func(childComplexity int, first *int, userID *string, ids []*string, before *string, after *string, limit *int, search *string) int
 		Club          func(childComplexity int, id string) int
 		Events        func(childComplexity int, first *int, clubId *string, before *string, after *string, limit *int) int
 		Event         func(childComplexity int, id string) int
@@ -265,8 +265,8 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	User(ctx context.Context, id string) (*models.User, error)
-	Users(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Users, error)
-	Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, limit *int) (*models.Clubs, error)
+	Users(ctx context.Context, first *int, before *string, after *string, limit *int, search *string) (*models.Users, error)
+	Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, limit *int, search *string) (*models.Clubs, error)
 	Club(ctx context.Context, id string) (*models.Club, error)
 	Events(ctx context.Context, first *int, clubId *string, before *string, after *string, limit *int) (*models.Events, error)
 	Event(ctx context.Context, id string) (*models.Event, error)
@@ -405,6 +405,20 @@ func field_Query_users_args(rawArgs map[string]interface{}) (map[string]interfac
 		}
 	}
 	args["limit"] = arg3
+	var arg4 *string
+	if tmp, ok := rawArgs["search"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = graphql.UnmarshalString(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["search"] = arg4
 	return args, nil
 
 }
@@ -505,6 +519,20 @@ func field_Query_clubs_args(rawArgs map[string]interface{}) (map[string]interfac
 		}
 	}
 	args["limit"] = arg5
+	var arg6 *string
+	if tmp, ok := rawArgs["search"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = graphql.UnmarshalString(tmp)
+			arg6 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["search"] = arg6
 	return args, nil
 
 }
@@ -1387,7 +1415,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Users(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int)), true
+		return e.complexity.Query.Users(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int), args["search"].(*string)), true
 
 	case "Query.clubs":
 		if e.complexity.Query.Clubs == nil {
@@ -1399,7 +1427,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Clubs(childComplexity, args["first"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int)), true
+		return e.complexity.Query.Clubs(childComplexity, args["first"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int), args["search"].(*string)), true
 
 	case "Query.club":
 		if e.complexity.Query.Club == nil {
@@ -4968,7 +4996,7 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Users(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int))
+		return ec.resolvers.Query().Users(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int), args["search"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5003,7 +5031,7 @@ func (ec *executionContext) _Query_clubs(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Clubs(rctx, args["first"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int))
+		return ec.resolvers.Query().Clubs(rctx, args["first"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int), args["search"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -8436,7 +8464,13 @@ type Announcements implements WithPagination {
 
 type Query {
   user(id: ID!): User
-  users(first: Int = 10, before: ID, after: ID, limit: Int): Users
+  users(
+    first: Int = 10
+    before: ID
+    after: ID
+    limit: Int
+    search: String
+  ): Users
   clubs(
     first: Int = 10
     userID: ID
@@ -8444,6 +8478,7 @@ type Query {
     before: ID
     after: ID
     limit: Int
+    search: String
   ): Clubs
   club(id: ID!): Club
   events(first: Int = 10, clubId: ID, before: ID, after: ID, limit: Int): Events

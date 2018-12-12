@@ -41,6 +41,12 @@
   name = "github.com/vektah/gqlparser"
   version = "1.0.0"
 
+[[override]]
+  name = "github.com/qor/qor"
+  branch = "master"
+[[override]]
+  name = "github.com/qor/roles"
+  branch = "master"
 [prune]
   go-tests = true
   unused-packages = true
