@@ -65,7 +65,6 @@ func seed() {
 	if err != nil {
 		return
 	}
-	user := &User{Email: "test1@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username"}
 	err = DBSession.Create(&Announcement{}).Error
 	if err != nil {
 		return
@@ -74,8 +73,37 @@ func seed() {
 	if err != nil {
 		return
 	}
-	err = DBSession.Create(user).Error
+	le := "https://mozillians-dev.allizom.org/en-US/u/kevinvle/"
+	mo := "https://mozillians.org/en-US/u/snasser2015/"
+	ne := "nelson6855"
+	da := "http://danieldalonzo.com/mozilla-learning-club-collaboration/"
+	users := []User{
+		{
+			Email: "test1@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username",
+		},
+		{
+			Email: "kevinvnle@gmail.com", FirstName: "Kevin Viet", LastName: "Le", Password: "test123", UserName: "le", PersonalURL: &le,
+		},
+		{
+			FirstName: "Shadi Nasser", LastName: "Moustafa", Email: "snasser2015@my.fit.edu", Password: "test123", UserName: "mo", PersonalURL: &mo,
+		},
+		{
+			Password: "test123", UserName: "nelson.perezliveedpun", FirstName: "Nelson", LastName: "Perez", Email: "nelson.perez@live.edpuniversity.edu", PersonalURL: &ne,
+		},
+		{
+			Password: "test123", UserName: "dan", FirstName: "Daniel", LastName: "DAlonzo", Email: "founder@actionhorizon.institute", PersonalURL: &da,
+		},
+		{
+			Password: "test123", UserName: "le", FirstName: "Veronica", LastName: "Armour", Email: "veronica.armour@shu.edu",
+		},
+		{
+			Email: "test@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username1",
+		},
+	}
+
+	err = DBSession.Create(&users).Error
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
@@ -87,28 +115,56 @@ func seed() {
 	}
 
 	str := "test1.com"
-	club := &Club{ClubURL: &str, Location: loc}
-	err = DBSession.Create(club).Error
-	if err != nil {
-		return
+
+	f := "https://www.ucsc.edu/"
+	ft := "Fifikos"
+	fa := "1156 High St, Santa Cruz, 95064, CA, USA"
+
+	fouf := "Foufoutos"
+	foufu := "fit.edu"
+	foufa := "150 W University Blvd., 32901, Melbourne, Florida, USA"
+
+	d := "Dedomena"
+	du := "www.edpuniversity.edu"
+	deda := "Betances # 49 PO Box 1674, 685, San Sebastian,Puerto Rico,USA"
+
+	syn := "Syneffo"
+	synu := "actionhorizon.institute"
+	syna := "4 Old Forge Road,7930,Chester,NJ,USA"
+
+	ok := "Okeanos"
+	oka := "400 South Orange Avenue, 7079, South Orange, New Jersey, USA"
+	oku := "www.shu.edu"
+
+	clubs := []Club{{ClubURL: &str, Location: loc},
+		{ClubURL: &f, Title: &ft, Location: &Location{Address: &fa}},
+		{ClubURL: &foufu, Title: &fouf, Location: &Location{Address: &foufa}},
+		{ClubURL: &du, Title: &d, Location: &Location{Address: &deda}},
+		{ClubURL: &synu, Title: &syn, Location: &Location{Address: &syna}},
+		{ClubURL: &oku, Title: &ok, Location: &Location{Address: &oka}},
 	}
-	err = DBSession.Create(&ClubUserRole{ClubID: club.ID, UserID: user.ID, Role: "user"}).Error
+	err = DBSession.Create(&clubs).Error
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
-	user = &User{Email: "test@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username1"}
-	err = DBSession.Create(user).Error
+	curs := []ClubUserRole{
+		{ClubID: clubs[0].ID, UserID: users[0].ID, Role: "user"},
+		{ClubID: clubs[0].ID, UserID: users[len(users)-1].ID, Role: "admin"},
+		{ClubID: clubs[4].ID, UserID: users[1].ID, Role: "member"},
+		{ClubID: clubs[3].ID, UserID: users[2].ID, Role: "member"},
+		{ClubID: clubs[5].ID, UserID: users[3].ID, Role: "member"},
+		{ClubID: clubs[2].ID, UserID: users[4].ID, Role: "member"},
+		{ClubID: clubs[1].ID, UserID: users[5].ID, Role: "member"},
+	}
+	err = DBSession.Create(&curs).Error
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
-	err = DBSession.Create(&ClubUserRole{ClubID: club.ID, UserID: user.ID, Role: "admin"}).Error
-	if err != nil {
-		return
-	}
-
-	err = DBSession.Create(&Event{Title: "test event", ClubID: &club.ID}).Error
+	err = DBSession.Create(&Event{Title: "test event", ClubID: &clubs[0].ID}).Error
 	if err != nil {
 		return
 	}

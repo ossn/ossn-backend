@@ -11,12 +11,12 @@ type Event struct {
 	StartDate       *time.Time `json:"startDate"`
 	EndDate         *time.Time `json:"endDate"`
 	Location        *Location  `json:"location" gorm:"foreignkey:LocationID"`
-	LocationID      *uint
-	ImageURL        *string `json:"imageUrl" sql:"type:text;"`
-	Description     *string `json:"description" sql:"type:text;"`
-	SortDescription *string `json:"sortDescription" sql:"type:text;"`
-	Club            *Club   `json:"club" gorm:"foreignkey:ClubID"`
-	ClubID          *uint
+	LocationID      *uint      `json:"location_id"`
+	ImageURL        *string    `json:"imageUrl" sql:"type:text;"`
+	Description     *string    `json:"description" sql:"type:text;"`
+	SortDescription *string    `json:"sortDescription" sql:"type:text;"`
+	Club            *Club      `json:"club" gorm:"foreignkey:ClubID"`
+	ClubID          *uint      `json:"club_id"`
 	PublishedAt     *time.Time `json:"publishedAt" gorm:"index:event_published_at"`
 }
 
