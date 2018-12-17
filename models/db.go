@@ -59,18 +59,16 @@ func init() {
 }
 
 func seed() {
-	star := "test.com"
-	c := &Club{ClubURL: &star}
-	err := DBSession.Create(c).Error
+	tx := DBSession.Begin()
+
+	err := tx.Create(&Announcement{}).Error
 	if err != nil {
+		tx.Rollback()
 		return
 	}
-	err = DBSession.Create(&Announcement{}).Error
+	err = tx.Create(&Job{}).Error
 	if err != nil {
-		return
-	}
-	err = DBSession.Create(&Job{}).Error
-	if err != nil {
+		tx.Rollback()
 		return
 	}
 	le := "https://mozillians-dev.allizom.org/en-US/u/kevinvle/"
@@ -78,44 +76,42 @@ func seed() {
 	ne := "nelson6855"
 	da := "http://danieldalonzo.com/mozilla-learning-club-collaboration/"
 	users := []User{
-		{
+		User{
 			Email: "test1@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username",
 		},
-		{
+		User{
 			Email: "kevinvnle@gmail.com", FirstName: "Kevin Viet", LastName: "Le", Password: "test123", UserName: "le", PersonalURL: &le,
 		},
-		{
+		User{
 			FirstName: "Shadi Nasser", LastName: "Moustafa", Email: "snasser2015@my.fit.edu", Password: "test123", UserName: "mo", PersonalURL: &mo,
 		},
-		{
+		User{
 			Password: "test123", UserName: "nelson.perezliveedpun", FirstName: "Nelson", LastName: "Perez", Email: "nelson.perez@live.edpuniversity.edu", PersonalURL: &ne,
 		},
-		{
+		User{
 			Password: "test123", UserName: "dan", FirstName: "Daniel", LastName: "DAlonzo", Email: "founder@actionhorizon.institute", PersonalURL: &da,
 		},
-		{
-			Password: "test123", UserName: "le", FirstName: "Veronica", LastName: "Armour", Email: "veronica.armour@shu.edu",
+		User{
+			Password: "test123", UserName: "ve", FirstName: "Veronica", LastName: "Armour", Email: "veronica.armour@shu.edu",
 		},
-		{
+		User{
 			Email: "test@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username1",
 		},
 	}
+	for i, u := range users {
 
-	err = DBSession.Create(&users).Error
-	if err != nil {
-		fmt.Println(err)
-		return
+		err = tx.Create(&u).Error
+		if err != nil {
+			tx.Rollback()
+			fmt.Println(u)
+			return
+		}
+		users[i] = u
 	}
 
-	st := "an address"
-	loc := &Location{Address: &st}
-	err = DBSession.Create(loc).Error
-	if err != nil {
-		return
-	}
+	stx := "test1.com"
 
-	str := "test1.com"
-
+	star := "test.com"
 	f := "https://www.ucsc.edu/"
 	ft := "Fifikos"
 	fa := "1156 High St, Santa Cruz, 95064, CA, USA"
@@ -135,18 +131,36 @@ func seed() {
 	ok := "Okeanos"
 	oka := "400 South Orange Avenue, 7079, South Orange, New Jersey, USA"
 	oku := "www.shu.edu"
+	st := "an address"
+	loc := []Location{{Address: &st}, {Address: &fa}, {Address: &foufa}, {Address: &deda}, {Address: &syna}, {Address: &oka}}
+	for i, l := range loc {
+		err = tx.Create(&l).Error
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		loc[i] = l
 
-	clubs := []Club{{ClubURL: &str, Location: loc},
-		{ClubURL: &f, Title: &ft, Location: &Location{Address: &fa}},
-		{ClubURL: &foufu, Title: &fouf, Location: &Location{Address: &foufa}},
-		{ClubURL: &du, Title: &d, Location: &Location{Address: &deda}},
-		{ClubURL: &synu, Title: &syn, Location: &Location{Address: &syna}},
-		{ClubURL: &oku, Title: &ok, Location: &Location{Address: &oka}},
 	}
-	err = DBSession.Create(&clubs).Error
-	if err != nil {
-		fmt.Println(err)
-		return
+
+	clubs := []Club{
+		{ClubURL: &stx, LocationID: &loc[0].ID},
+		{ClubURL: &f, Title: &ft, LocationID: &loc[1].ID},
+		{ClubURL: &foufu, Title: &fouf, LocationID: &loc[2].ID},
+		{ClubURL: &du, Title: &d, LocationID: &loc[3].ID},
+		{ClubURL: &synu, Title: &syn, LocationID: &loc[4].ID},
+		{ClubURL: &oku, Title: &ok, LocationID: &loc[5].ID},
+		{ClubURL: &star},
+	}
+		for i, c := range clubs {
+		err = tx.Create(&c).Error
+		if err != nil {
+			tx.Rollback()
+			fmt.Println(err)
+			return
+		}
+		clubs[i] = c
+
 	}
 
 	curs := []ClubUserRole{
@@ -158,14 +172,23 @@ func seed() {
 		{ClubID: clubs[2].ID, UserID: users[4].ID, Role: "member"},
 		{ClubID: clubs[1].ID, UserID: users[5].ID, Role: "member"},
 	}
-	err = DBSession.Create(&curs).Error
-	if err != nil {
-		fmt.Println(err)
-		return
+
+		for i, c := range curs {
+		err = tx.Create(&c).Error
+		if err != nil {
+			tx.Rollback()
+			fmt.Println(err)
+			return
+		}
+		curs[i] = c
+
 	}
 
-	err = DBSession.Create(&Event{Title: "test event", ClubID: &clubs[0].ID}).Error
+
+	err = tx.Create(&Event{Title: "test event", ClubID: &clubs[0].ID}).Error
 	if err != nil {
+		tx.Rollback()
 		return
 	}
+	tx.Commit()
 }

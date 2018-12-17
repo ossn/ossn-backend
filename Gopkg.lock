@@ -60,12 +60,12 @@
   version = "v1.4.0"
 
 [[projects]]
-  digest = "1:7f21be04e0b759244c9c113397963c3c42270844114e3ea55de42cd16d0ab8bc"
+  digest = "1:e1aa8e520787bfd8623c7df394352be3183ef207039cfb513ba40dc00c82fa6d"
   name = "github.com/gosimple/slug"
   packages = ["."]
   pruneopts = "UT"
-  revision = "d8eda97f6ce6a447aa8ed204694bb5ce84f36b71"
-  version = "v1.4.1"
+  revision = "42ac18c34c2c6f4843fa48167317dcaa9416d1e2"
+  version = "v1.4.2"
 
 [[projects]]
   digest = "1:8ec8d88c248041a6df5f6574b87bc00e7e0b493881dad2e7ef47b11dc69093b5"
@@ -278,7 +278,7 @@
     "html/atom",
   ]
   pruneopts = "UT"
-  revision = "610586996380ceef02dd726cc09df7e00a3f8e56"
+  revision = "e147a9138326bc0e9d4e179541ffd8af41cff8a9"
 
 [[projects]]
   digest = "1:740cec287074ade445ab57356e36f54d3e0d33c0d0ebf77047934da33af2c1c0"
@@ -293,19 +293,24 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:d9e353117da692eea5030b88167d54d51e77a5cbb515ff107cfd9b981ed06219"
+  digest = "1:24b916bf9d5211dbc922c2788356a8bee063e93275babaea7d03c28a69ecb956"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
     "go/buildutil",
+    "go/gcexportdata",
     "go/internal/cgo",
+    "go/internal/gcimporter",
     "go/loader",
+    "go/packages",
+    "go/types/typeutil",
     "imports",
     "internal/fastwalk",
     "internal/gopathwalk",
+    "internal/semver",
   ]
   pruneopts = "UT"
-  revision = "59cd96f77e7ec4d6e1fc7489f61915a82879680d"
+  revision = "3c39ce7b61056afe4473b651789da5f89d4aeb20"
 
 [[projects]]
   digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
