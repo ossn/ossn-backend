@@ -40,7 +40,7 @@ type ClubWithRole struct {
 	SortDescription *string   `json:"sortDescription"`
 	Users           []*User   `json:"users"`
 	Events          []*Event  `json:"events"`
-	Role            *Role     `json:"role"`
+	Role            *RoleName `json:"role"`
 	GithubURL       *string   `json:"githubUrl"`
 	ClubURL         *string   `json:"clubUrl"`
 	CreatedAt       string    `json:"createdAt"`
@@ -83,10 +83,6 @@ type PageInfo struct {
 	TotalCount      int    `json:"totalCount"`
 }
 
-type Role struct {
-	Name *RoleName `json:"name"`
-}
-
 type UserInput struct {
 	Email             string   `json:"email"`
 	Password          string   `json:"password"`
@@ -117,7 +113,7 @@ type UserWithRole struct {
 	PersonalURL       *string         `json:"personalUrl"`
 	CreatedAt         string          `json:"createdAt"`
 	UpdatedAt         string          `json:"updatedAt"`
-	Role              *Role           `json:"role"`
+	Role              *RoleName       `json:"role"`
 }
 
 type Users struct {

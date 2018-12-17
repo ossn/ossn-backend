@@ -47,7 +47,7 @@ type ClubWithRole {
   sortDescription: String
   users: [User]
   events: [Event]
-  role: Role
+  role: RoleName
   githubUrl: String
   clubUrl: String
   createdAt: EpochTime!
@@ -97,10 +97,6 @@ enum RoleName {
   undefined
 }
 
-type Role {
-  name: RoleName
-}
-
 type User {
   id: ID!
   email: String!
@@ -133,7 +129,7 @@ type UserWithRole {
   personalUrl: String
   createdAt: EpochTime!
   updatedAt: EpochTime!
-  role: Role
+  role: RoleName
 }
 
 interface WithPagination {
@@ -167,32 +163,20 @@ type Announcements implements WithPagination {
 
 type Query {
   user(id: ID!): User
-  users(
-    first: Int = 10
-    before: ID
-    after: ID
-    limit: Int
-    search: String
-  ): Users
+  users(first: Int = 10, before: ID, after: ID, search: String): Users
   clubs(
     first: Int = 10
     userID: ID
     ids: [ID]
     before: ID
     after: ID
-    limit: Int
     search: String
   ): Clubs
   club(id: ID!): Club
-  events(first: Int = 10, clubId: ID, before: ID, after: ID, limit: Int): Events
+  events(first: Int = 10, clubId: ID, before: ID, after: ID): Events
   event(id: ID!): Event
-  jobs(first: Int = 10, before: ID, after: ID, limit: Int): Jobs
-  announcements(
-    first: Int = 10
-    before: ID
-    after: ID
-    limit: Int
-  ): Announcements
+  jobs(first: Int = 10, before: ID, after: ID): Jobs
+  announcements(first: Int = 10, before: ID, after: ID): Announcements
 }
 
 input UserInput {

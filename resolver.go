@@ -80,7 +80,7 @@ func (r *clubResolver) Users(ctx context.Context, obj *models.Club) ([]*models.U
 			ID:                strconv.FormatUint(uint64(u.ID), 10),
 			Email:             u.Email,
 			ImageURL:          u.ImageURL,
-			Role:              &models.Role{Name: models.TurnStringToRolename(user.Role)},
+			Role:              models.TurnStringToRolename(user.Role),
 			GithubURL:         u.GithubURL,
 			UpdatedAt:         u.UpdatedAtToString(),
 			CreatedAt:         u.CreatedAtToString(),
@@ -170,9 +170,9 @@ func (r *queryResolver) User(ctx context.Context, id string) (*models.User, erro
 	err := models.DBSession.Where("id = ?", id).First(user).Error
 	return user, err
 }
-func (r *queryResolver) Users(ctx context.Context, first *int, before *string, after *string, limit *int, search *string) (*models.Users, error) {
+func (r *queryResolver) Users(ctx context.Context, first *int, before *string, after *string, search *string) (*models.Users, error) {
 	query := models.DBSession
-	query, err := parseParams(query, min(first, limit), after, before)
+	query, err := parseParams(query, first, after, before)
 	if err != nil {
 		return nil, err
 	}
@@ -199,13 +199,13 @@ func (r *queryResolver) Users(ctx context.Context, first *int, before *string, a
 	lastID := &users[0].ID
 	return &models.Users{
 		Users:    users,
-		PageInfo: getPageInfo(&count, firstID, lastID, min(limit, first), 0),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, 0),
 	}, err
 }
 
-func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, limit *int, search *string) (*models.Clubs, error) {
+func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, search *string) (*models.Clubs, error) {
 	query := models.DBSession
-	query, err := parseParams(query, min(first, limit), after, before)
+	query, err := parseParams(query, first, after, before)
 	if err != nil {
 		return nil, err
 	}
@@ -251,7 +251,7 @@ func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, i
 	lastID := &clubs[0].ID
 	return &models.Clubs{
 		Clubs:    clubs,
-		PageInfo: getPageInfo(&count, firstID, lastID, min(limit, first), len(i)),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, len(i)),
 	}, err
 }
 
@@ -261,9 +261,9 @@ func (r *queryResolver) Club(ctx context.Context, id string) (*models.Club, erro
 	return club, err
 }
 
-func (r *queryResolver) Events(ctx context.Context, first *int, clubId *string, before *string, after *string, limit *int) (*models.Events, error) {
+func (r *queryResolver) Events(ctx context.Context, first *int, clubId *string, before *string, after *string) (*models.Events, error) {
 	query := models.DBSession.Order("id desc, published_at")
-	query, err := parseParams(query, min(first, limit), after, before)
+	query, err := parseParams(query, first, after, before)
 	if err != nil {
 		return nil, err
 	}
@@ -298,7 +298,7 @@ func (r *queryResolver) Events(ctx context.Context, first *int, clubId *string, 
 	lastID := &events[0].ID
 	return &models.Events{
 		Events:   events,
-		PageInfo: getPageInfo(&count, firstID, lastID, min(limit, first), 0),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, 0),
 	}, err
 
 }
@@ -309,9 +309,9 @@ func (r *queryResolver) Event(ctx context.Context, id string) (*models.Event, er
 	return event, err
 }
 
-func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Jobs, error) {
+func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, after *string) (*models.Jobs, error) {
 	query := models.DBSession.Order("id desc, published_at")
-	query, err := parseParams(query, min(first, limit), after, before)
+	query, err := parseParams(query, first, after, before)
 	if err != nil {
 		return nil, err
 	}
@@ -343,13 +343,13 @@ func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, af
 	lastID := &jobs[0].ID
 	return &models.Jobs{
 		Jobs:     jobs,
-		PageInfo: getPageInfo(&count, firstID, lastID, min(limit, first), 0),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, 0),
 	}, err
 }
 
-func (r *queryResolver) Announcements(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Announcements, error) {
+func (r *queryResolver) Announcements(ctx context.Context, first *int, before *string, after *string) (*models.Announcements, error) {
 	query := models.DBSession.Order("id desc, published_at")
-	query, err := parseParams(query, min(first, limit), after, before)
+	query, err := parseParams(query, first, after, before)
 	if err != nil {
 		return nil, err
 	}
@@ -380,7 +380,7 @@ func (r *queryResolver) Announcements(ctx context.Context, first *int, before *s
 	lastID := &announcements[0].ID
 	return &models.Announcements{
 		Announcements: announcements,
-		PageInfo:      getPageInfo(&count, firstID, lastID, min(limit, first), 0),
+		PageInfo:      getPageInfo(&count, firstID, lastID, first, 0),
 	}, err
 }
 
@@ -401,6 +401,7 @@ func (r *userResolver) Clubs(ctx context.Context, obj *models.User) ([]*models.C
 	for _, club := range clubUserRole {
 		c := &club.Club
 		users := []*models.User{}
+
 		err := models.DBSession.Raw("SELECT * FROM users where id IN (SELECT user_id from club_user_roles where club_id = ?)", c.ID).Scan(&users).Error
 		if err != nil {
 			return clubWithRole, err
@@ -411,7 +412,7 @@ func (r *userResolver) Clubs(ctx context.Context, obj *models.User) ([]*models.C
 			Location:      c.Location,
 			Name:          c.Title,
 			ImageURL:      c.ImageURL,
-			Role:          &models.Role{Name: models.TurnStringToRolename(club.Role)},
+			Role:          models.TurnStringToRolename(club.Role),
 			GithubURL:     c.GithubURL,
 			UpdatedAt:     c.UpdatedAtToString(),
 			CreatedAt:     c.CreatedAtToString(),

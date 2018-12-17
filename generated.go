@@ -164,17 +164,13 @@ type ComplexityRoot struct {
 
 	Query struct {
 		User          func(childComplexity int, id string) int
-		Users         func(childComplexity int, first *int, before *string, after *string, limit *int, search *string) int
-		Clubs         func(childComplexity int, first *int, userID *string, ids []*string, before *string, after *string, limit *int, search *string) int
+		Users         func(childComplexity int, first *int, before *string, after *string, search *string) int
+		Clubs         func(childComplexity int, first *int, userID *string, ids []*string, before *string, after *string, search *string) int
 		Club          func(childComplexity int, id string) int
-		Events        func(childComplexity int, first *int, clubId *string, before *string, after *string, limit *int) int
+		Events        func(childComplexity int, first *int, clubId *string, before *string, after *string) int
 		Event         func(childComplexity int, id string) int
-		Jobs          func(childComplexity int, first *int, before *string, after *string, limit *int) int
-		Announcements func(childComplexity int, first *int, before *string, after *string, limit *int) int
-	}
-
-	Role struct {
-		Name func(childComplexity int) int
+		Jobs          func(childComplexity int, first *int, before *string, after *string) int
+		Announcements func(childComplexity int, first *int, before *string, after *string) int
 	}
 
 	User struct {
@@ -265,13 +261,13 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	User(ctx context.Context, id string) (*models.User, error)
-	Users(ctx context.Context, first *int, before *string, after *string, limit *int, search *string) (*models.Users, error)
-	Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, limit *int, search *string) (*models.Clubs, error)
+	Users(ctx context.Context, first *int, before *string, after *string, search *string) (*models.Users, error)
+	Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, search *string) (*models.Clubs, error)
 	Club(ctx context.Context, id string) (*models.Club, error)
-	Events(ctx context.Context, first *int, clubId *string, before *string, after *string, limit *int) (*models.Events, error)
+	Events(ctx context.Context, first *int, clubId *string, before *string, after *string) (*models.Events, error)
 	Event(ctx context.Context, id string) (*models.Event, error)
-	Jobs(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Jobs, error)
-	Announcements(ctx context.Context, first *int, before *string, after *string, limit *int) (*models.Announcements, error)
+	Jobs(ctx context.Context, first *int, before *string, after *string) (*models.Jobs, error)
+	Announcements(ctx context.Context, first *int, before *string, after *string) (*models.Announcements, error)
 }
 type UserResolver interface {
 	ID(ctx context.Context, obj *models.User) (string, error)
@@ -391,12 +387,12 @@ func field_Query_users_args(rawArgs map[string]interface{}) (map[string]interfac
 		}
 	}
 	args["after"] = arg2
-	var arg3 *int
-	if tmp, ok := rawArgs["limit"]; ok {
+	var arg3 *string
+	if tmp, ok := rawArgs["search"]; ok {
 		var err error
-		var ptr1 int
+		var ptr1 string
 		if tmp != nil {
-			ptr1, err = graphql.UnmarshalInt(tmp)
+			ptr1, err = graphql.UnmarshalString(tmp)
 			arg3 = &ptr1
 		}
 
@@ -404,21 +400,7 @@ func field_Query_users_args(rawArgs map[string]interface{}) (map[string]interfac
 			return nil, err
 		}
 	}
-	args["limit"] = arg3
-	var arg4 *string
-	if tmp, ok := rawArgs["search"]; ok {
-		var err error
-		var ptr1 string
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalString(tmp)
-			arg4 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["search"] = arg4
+	args["search"] = arg3
 	return args, nil
 
 }
@@ -505,12 +487,12 @@ func field_Query_clubs_args(rawArgs map[string]interface{}) (map[string]interfac
 		}
 	}
 	args["after"] = arg4
-	var arg5 *int
-	if tmp, ok := rawArgs["limit"]; ok {
+	var arg5 *string
+	if tmp, ok := rawArgs["search"]; ok {
 		var err error
-		var ptr1 int
+		var ptr1 string
 		if tmp != nil {
-			ptr1, err = graphql.UnmarshalInt(tmp)
+			ptr1, err = graphql.UnmarshalString(tmp)
 			arg5 = &ptr1
 		}
 
@@ -518,21 +500,7 @@ func field_Query_clubs_args(rawArgs map[string]interface{}) (map[string]interfac
 			return nil, err
 		}
 	}
-	args["limit"] = arg5
-	var arg6 *string
-	if tmp, ok := rawArgs["search"]; ok {
-		var err error
-		var ptr1 string
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalString(tmp)
-			arg6 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["search"] = arg6
+	args["search"] = arg5
 	return args, nil
 
 }
@@ -610,20 +578,6 @@ func field_Query_events_args(rawArgs map[string]interface{}) (map[string]interfa
 		}
 	}
 	args["after"] = arg3
-	var arg4 *int
-	if tmp, ok := rawArgs["limit"]; ok {
-		var err error
-		var ptr1 int
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalInt(tmp)
-			arg4 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["limit"] = arg4
 	return args, nil
 
 }
@@ -687,20 +641,6 @@ func field_Query_jobs_args(rawArgs map[string]interface{}) (map[string]interface
 		}
 	}
 	args["after"] = arg2
-	var arg3 *int
-	if tmp, ok := rawArgs["limit"]; ok {
-		var err error
-		var ptr1 int
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalInt(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["limit"] = arg3
 	return args, nil
 
 }
@@ -749,20 +689,6 @@ func field_Query_announcements_args(rawArgs map[string]interface{}) (map[string]
 		}
 	}
 	args["after"] = arg2
-	var arg3 *int
-	if tmp, ok := rawArgs["limit"]; ok {
-		var err error
-		var ptr1 int
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalInt(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["limit"] = arg3
 	return args, nil
 
 }
@@ -1415,7 +1341,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Users(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int), args["search"].(*string)), true
+		return e.complexity.Query.Users(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["search"].(*string)), true
 
 	case "Query.clubs":
 		if e.complexity.Query.Clubs == nil {
@@ -1427,7 +1353,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Clubs(childComplexity, args["first"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int), args["search"].(*string)), true
+		return e.complexity.Query.Clubs(childComplexity, args["first"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["search"].(*string)), true
 
 	case "Query.club":
 		if e.complexity.Query.Club == nil {
@@ -1451,7 +1377,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Events(childComplexity, args["first"].(*int), args["clubId"].(*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int)), true
+		return e.complexity.Query.Events(childComplexity, args["first"].(*int), args["clubId"].(*string), args["before"].(*string), args["after"].(*string)), true
 
 	case "Query.event":
 		if e.complexity.Query.Event == nil {
@@ -1475,7 +1401,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Jobs(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int)), true
+		return e.complexity.Query.Jobs(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string)), true
 
 	case "Query.announcements":
 		if e.complexity.Query.Announcements == nil {
@@ -1487,14 +1413,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Announcements(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int)), true
-
-	case "Role.name":
-		if e.complexity.Role.Name == nil {
-			break
-		}
-
-		return e.complexity.Role.Name(childComplexity), true
+		return e.complexity.Query.Announcements(childComplexity, args["first"].(*int), args["before"].(*string), args["after"].(*string)), true
 
 	case "User.id":
 		if e.complexity.User.Id == nil {
@@ -3131,15 +3050,14 @@ func (ec *executionContext) _ClubWithRole_role(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.Role)
+	res := resTmp.(*models.RoleName)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 
 	if res == nil {
 		return graphql.Null
 	}
-
-	return ec._Role(ctx, field.Selections, res)
+	return *res
 }
 
 // nolint: vetshadow
@@ -4996,7 +4914,7 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Users(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int), args["search"].(*string))
+		return ec.resolvers.Query().Users(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["search"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5031,7 +4949,7 @@ func (ec *executionContext) _Query_clubs(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Clubs(rctx, args["first"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int), args["search"].(*string))
+		return ec.resolvers.Query().Clubs(rctx, args["first"].(*int), args["userID"].(*string), args["ids"].([]*string), args["before"].(*string), args["after"].(*string), args["search"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5101,7 +5019,7 @@ func (ec *executionContext) _Query_events(ctx context.Context, field graphql.Col
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Events(rctx, args["first"].(*int), args["clubId"].(*string), args["before"].(*string), args["after"].(*string), args["limit"].(*int))
+		return ec.resolvers.Query().Events(rctx, args["first"].(*int), args["clubId"].(*string), args["before"].(*string), args["after"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5171,7 +5089,7 @@ func (ec *executionContext) _Query_jobs(ctx context.Context, field graphql.Colle
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Jobs(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int))
+		return ec.resolvers.Query().Jobs(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5206,7 +5124,7 @@ func (ec *executionContext) _Query_announcements(ctx context.Context, field grap
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Announcements(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string), args["limit"].(*int))
+		return ec.resolvers.Query().Announcements(rctx, args["first"].(*int), args["before"].(*string), args["after"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -5284,61 +5202,6 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	}
 
 	return ec.___Schema(ctx, field.Selections, res)
-}
-
-var roleImplementors = []string{"Role"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _Role(ctx context.Context, sel ast.SelectionSet, obj *models.Role) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, roleImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Role")
-		case "name":
-			out.Values[i] = ec._Role_name(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _Role_name(ctx context.Context, field graphql.CollectedField, obj *models.Role) graphql.Marshaler {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
-	rctx := &graphql.ResolverContext{
-		Object: "Role",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.RoleName)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-
-	if res == nil {
-		return graphql.Null
-	}
-	return *res
 }
 
 var userImplementors = []string{"User"}
@@ -6362,15 +6225,14 @@ func (ec *executionContext) _UserWithRole_role(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.Role)
+	res := resTmp.(*models.RoleName)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 
 	if res == nil {
 		return graphql.Null
 	}
-
-	return ec._Role(ctx, field.Selections, res)
+	return *res
 }
 
 var usersImplementors = []string{"Users", "WithPagination"}
@@ -8344,7 +8206,7 @@ type ClubWithRole {
   sortDescription: String
   users: [User]
   events: [Event]
-  role: Role
+  role: RoleName
   githubUrl: String
   clubUrl: String
   createdAt: EpochTime!
@@ -8394,10 +8256,6 @@ enum RoleName {
   undefined
 }
 
-type Role {
-  name: RoleName
-}
-
 type User {
   id: ID!
   email: String!
@@ -8430,7 +8288,7 @@ type UserWithRole {
   personalUrl: String
   createdAt: EpochTime!
   updatedAt: EpochTime!
-  role: Role
+  role: RoleName
 }
 
 interface WithPagination {
@@ -8464,32 +8322,20 @@ type Announcements implements WithPagination {
 
 type Query {
   user(id: ID!): User
-  users(
-    first: Int = 10
-    before: ID
-    after: ID
-    limit: Int
-    search: String
-  ): Users
+  users(first: Int = 10, before: ID, after: ID, search: String): Users
   clubs(
     first: Int = 10
     userID: ID
     ids: [ID]
     before: ID
     after: ID
-    limit: Int
     search: String
   ): Clubs
   club(id: ID!): Club
-  events(first: Int = 10, clubId: ID, before: ID, after: ID, limit: Int): Events
+  events(first: Int = 10, clubId: ID, before: ID, after: ID): Events
   event(id: ID!): Event
-  jobs(first: Int = 10, before: ID, after: ID, limit: Int): Jobs
-  announcements(
-    first: Int = 10
-    before: ID
-    after: ID
-    limit: Int
-  ): Announcements
+  jobs(first: Int = 10, before: ID, after: ID): Jobs
+  announcements(first: Int = 10, before: ID, after: ID): Announcements
 }
 
 input UserInput {
