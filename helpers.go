@@ -62,8 +62,8 @@ func getPageInfo(count *int, firstID, lastID *uint, first *int, length int) mode
 	return models.PageInfo{
 		TotalCount:      *count,
 		HasPreviousPage: length < 1 && *count > 0 && int(*lastID) < *count,
-		HasNextPage:     length < 1 && *count > 0 && int(*firstID) > *first,
-		StartCursor:     base64.StdEncoding.EncodeToString([]byte(strconv.FormatUint(uint64(*firstID), 10))),
-		EndCursor:       base64.StdEncoding.EncodeToString([]byte(strconv.FormatUint(uint64(*lastID), 10))),
+		HasNextPage:     length < 1 && *count > 0 && int(*firstID) > 1,
+		EndCursor:       base64.StdEncoding.EncodeToString([]byte(strconv.FormatUint(uint64(*firstID), 10))),
+		StartCursor:     base64.StdEncoding.EncodeToString([]byte(strconv.FormatUint(uint64(*lastID), 10))),
 	}
 }
