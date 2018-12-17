@@ -192,7 +192,7 @@ func (r *queryResolver) Users(ctx context.Context, first *int, before *string, a
 		str := "%" + *search + "%"
 		query = query.Where("user_name LIKE ?", str).Or("first_name LIKE ?", str).Or("last_name LIKE ?", str)
 	}
-	err = query.Find(&[]models.Club{}).Count(&count).Error
+	err = query.Find(&[]models.User{}).Count(&count).Error
 
 	if len(users) < 1 {
 		return &models.Users{Users: users, PageInfo: models.PageInfo{
