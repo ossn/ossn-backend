@@ -50,3 +50,14 @@
 [prune]
   go-tests = true
   unused-packages = true
+  non-go = true
+  [[prune.project]]
+      name = "github.com/qor/qor"
+      non-go = false
+      unused-packages = false
+  [[prune.project]]
+    name = "github.com/qor/admin"
+    non-go = false
+    unused-packages = false
+
+
