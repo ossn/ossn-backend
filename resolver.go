@@ -181,11 +181,19 @@ func (r *queryResolver) Users(ctx context.Context, first *int, before *string, a
 		query = query.Where("user_name LIKE ?", str).Or("first_name LIKE ?", str).Or("last_name LIKE ?", str)
 	}
 	users := []models.User{}
-	count := 0
-	err = query.Find(&users).Limit(-1).Offset(-1).Count(&count).Error
+	err = query.Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
+
+	count := 0
+	query = models.DBSession
+	if search != nil {
+		str := "%" + *search + "%"
+		query = query.Where("user_name LIKE ?", str).Or("first_name LIKE ?", str).Or("last_name LIKE ?", str)
+	}
+	err = query.Find(&[]models.Club{}).Count(&count).Error
+
 	if len(users) < 1 {
 		return &models.Users{Users: users, PageInfo: models.PageInfo{
 			TotalCount:      count,
@@ -231,7 +239,11 @@ func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, i
 	}
 
 	count := 0
-	err = models.DBSession.Find(&[]models.Club{}).Count(&count).Error
+	query = models.DBSession
+	if search != nil {
+		query = query.Where("title LIKE ?", "%"+*search+"%")
+	}
+	err = query.Find(&[]models.Club{}).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
