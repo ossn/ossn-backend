@@ -172,27 +172,24 @@ func (r *queryResolver) User(ctx context.Context, id string) (*models.User, erro
 }
 func (r *queryResolver) Users(ctx context.Context, first *int, before *string, after *string, search *string) (*models.Users, error) {
 	query := models.DBSession
-	query, err := parseParams(query, first, after, before)
-	if err != nil {
-		return nil, err
-	}
+	count := 0
 	if search != nil {
 		str := "%" + *search + "%"
 		query = query.Where("user_name LIKE ?", str).Or("first_name LIKE ?", str).Or("last_name LIKE ?", str)
+	}
+	err := query.Find(&[]models.User{}).Count(&count).Error
+	if err != nil {
+		return nil, err
+	}
+	query, err = parseParams(query, first, after, before)
+	if err != nil {
+		return nil, err
 	}
 	users := []models.User{}
 	err = query.Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
-
-	count := 0
-	query = models.DBSession
-	if search != nil {
-		str := "%" + *search + "%"
-		query = query.Where("user_name LIKE ?", str).Or("first_name LIKE ?", str).Or("last_name LIKE ?", str)
-	}
-	err = query.Find(&[]models.User{}).Count(&count).Error
 	length := len(users)
 	if length < 1 {
 		return &models.Users{Users: users, PageInfo: models.PageInfo{
@@ -212,20 +209,15 @@ func (r *queryResolver) Users(ctx context.Context, first *int, before *string, a
 }
 
 func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, search *string) (*models.Clubs, error) {
-	// TODO: Cleanup queries, first count and then parse params and fetch
-
-	query := models.DBSession
-	query, err := parseParams(query, first, after, before)
-	if err != nil {
-		return nil, err
-	}
-	clubs := []models.Club{}
+	count := 0
 	safeIDS := []string{}
 	for _, id := range ids {
 		if id != nil {
 			safeIDS = append(safeIDS, *id)
 		}
 	}
+
+	query := models.DBSession
 	if search != nil {
 		query = query.Where("title LIKE ?", "%"+*search+"%")
 	}
@@ -235,23 +227,22 @@ func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, i
 	if userID != nil {
 		query = query.Where("id in (SELECT club_id from club_user_roles where user_id = ?)", userID)
 	}
+	err := query.Find(&[]models.Club{}).Count(&count).Error
+	if err != nil {
+		return nil, err
+	}
+
+	query, err = parseParams(query, first, after, before)
+	if err != nil {
+		return nil, err
+	}
+	clubs := []models.Club{}
+
 	err = query.Find(&clubs).Error
 	if err != nil {
 		return nil, err
 	}
 
-	count := 0
-	query = models.DBSession
-	if search != nil {
-		query = query.Where("title LIKE ?", "%"+*search+"%")
-	}
-	if len(safeIDS) > 0 {
-		query = query.Where("id in (?)", safeIDS)
-	}
-	err = query.Find(&[]models.Club{}).Count(&count).Error
-	if err != nil {
-		return nil, err
-	}
 	length := len(clubs)
 	if length < 1 {
 		return &models.Clubs{
@@ -275,31 +266,32 @@ func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, i
 
 func (r *queryResolver) Club(ctx context.Context, id string) (*models.Club, error) {
 	club := &models.Club{}
-	err := models.DBSession.Where("id =?", id).First(club).Error
+	err := models.DBSession.Where("id = ?", id).First(club).Error
 	return club, err
 }
 
 func (r *queryResolver) Events(ctx context.Context, first *int, clubId *string, before *string, after *string) (*models.Events, error) {
 	query := models.DBSession.Order("id desc, published_at")
-	query, err := parseParams(query, first, after, before)
+	count := 0
+	if clubId != nil {
+		query = query.Where("club_id = ?", clubId)
+	}
+	err := models.DBSession.Find(&[]models.Event{}).Count(&count).Error
+	if err != nil {
+		return nil, err
+	}
+
+	query, err = parseParams(query, first, after, before)
 	if err != nil {
 		return nil, err
 	}
 
 	events := []models.Event{}
-	if clubId != nil {
-		query = query.Where("club_id =", clubId)
-	}
 	err = query.Find(&events).Error
 	if err != nil {
 		return nil, err
 	}
 
-	count := 0
-	err = models.DBSession.Find(&[]models.Event{}).Count(&count).Error
-	if err != nil {
-		return nil, err
-	}
 	length := len(events)
 	if length < 1 {
 		return &models.Events{
@@ -330,7 +322,13 @@ func (r *queryResolver) Event(ctx context.Context, id string) (*models.Event, er
 
 func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, after *string) (*models.Jobs, error) {
 	query := models.DBSession.Order("id desc, published_at")
-	query, err := parseParams(query, first, after, before)
+	count := 0
+	err := models.DBSession.Find(&[]models.Job{}).Count(&count).Error
+	if err != nil {
+		return nil, err
+	}
+
+	query, err = parseParams(query, first, after, before)
 	if err != nil {
 		return nil, err
 	}
@@ -341,11 +339,6 @@ func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, af
 		return nil, err
 	}
 
-	count := 0
-	err = models.DBSession.Find(&[]models.Job{}).Count(&count).Error
-	if err != nil {
-		return nil, err
-	}
 	length := len(jobs)
 	if length < 1 {
 		return &models.Jobs{
@@ -368,7 +361,12 @@ func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, af
 
 func (r *queryResolver) Announcements(ctx context.Context, first *int, before *string, after *string) (*models.Announcements, error) {
 	query := models.DBSession.Order("id desc, published_at")
-	query, err := parseParams(query, first, after, before)
+	count := 0
+	err := models.DBSession.Find(&[]models.Announcement{}).Count(&count).Error
+	if err != nil {
+		return nil, err
+	}
+	query, err = parseParams(query, first, after, before)
 	if err != nil {
 		return nil, err
 	}
@@ -378,11 +376,6 @@ func (r *queryResolver) Announcements(ctx context.Context, first *int, before *s
 		return nil, err
 	}
 
-	count := 0
-	err = models.DBSession.Find(&[]models.Announcement{}).Count(&count).Error
-	if err != nil {
-		return nil, err
-	}
 	length := len(announcements)
 	if length < 1 {
 		return &models.Announcements{
