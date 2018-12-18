@@ -61,8 +61,8 @@ func parseParams(query *gorm.DB, limit *int, after, before *string) (*gorm.DB, e
 func getPageInfo(count *int, firstID, lastID *uint, first *int, length int) models.PageInfo {
 	return models.PageInfo{
 		TotalCount:      *count,
-		HasPreviousPage: length < 1 && *count > 0 && int(*lastID) < *count,
-		HasNextPage:     length < 1 && *count > 0 && int(*firstID) > 1,
+		HasPreviousPage: *count > 0 && length != *count && int(*lastID) < *count,
+		HasNextPage:     *count > 0 && length < *count,
 		EndCursor:       base64.StdEncoding.EncodeToString([]byte(strconv.FormatUint(uint64(*firstID), 10))),
 		StartCursor:     base64.StdEncoding.EncodeToString([]byte(strconv.FormatUint(uint64(*lastID), 10))),
 	}

@@ -193,8 +193,8 @@ func (r *queryResolver) Users(ctx context.Context, first *int, before *string, a
 		query = query.Where("user_name LIKE ?", str).Or("first_name LIKE ?", str).Or("last_name LIKE ?", str)
 	}
 	err = query.Find(&[]models.User{}).Count(&count).Error
-
-	if len(users) < 1 {
+	length := len(users)
+	if length < 1 {
 		return &models.Users{Users: users, PageInfo: models.PageInfo{
 			TotalCount:      count,
 			HasPreviousPage: count > 0,
@@ -203,32 +203,34 @@ func (r *queryResolver) Users(ctx context.Context, first *int, before *string, a
 			EndCursor:       "",
 		}}, err
 	}
-	firstID := &users[len(users)-1].ID
+	firstID := &users[length-1].ID
 	lastID := &users[0].ID
 	return &models.Users{
 		Users:    users,
-		PageInfo: getPageInfo(&count, firstID, lastID, first, 0),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, length),
 	}, err
 }
 
 func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, search *string) (*models.Clubs, error) {
+	// TODO: Cleanup queries, first count and then parse params and fetch
+
 	query := models.DBSession
 	query, err := parseParams(query, first, after, before)
 	if err != nil {
 		return nil, err
 	}
 	clubs := []models.Club{}
-	i := []string{}
+	safeIDS := []string{}
 	for _, id := range ids {
 		if id != nil {
-			i = append(i, *id)
+			safeIDS = append(safeIDS, *id)
 		}
 	}
 	if search != nil {
 		query = query.Where("title LIKE ?", "%"+*search+"%")
 	}
-	if len(i) > 0 {
-		query = query.Where("id in (?)", i)
+	if len(safeIDS) > 0 {
+		query = query.Where("id in (?)", safeIDS)
 	}
 	if userID != nil {
 		query = query.Where("id in (SELECT club_id from club_user_roles where user_id = ?)", userID)
@@ -243,11 +245,15 @@ func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, i
 	if search != nil {
 		query = query.Where("title LIKE ?", "%"+*search+"%")
 	}
+	if len(safeIDS) > 0 {
+		query = query.Where("id in (?)", safeIDS)
+	}
 	err = query.Find(&[]models.Club{}).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
-	if len(clubs) < 1 {
+	length := len(clubs)
+	if length < 1 {
 		return &models.Clubs{
 			Clubs: clubs,
 			PageInfo: models.PageInfo{
@@ -259,11 +265,11 @@ func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, i
 			}}, err
 	}
 
-	firstID := &clubs[len(clubs)-1].ID
+	firstID := &clubs[length-1].ID
 	lastID := &clubs[0].ID
 	return &models.Clubs{
 		Clubs:    clubs,
-		PageInfo: getPageInfo(&count, firstID, lastID, first, len(i)),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, length),
 	}, err
 }
 
@@ -294,7 +300,8 @@ func (r *queryResolver) Events(ctx context.Context, first *int, clubId *string, 
 	if err != nil {
 		return nil, err
 	}
-	if len(events) < 1 {
+	length := len(events)
+	if length < 1 {
 		return &models.Events{
 			Events: events,
 			PageInfo: models.PageInfo{
@@ -306,11 +313,11 @@ func (r *queryResolver) Events(ctx context.Context, first *int, clubId *string, 
 			}}, err
 	}
 
-	firstID := &events[len(events)-1].ID
+	firstID := &events[length-1].ID
 	lastID := &events[0].ID
 	return &models.Events{
 		Events:   events,
-		PageInfo: getPageInfo(&count, firstID, lastID, first, 0),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, length),
 	}, err
 
 }
@@ -339,7 +346,8 @@ func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, af
 	if err != nil {
 		return nil, err
 	}
-	if len(jobs) < 1 {
+	length := len(jobs)
+	if length < 1 {
 		return &models.Jobs{
 			Jobs: jobs,
 			PageInfo: models.PageInfo{
@@ -350,12 +358,11 @@ func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, af
 				EndCursor:       "",
 			}}, err
 	}
-
-	firstID := &jobs[len(jobs)-1].ID
+	firstID := &jobs[length-1].ID
 	lastID := &jobs[0].ID
 	return &models.Jobs{
 		Jobs:     jobs,
-		PageInfo: getPageInfo(&count, firstID, lastID, first, 0),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, length),
 	}, err
 }
 
@@ -376,7 +383,8 @@ func (r *queryResolver) Announcements(ctx context.Context, first *int, before *s
 	if err != nil {
 		return nil, err
 	}
-	if len(announcements) < 1 {
+	length := len(announcements)
+	if length < 1 {
 		return &models.Announcements{
 			Announcements: announcements,
 			PageInfo: models.PageInfo{
@@ -388,11 +396,11 @@ func (r *queryResolver) Announcements(ctx context.Context, first *int, before *s
 			}}, err
 	}
 
-	firstID := &announcements[len(announcements)-1].ID
+	firstID := &announcements[length-1].ID
 	lastID := &announcements[0].ID
 	return &models.Announcements{
 		Announcements: announcements,
-		PageInfo:      getPageInfo(&count, firstID, lastID, first, 0),
+		PageInfo:      getPageInfo(&count, firstID, lastID, first, length),
 	}, err
 }
 
