@@ -76,27 +76,14 @@ func seed() {
 	ne := "nelson6855"
 	da := "http://danieldalonzo.com/mozilla-learning-club-collaboration/"
 	users := []User{
-		User{
-			Email: "test1@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username",
-		},
-		User{
-			Email: "kevinvnle@gmail.com", FirstName: "Kevin Viet", LastName: "Le", Password: "test123", UserName: "le", PersonalURL: &le,
-		},
-		User{
-			FirstName: "Shadi Nasser", LastName: "Moustafa", Email: "snasser2015@my.fit.edu", Password: "test123", UserName: "mo", PersonalURL: &mo,
-		},
-		User{
-			Password: "test123", UserName: "nelson.perezliveedpun", FirstName: "Nelson", LastName: "Perez", Email: "nelson.perez@live.edpuniversity.edu", PersonalURL: &ne,
-		},
-		User{
-			Password: "test123", UserName: "dan", FirstName: "Daniel", LastName: "DAlonzo", Email: "founder@actionhorizon.institute", PersonalURL: &da,
-		},
-		User{
-			Password: "test123", UserName: "ve", FirstName: "Veronica", LastName: "Armour", Email: "veronica.armour@shu.edu",
-		},
-		User{
-			Email: "test@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username1",
-		},
+		{Email: "test1@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username"},
+		{Email: "kevinvnle@gmail.com", FirstName: "Kevin Viet", LastName: "Le", Password: "test123", UserName: "le", PersonalURL: &le},
+		{FirstName: "Shadi Nasser", LastName: "Moustafa", Email: "snasser2015@my.fit.edu", Password: "test123", UserName: "mo", PersonalURL: &mo},
+		{Password: "test123", UserName: "nelson.perezliveedpun", FirstName: "Nelson", LastName: "Perez", Email: "nelson.perez@live.edpuniversity.edu", PersonalURL: &ne},
+		{Password: "test123", UserName: "dan", FirstName: "Daniel", LastName: "DAlonzo", Email: "founder@actionhorizon.institute", PersonalURL: &da},
+		{Password: "test123", UserName: "ve", FirstName: "Veronica", LastName: "Armour", Email: "veronica.armour@shu.edu"},
+		{FirstName: "Carla Rodriguez y", UserName: "CarlaRodriguezy", LastName: "Calderón", Email: "CarlaRodriguezy.Calderón@acm.com", Password: "test123"},
+		{Email: "test@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username1"},
 	}
 	for i, u := range users {
 
@@ -132,6 +119,9 @@ func seed() {
 	oka := "400 South Orange Avenue, 7079, South Orange, New Jersey, USA"
 	oku := "www.shu.edu"
 	st := "an address"
+
+	acm := "ACM Mines university of charleston"
+	acmu := "acm.com"
 	loc := []Location{{Address: &st}, {Address: &fa}, {Address: &foufa}, {Address: &deda}, {Address: &syna}, {Address: &oka}}
 	for i, l := range loc {
 		err = tx.Create(&l).Error
@@ -151,8 +141,9 @@ func seed() {
 		{ClubURL: &synu, Title: &syn, LocationID: &loc[4].ID},
 		{ClubURL: &oku, Title: &ok, LocationID: &loc[5].ID},
 		{ClubURL: &star},
+		{ClubURL: &acmu, Title: &acm},
 	}
-		for i, c := range clubs {
+	for i, c := range clubs {
 		err = tx.Create(&c).Error
 		if err != nil {
 			tx.Rollback()
@@ -165,15 +156,16 @@ func seed() {
 
 	curs := []ClubUserRole{
 		{ClubID: clubs[0].ID, UserID: users[0].ID, Role: "user"},
-		{ClubID: clubs[0].ID, UserID: users[len(users)-1].ID, Role: "admin"},
+		{ClubID: clubs[0].ID, UserID: users[7].ID, Role: "admin"},
 		{ClubID: clubs[4].ID, UserID: users[1].ID, Role: "member"},
 		{ClubID: clubs[3].ID, UserID: users[2].ID, Role: "member"},
 		{ClubID: clubs[5].ID, UserID: users[3].ID, Role: "member"},
 		{ClubID: clubs[2].ID, UserID: users[4].ID, Role: "member"},
 		{ClubID: clubs[1].ID, UserID: users[5].ID, Role: "member"},
+		{ClubID: clubs[6].ID, UserID: users[6].ID, Role: "member"},
 	}
 
-		for i, c := range curs {
+	for i, c := range curs {
 		err = tx.Create(&c).Error
 		if err != nil {
 			tx.Rollback()
@@ -183,7 +175,6 @@ func seed() {
 		curs[i] = c
 
 	}
-
 
 	err = tx.Create(&Event{Title: "test event", ClubID: &clubs[0].ID}).Error
 	if err != nil {
