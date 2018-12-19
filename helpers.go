@@ -48,7 +48,7 @@ func parseBase64Str(str *string) (int, error) {
 	return num, err
 }
 
-func parseParams(query *gorm.DB, first, last *int, after, before *string, orederByCol string) (*gorm.DB, error) {
+func parseParams(query *gorm.DB, first, last *int, before, after *string, orederByCol string) (*gorm.DB, error) {
 	l := 0
 
 	if first != nil {
@@ -83,18 +83,21 @@ func getPageInfo(count *int, firstID, lastID *uint, first, last *int, length int
 	hasNext := false
 	hasPrev := false
 
+	endCursor := base64.StdEncoding.EncodeToString([]byte(strconv.FormatUint(uint64(*firstID), 10)))
+	startCursor := base64.StdEncoding.EncodeToString([]byte(strconv.FormatUint(uint64(*lastID), 10)))
 	switch {
 	case first != nil:
 		hasNext = length == (*first + 1)
 	case last != nil:
 		hasPrev = length == (*last + 1)
+		endCursor, startCursor = startCursor, endCursor
 	}
 
 	return models.PageInfo{
 		TotalCount:      *count,
 		HasPreviousPage: hasPrev,
 		HasNextPage:     hasNext,
-		EndCursor:       base64.StdEncoding.EncodeToString([]byte(strconv.FormatUint(uint64(*firstID), 10))),
-		StartCursor:     base64.StdEncoding.EncodeToString([]byte(strconv.FormatUint(uint64(*lastID), 10))),
+		EndCursor:       endCursor,
+		StartCursor:     startCursor,
 	}
 }
