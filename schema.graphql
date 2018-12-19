@@ -163,9 +163,16 @@ type Announcements implements WithPagination {
 
 type Query {
   user(id: ID!): User
-  users(first: Int = 10, before: ID, after: ID, search: String): Users
+  users(
+    first: Int
+    last: Int
+    before: ID
+    after: ID
+    search: String
+  ): Users
   clubs(
-    first: Int = 10
+    first: Int
+    last: Int
     userID: ID
     ids: [ID]
     before: ID
@@ -173,10 +180,15 @@ type Query {
     search: String
   ): Clubs
   club(id: ID!): Club
-  events(first: Int = 10, clubId: ID, before: ID, after: ID): Events
+  events(first: Int, last: Int , clubId: ID, before: ID, after: ID): Events
   event(id: ID!): Event
-  jobs(first: Int = 10, before: ID, after: ID): Jobs
-  announcements(first: Int = 10, before: ID, after: ID): Announcements
+  jobs(first: Int, last: Int , before: ID, after: ID): Jobs
+  announcements(
+    first: Int
+    last: Int
+    before: ID
+    after: ID
+  ): Announcements
 }
 
 input UserInput {

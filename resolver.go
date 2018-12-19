@@ -170,18 +170,22 @@ func (r *queryResolver) User(ctx context.Context, id string) (*models.User, erro
 	err := models.DBSession.Where("id = ?", id).First(user).Error
 	return user, err
 }
-func (r *queryResolver) Users(ctx context.Context, first *int, before *string, after *string, search *string) (*models.Users, error) {
+func (r *queryResolver) Users(ctx context.Context, first, last *int, before *string, after *string, search *string) (*models.Users, error) {
+	err := validateFirstAndLast(first, last)
+	if err != nil {
+		return nil, err
+	}
 	query := models.DBSession
 	count := 0
 	if search != nil {
 		str := "%" + *search + "%"
 		query = query.Where("user_name LIKE ?", str).Or("first_name LIKE ?", str).Or("last_name LIKE ?", str)
 	}
-	err := query.Find(&[]models.User{}).Count(&count).Error
+	err = query.Find(&[]models.User{}).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
-	query, err = parseParams(query, first, after, before)
+	query, err = parseParams(query, first, last, after, before, "first_name")
 	if err != nil {
 		return nil, err
 	}
@@ -190,8 +194,10 @@ func (r *queryResolver) Users(ctx context.Context, first *int, before *string, a
 	if err != nil {
 		return nil, err
 	}
+
 	length := len(users)
-	if length < 1 {
+	switch {
+	case length < 1:
 		return &models.Users{Users: users, PageInfo: models.PageInfo{
 			TotalCount:      count,
 			HasPreviousPage: count > 0,
@@ -199,16 +205,22 @@ func (r *queryResolver) Users(ctx context.Context, first *int, before *string, a
 			StartCursor:     "",
 			EndCursor:       "",
 		}}, err
+	case length > 1 && length >= (*max(first, last)+1):
+		users = users[:length-1]
 	}
-	firstID := &users[length-1].ID
+	firstID := &users[len(users)-1].ID
 	lastID := &users[0].ID
 	return &models.Users{
 		Users:    users,
-		PageInfo: getPageInfo(&count, firstID, lastID, first, length),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, last, length),
 	}, err
 }
 
-func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, ids []*string, before *string, after *string, search *string) (*models.Clubs, error) {
+func (r *queryResolver) Clubs(ctx context.Context, first, last *int, userID *string, ids []*string, before *string, after *string, search *string) (*models.Clubs, error) {
+	err := validateFirstAndLast(first, last)
+	if err != nil {
+		return nil, err
+	}
 	count := 0
 	safeIDS := []string{}
 	for _, id := range ids {
@@ -227,12 +239,12 @@ func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, i
 	if userID != nil {
 		query = query.Where("id in (SELECT club_id from club_user_roles where user_id = ?)", userID)
 	}
-	err := query.Find(&[]models.Club{}).Count(&count).Error
+	err = query.Find(&[]models.Club{}).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
 
-	query, err = parseParams(query, first, after, before)
+	query, err = parseParams(query, first, last, after, before, "title")
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +256,8 @@ func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, i
 	}
 
 	length := len(clubs)
-	if length < 1 {
+	switch {
+	case length < 1:
 		return &models.Clubs{
 			Clubs: clubs,
 			PageInfo: models.PageInfo{
@@ -254,13 +267,15 @@ func (r *queryResolver) Clubs(ctx context.Context, first *int, userID *string, i
 				StartCursor:     "",
 				EndCursor:       "",
 			}}, err
+	case length >= (*max(first, last) + 1):
+		clubs = clubs[:length-1]
 	}
 
-	firstID := &clubs[length-1].ID
+	firstID := &clubs[len(clubs)-1].ID
 	lastID := &clubs[0].ID
 	return &models.Clubs{
 		Clubs:    clubs,
-		PageInfo: getPageInfo(&count, firstID, lastID, first, length),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, last, length),
 	}, err
 }
 
@@ -270,18 +285,22 @@ func (r *queryResolver) Club(ctx context.Context, id string) (*models.Club, erro
 	return club, err
 }
 
-func (r *queryResolver) Events(ctx context.Context, first *int, clubId *string, before *string, after *string) (*models.Events, error) {
-	query := models.DBSession.Order("id desc, published_at")
+func (r *queryResolver) Events(ctx context.Context, first, last *int, clubId *string, before *string, after *string) (*models.Events, error) {
+	err := validateFirstAndLast(first, last)
+	if err != nil {
+		return nil, err
+	}
+	query := models.DBSession
 	count := 0
 	if clubId != nil {
 		query = query.Where("club_id = ?", clubId)
 	}
-	err := models.DBSession.Find(&[]models.Event{}).Count(&count).Error
+	err = models.DBSession.Find(&[]models.Event{}).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
 
-	query, err = parseParams(query, first, after, before)
+	query, err = parseParams(query, first, last, after, before, "published_at")
 	if err != nil {
 		return nil, err
 	}
@@ -293,7 +312,8 @@ func (r *queryResolver) Events(ctx context.Context, first *int, clubId *string, 
 	}
 
 	length := len(events)
-	if length < 1 {
+	switch {
+	case length < 1:
 		return &models.Events{
 			Events: events,
 			PageInfo: models.PageInfo{
@@ -303,13 +323,15 @@ func (r *queryResolver) Events(ctx context.Context, first *int, clubId *string, 
 				StartCursor:     "",
 				EndCursor:       "",
 			}}, err
+	case length > 1 && length >= (*max(first, last)+1):
+		events = events[:length-1]
 	}
 
-	firstID := &events[length-1].ID
+	firstID := &events[len(events)-1].ID
 	lastID := &events[0].ID
 	return &models.Events{
 		Events:   events,
-		PageInfo: getPageInfo(&count, firstID, lastID, first, length),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, last, length),
 	}, err
 
 }
@@ -320,15 +342,19 @@ func (r *queryResolver) Event(ctx context.Context, id string) (*models.Event, er
 	return event, err
 }
 
-func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, after *string) (*models.Jobs, error) {
-	query := models.DBSession.Order("id desc, published_at")
+func (r *queryResolver) Jobs(ctx context.Context, first, last *int, before *string, after *string) (*models.Jobs, error) {
+	err := validateFirstAndLast(first, last)
+	if err != nil {
+		return nil, err
+	}
+	query := models.DBSession
 	count := 0
-	err := models.DBSession.Find(&[]models.Job{}).Count(&count).Error
+	err = models.DBSession.Find(&[]models.Job{}).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
 
-	query, err = parseParams(query, first, after, before)
+	query, err = parseParams(query, first, last, after, before, "published_at")
 	if err != nil {
 		return nil, err
 	}
@@ -340,7 +366,8 @@ func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, af
 	}
 
 	length := len(jobs)
-	if length < 1 {
+	switch {
+	case length < 1:
 		return &models.Jobs{
 			Jobs: jobs,
 			PageInfo: models.PageInfo{
@@ -350,23 +377,29 @@ func (r *queryResolver) Jobs(ctx context.Context, first *int, before *string, af
 				StartCursor:     "",
 				EndCursor:       "",
 			}}, err
+	case length > 1 && length >= (*max(first, last)+1):
+		jobs = jobs[:length-1]
 	}
-	firstID := &jobs[length-1].ID
+	firstID := &jobs[len(jobs)-1].ID
 	lastID := &jobs[0].ID
 	return &models.Jobs{
 		Jobs:     jobs,
-		PageInfo: getPageInfo(&count, firstID, lastID, first, length),
+		PageInfo: getPageInfo(&count, firstID, lastID, first, last, length),
 	}, err
 }
 
-func (r *queryResolver) Announcements(ctx context.Context, first *int, before *string, after *string) (*models.Announcements, error) {
-	query := models.DBSession.Order("id desc, published_at")
-	count := 0
-	err := models.DBSession.Find(&[]models.Announcement{}).Count(&count).Error
+func (r *queryResolver) Announcements(ctx context.Context, first, last *int, before *string, after *string) (*models.Announcements, error) {
+	err := validateFirstAndLast(first, last)
 	if err != nil {
 		return nil, err
 	}
-	query, err = parseParams(query, first, after, before)
+	query := models.DBSession
+	count := 0
+	err = models.DBSession.Find(&[]models.Announcement{}).Count(&count).Error
+	if err != nil {
+		return nil, err
+	}
+	query, err = parseParams(query, first, last, after, before, "published_at")
 	if err != nil {
 		return nil, err
 	}
@@ -377,7 +410,8 @@ func (r *queryResolver) Announcements(ctx context.Context, first *int, before *s
 	}
 
 	length := len(announcements)
-	if length < 1 {
+	switch {
+	case length < 1:
 		return &models.Announcements{
 			Announcements: announcements,
 			PageInfo: models.PageInfo{
@@ -387,13 +421,15 @@ func (r *queryResolver) Announcements(ctx context.Context, first *int, before *s
 				StartCursor:     "",
 				EndCursor:       "",
 			}}, err
+	case length > 1 && length >= (*max(first, last)+1):
+		announcements = announcements[:length-1]
 	}
 
-	firstID := &announcements[length-1].ID
+	firstID := &announcements[len(announcements)-1].ID
 	lastID := &announcements[0].ID
 	return &models.Announcements{
 		Announcements: announcements,
-		PageInfo:      getPageInfo(&count, firstID, lastID, first, length),
+		PageInfo:      getPageInfo(&count, firstID, lastID, first, last, length),
 	}, err
 }
 
