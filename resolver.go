@@ -170,7 +170,7 @@ func (r *queryResolver) User(ctx context.Context, id string) (*models.User, erro
 	err := models.DBSession.Where("id = ?", id).First(user).Error
 	return user, err
 }
-func (r *queryResolver) Users(ctx context.Context, first, last *int, before *string, after *string, search *string) (*models.Users, error) {
+func (r *queryResolver) Users(ctx context.Context, first, last *int, before, after, search *string) (*models.Users, error) {
 	err := validateFirstAndLast(first, last)
 	if err != nil {
 		return nil, err
@@ -216,7 +216,7 @@ func (r *queryResolver) Users(ctx context.Context, first, last *int, before *str
 	}, err
 }
 
-func (r *queryResolver) Clubs(ctx context.Context, first, last *int, userID *string, ids []*string, before *string, after *string, search *string) (*models.Clubs, error) {
+func (r *queryResolver) Clubs(ctx context.Context, first, last *int, userID *string, ids []*string, before, after, search *string) (*models.Clubs, error) {
 	err := validateFirstAndLast(first, last)
 	if err != nil {
 		return nil, err
@@ -285,7 +285,7 @@ func (r *queryResolver) Club(ctx context.Context, id string) (*models.Club, erro
 	return club, err
 }
 
-func (r *queryResolver) Events(ctx context.Context, first, last *int, clubId *string, before *string, after *string) (*models.Events, error) {
+func (r *queryResolver) Events(ctx context.Context, first, last *int, clubId, before, after *string) (*models.Events, error) {
 	err := validateFirstAndLast(first, last)
 	if err != nil {
 		return nil, err
@@ -342,7 +342,7 @@ func (r *queryResolver) Event(ctx context.Context, id string) (*models.Event, er
 	return event, err
 }
 
-func (r *queryResolver) Jobs(ctx context.Context, first, last *int, before *string, after *string) (*models.Jobs, error) {
+func (r *queryResolver) Jobs(ctx context.Context, first, last *int, before, after *string) (*models.Jobs, error) {
 	err := validateFirstAndLast(first, last)
 	if err != nil {
 		return nil, err
