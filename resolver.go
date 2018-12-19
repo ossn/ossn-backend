@@ -179,7 +179,7 @@ func (r *queryResolver) Users(ctx context.Context, first, last *int, before *str
 	count := 0
 	if search != nil {
 		str := "%" + *search + "%"
-		query = query.Where("user_name LIKE ?", str).Or("first_name LIKE ?", str).Or("last_name LIKE ?", str)
+		query = query.Where("user_name LIKE ? OR first_name LIKE ? OR last_name LIKE ?", str, str, str)
 	}
 	err = query.Find(&[]models.User{}).Count(&count).Error
 	if err != nil {
