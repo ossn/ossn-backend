@@ -13,7 +13,6 @@ func validateFirstAndLast(first, last *int) error {
 	switch {
 	case (first == nil && last == nil):
 		return errors.New("Please provide first or last param")
-
 	case (first != nil && last != nil):
 		return errors.New("Please provide only first or only last")
 	case (first != nil && *first > 100) || (last != nil && *last > 100):
@@ -57,7 +56,7 @@ func parseParams(query *gorm.DB, first, last *int, after, before *string, oreder
 		l = *first
 	}
 	if last != nil {
-		query = query.Order("id asc," + orederByCol + " asc")
+		query = query.Order("id asc, " + orederByCol + " asc")
 		l = *last
 	}
 	query = query.Limit(l + 1)

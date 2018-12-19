@@ -470,6 +470,7 @@ func (r *userResolver) Clubs(ctx context.Context, obj *models.User) ([]*models.C
 			ClubURL:       c.ClubURL,
 			Events:        c.Events,
 			Users:         users,
+			BannerImageURL: c.BannerImageURL,
 		})
 	}
 	return clubWithRole, nil

@@ -69,6 +69,7 @@ type ComplexityRoot struct {
 		Location        func(childComplexity int) int
 		Name            func(childComplexity int) int
 		ImageUrl        func(childComplexity int) int
+		BannerImageUrl  func(childComplexity int) int
 		Description     func(childComplexity int) int
 		CodeOfConduct   func(childComplexity int) int
 		SortDescription func(childComplexity int) int
@@ -86,6 +87,7 @@ type ComplexityRoot struct {
 		Location        func(childComplexity int) int
 		Name            func(childComplexity int) int
 		ImageUrl        func(childComplexity int) int
+		BannerImageUrl  func(childComplexity int) int
 		Description     func(childComplexity int) int
 		CodeOfConduct   func(childComplexity int) int
 		SortDescription func(childComplexity int) int
@@ -926,6 +928,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Club.ImageUrl(childComplexity), true
 
+	case "Club.bannerImageUrl":
+		if e.complexity.Club.BannerImageUrl == nil {
+			break
+		}
+
+		return e.complexity.Club.BannerImageUrl(childComplexity), true
+
 	case "Club.description":
 		if e.complexity.Club.Description == nil {
 			break
@@ -1023,6 +1032,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ClubWithRole.ImageUrl(childComplexity), true
+
+	case "ClubWithRole.bannerImageUrl":
+		if e.complexity.ClubWithRole.BannerImageUrl == nil {
+			break
+		}
+
+		return e.complexity.ClubWithRole.BannerImageUrl(childComplexity), true
 
 	case "ClubWithRole.description":
 		if e.complexity.ClubWithRole.Description == nil {
@@ -2189,6 +2205,8 @@ func (ec *executionContext) _Club(ctx context.Context, sel ast.SelectionSet, obj
 			}(i, field)
 		case "imageUrl":
 			out.Values[i] = ec._Club_imageUrl(ctx, field, obj)
+		case "bannerImageUrl":
+			out.Values[i] = ec._Club_bannerImageUrl(ctx, field, obj)
 		case "description":
 			out.Values[i] = ec._Club_description(ctx, field, obj)
 		case "codeOfConduct":
@@ -2362,6 +2380,34 @@ func (ec *executionContext) _Club_imageUrl(ctx context.Context, field graphql.Co
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ImageURL, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Club_bannerImageUrl(ctx context.Context, field graphql.CollectedField, obj *models.Club) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rctx := &graphql.ResolverContext{
+		Object: "Club",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BannerImageURL, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -2719,6 +2765,8 @@ func (ec *executionContext) _ClubWithRole(ctx context.Context, sel ast.Selection
 			out.Values[i] = ec._ClubWithRole_name(ctx, field, obj)
 		case "imageUrl":
 			out.Values[i] = ec._ClubWithRole_imageUrl(ctx, field, obj)
+		case "bannerImageUrl":
+			out.Values[i] = ec._ClubWithRole_bannerImageUrl(ctx, field, obj)
 		case "description":
 			out.Values[i] = ec._ClubWithRole_description(ctx, field, obj)
 		case "codeOfConduct":
@@ -2882,6 +2930,34 @@ func (ec *executionContext) _ClubWithRole_imageUrl(ctx context.Context, field gr
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ImageURL, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _ClubWithRole_bannerImageUrl(ctx context.Context, field graphql.CollectedField, obj *models.ClubWithRole) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rctx := &graphql.ResolverContext{
+		Object: "ClubWithRole",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BannerImageURL, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -8254,6 +8330,7 @@ type Club {
   location: Location
   name: String
   imageUrl: String
+  bannerImageUrl: String
   description: String
   codeOfConduct: String
   sortDescription: String
@@ -8271,6 +8348,7 @@ type ClubWithRole {
   location: Location
   name: String
   imageUrl: String
+  bannerImageUrl: String
   description: String
   codeOfConduct: String
   sortDescription: String
@@ -8392,13 +8470,7 @@ type Announcements implements WithPagination {
 
 type Query {
   user(id: ID!): User
-  users(
-    first: Int
-    last: Int
-    before: ID
-    after: ID
-    search: String
-  ): Users
+  users(first: Int, last: Int, before: ID, after: ID, search: String): Users
   clubs(
     first: Int
     last: Int
@@ -8409,15 +8481,10 @@ type Query {
     search: String
   ): Clubs
   club(id: ID!): Club
-  events(first: Int, last: Int , clubId: ID, before: ID, after: ID): Events
+  events(first: Int, last: Int, clubId: ID, before: ID, after: ID): Events
   event(id: ID!): Event
-  jobs(first: Int, last: Int , before: ID, after: ID): Jobs
-  announcements(
-    first: Int
-    last: Int
-    before: ID
-    after: ID
-  ): Announcements
+  jobs(first: Int, last: Int, before: ID, after: ID): Jobs
+  announcements(first: Int, last: Int, before: ID, after: ID): Announcements
 }
 
 input UserInput {

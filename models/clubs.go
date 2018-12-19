@@ -14,4 +14,5 @@ type Club struct {
 	Events          []*Event        `json:"events" gorm:"many2many:club_events;"`
 	GithubURL       *string         `json:"githubUrl" sql:"type:text;" gorm:"UNIQUE;"`
 	ClubURL         *string         `json:"clubUrl" sql:"type:text;" gorm:"UNIQUE;"`
+	BannerImageURL  *string         `json:"bannerImageUrl" sql:"type:text;"`
 }

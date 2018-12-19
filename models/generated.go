@@ -35,6 +35,7 @@ type ClubWithRole struct {
 	Location        *Location `json:"location"`
 	Name            *string   `json:"name"`
 	ImageURL        *string   `json:"imageUrl"`
+	BannerImageURL  *string   `json:"bannerImageUrl"`
 	Description     *string   `json:"description"`
 	CodeOfConduct   *string   `json:"codeOfConduct"`
 	SortDescription *string   `json:"sortDescription"`
