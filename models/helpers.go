@@ -7,7 +7,7 @@ import (
 )
 
 type Model struct {
-	*gorm.Model
+	gorm.Model
 }
 
 func (m *Model) IDToString() (string, error) {

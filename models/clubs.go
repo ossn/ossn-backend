@@ -1,7 +1,7 @@
 package models
 
 type Club struct {
-	*Model
+	Model
 	Email           *string   `json:"email" gorm:"UNIQUE;"`
 	Location        *Location `json:"location" gorm:"foreignkey:LocationID"`
 	LocationID      *uint

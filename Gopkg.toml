@@ -49,8 +49,6 @@
   branch = "master"
 [prune]
   go-tests = true
-  unused-packages = true
-  non-go = true
   [[prune.project]]
       name = "github.com/qor/qor"
       non-go = false
@@ -61,3 +59,7 @@
     unused-packages = false
 
 
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/qor/bindatafs"

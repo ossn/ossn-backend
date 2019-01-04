@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:12888be6ae772ea65441ee26ce677d3452e6236c10cf3d5d80cca150954b96b5"
+  digest = "1:aec0c5028124281efb9d9d5ca47efe0e008a6a095d28402f85d47d93386e2d1b"
   name = "github.com/99designs/gqlgen"
   packages = [
     "cmd",
@@ -15,162 +15,170 @@
     "internal/gopath",
     "internal/imports",
   ]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "3a7f37c7e22a8fedce430c4d340ad5c1351198f4"
   version = "v0.7.1"
 
 [[projects]]
-  digest = "1:352b01f15a6d9c1fa40f50e94b5a627e3b6ce7735dccddb770d8ab4df2df69f6"
+  digest = "1:00ecbe13acec4f32404360b186d54feaa578f11cf5cd504de8e38ec6245f380e"
   name = "github.com/agnivade/levenshtein"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "834b435c3df04fba060c8d74a40d849ab2c4a090"
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:c01767916c59f084bb7c41a7d5877c0f3099b1595cfa066e84ec6ad6b084dd89"
+  digest = "1:2da9bf5781e0a88acb224c68ac7161578bca3b12a800865764a21effe5023844"
+  name = "github.com/containous/go-bindata"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "532cb0b0736b109aefe85e24e37a2ef35eafc6a8"
+  version = "v1.0.0"
+
+[[projects]]
+  digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
   name = "github.com/gorilla/context"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:0faa8131e5822f3420f82426667a29c5c425c3cb7e0fcf0c5d1c718d6e6ba19b"
+  digest = "1:3b5918c233248a223d7215e6bd91e2dedb8c2503485e04a2218756f97953cb47"
   name = "github.com/gorilla/securecookie"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "e59506cc896acb7f7bf732d4fdf5e25f7ccd8983"
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:47397e09ed21e6c4cb434668a7ef7cfb017d1fb4e9345416b2485ca6393a7906"
+  digest = "1:c3c14f89246dfaaf837ca22dc137471ba83906d26ca110134b25610b3ec1a69e"
   name = "github.com/gorilla/sessions"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "f57b7e2d29c6211d16ffa52a0998272f75799030"
   version = "v1.1.3"
 
 [[projects]]
-  digest = "1:4a0c072e44da763409da72d41492373a034baf2e6d849c76d239b4abdfbb6c49"
+  digest = "1:80f394537967d97fcc0da30762843805c8aaea7d208c43c99d1fe988a8888f0d"
   name = "github.com/gorilla/websocket"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
   version = "v1.4.0"
 
 [[projects]]
-  digest = "1:05c973d076efe8b4ec653ab4ce5293fa6282c215250f854add2f554f2648c380"
+  digest = "1:e1aa8e520787bfd8623c7df394352be3183ef207039cfb513ba40dc00c82fa6d"
   name = "github.com/gosimple/slug"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "42ac18c34c2c6f4843fa48167317dcaa9416d1e2"
   version = "v1.4.2"
 
 [[projects]]
-  digest = "1:b42cde0e1f3c816dd57f57f7bbcf05ca40263ad96f168714c130c611fc0856a6"
+  digest = "1:8ec8d88c248041a6df5f6574b87bc00e7e0b493881dad2e7ef47b11dc69093b5"
   name = "github.com/hashicorp/golang-lru"
   packages = [
     ".",
     "simplelru",
   ]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "20f1fb78b0740ba8c3cb143a61e86ba5c8669768"
   version = "v0.5.0"
 
 [[projects]]
-  digest = "1:e7e67293542f3e0449d5aa74b901e761e424e416853f842c306594644699ec96"
+  digest = "1:56889f4ced0f576272d91c67a63d90f32ae169aa069d75d3f55a40701a965593"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
     "dialects/postgres",
   ]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "472c70caa40267cb89fd8facb07fe6454b578626"
   version = "v1.9.2"
 
 [[projects]]
   branch = "master"
-  digest = "1:802f75230c29108e787d40679f9bf5da1a5673eaf5c10eb89afd993e18972909"
+  digest = "1:fd97437fbb6b7dce04132cf06775bd258cce305c44add58eb55ca86c6c325160"
   name = "github.com/jinzhu/inflection"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "04140366298a54a039076d798123ffa108fff46c"
 
 [[projects]]
   branch = "master"
-  digest = "1:71046a4b75054f92ca811e7d1284d08ced8a7c2a91f449b5e5697a73fe8ab061"
+  digest = "1:20bfc9287db8b7fb8f12d31468dab57187fd7e320e76d73d1865b7d1327e8424"
   name = "github.com/jinzhu/now"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "8ec929ed50c3ac25ce77ba4486e1f277c552c591"
 
 [[projects]]
-  digest = "1:7b21c7fc5551b46d1308b4ffa9e9e49b66c7a8b0ba88c0130474b0e7a20d859f"
+  digest = "1:ca955a9cd5b50b0f43d2cc3aeb35c951473eeca41b34eb67507f1dbcc0542394"
   name = "github.com/kr/pretty"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "73f6ac0b30a98e433b289500d779f50c1a6f0712"
   version = "v0.1.0"
 
 [[projects]]
-  digest = "1:c3a7836b5904db0f8b609595b619916a6831cb35b8b714aec39f96d00c6155d8"
+  digest = "1:d3cea7f1e6ac37e9598c31505121b26aaaccf4fffc58d19c701d3d3725d6553d"
   name = "github.com/kr/text"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "e2ffdb16a802fe2bb95e2e35ff34f0e53aeef34f"
   version = "v0.1.0"
 
 [[projects]]
-  digest = "1:981b5a5a9c05b9f5645e68e2c13dd498a048e8ab0aec07397f33edb3301f2569"
+  digest = "1:2106821001befed6a5783b54950030dd0614257d18bef539e46cae9afd02b89b"
   name = "github.com/lib/pq"
   packages = [
     ".",
     "hstore",
     "oid",
   ]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79"
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:a127ff6552f64ae4ff4ccc051201edba258f545221f40b4bdf1c2a7db8c0906b"
+  digest = "1:ea14cf15cce513011868c08e47c65bf20deb780617217964a8db8ba3d398189a"
   name = "github.com/microcosm-cc/bluemonday"
   packages = ["."]
-  pruneopts = "NUT"
-  revision = "82c7118e8ccf7403d4860175d97bb635e8e28239"
-  version = "v1.0.1"
+  pruneopts = "T"
+  revision = "506f3da9b7c86d737e91f16b7431df8635871552"
+  version = "v1.0.2"
 
 [[projects]]
-  digest = "1:5cf3f025cbee5951a4ee961de067c8a89fc95a5adabead774f82822efabab121"
+  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:63176ef3720d7a54f7c8256f1798b9f59d5549eb7daaaae67b90810b555e0447"
+  digest = "1:7b318f5b5903a6c752c294e353542a0211f758c8ba114b4a2e20616d52a590d7"
   name = "github.com/qor/admin"
   packages = ["."]
   pruneopts = "T"
-  revision = "0ef7c2aa0f3359bc794300e9ca46dce4c6d95e37"
+  revision = "e550beeb4925ce4943cd44958b2a1b8b39c2f7aa"
 
 [[projects]]
   branch = "master"
-  digest = "1:f7d2a3ca966f01d326c3fc1f2d4572dc2eceebd814426255bc99f0b039cd03cf"
+  digest = "1:d2bdad175842f83799e02819fa718858ebde6f8704101a7dfa0a4a8e8742e587"
   name = "github.com/qor/assetfs"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "ff57fdc13a148d39c3e930cb27c7eaf82e376891"
 
 [[projects]]
   branch = "master"
-  digest = "1:6c13a91ed5cb8c5b0576d871c3c6f70feef1453d3d85e9979ddfffba38eaf6d7"
+  digest = "1:d221e9b7e68759e27735dd1929cc37c916eb814cc5ef5bacf533d47d1ca55ff1"
   name = "github.com/qor/middlewares"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "781378b69454a545d08058d8154aca40d079e7ab"
 
 [[projects]]
@@ -186,75 +194,75 @@
   revision = "49b2dd4f5840f58f43d6d83fdd32baf56ffb24b2"
 
 [[projects]]
-  digest = "1:480d0b34428878fff0dedd43915261d460b464da9966e2b316793fc259c38faa"
+  digest = "1:4d7e309108709883ce2067c488982206ecc25b81835dd6911c6f63fecb4e767c"
   name = "github.com/qor/responder"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "ecae0be66c1a6a441001b0b5eeef51f8bc27d42a"
   version = "v1.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:7576081fa4a18061743fc047d6464b2b21a6786c74b981d5dcb8863ae832598a"
+  digest = "1:be8425925ff99bd3fb026add07beb8069fed5c8e199b1cd55a871f832d9f6688"
   name = "github.com/qor/roles"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "d6375609fe3e5da46ad3a574fae244fb633e79c1"
 
 [[projects]]
   branch = "master"
-  digest = "1:98dccd1aaee36063149674bec4654a8da4223a28eeb98682210df82a96a036a0"
+  digest = "1:7e9c896555d78b68e25a673acfb4ef9c7e958f8316717773572c56cae5c30ebf"
   name = "github.com/qor/session"
   packages = [
     ".",
     "gorilla",
     "manager",
   ]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "8206b0adab706a6ef3ee6fabba2584d34429a26a"
 
 [[projects]]
-  digest = "1:e57ac2b85778fe50bdfda04a2b80b594cbd7904a4efb8fec16ddb83c1a40c10a"
+  digest = "1:1a44c28f6de12e934afea5ff48ccd61a779526dc587afb60f30ebbfae838c2fd"
   name = "github.com/qor/validations"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "87c1296c75e72a8f3247beab65c48c50b7b66a7a"
   version = "v1.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:16e2136a67ec44aa2d1d6b0fd65394b3c4a8b2a1b6730c77967f7b7b06b179b2"
+  digest = "1:e6a29574542c00bb18adb1bfbe629ff88c468c2af2e2e953d3e58eda07165086"
   name = "github.com/rainycape/unidecode"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c"
 
 [[projects]]
-  digest = "1:f250ca51e5b9215bc2df18f92060a9a835e9f85ab18ebbba0e1a6ef1f8fcdbfe"
+  digest = "1:a8a03bca5a81878daa4958136f3372af00437c61129ca088a430b0b786b9378a"
   name = "github.com/rs/cors"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "9a47f48565a795472d43519dd49aac781f3034fb"
   version = "v1.6.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:7424738b55958db018806ce52d80a9533011483ce17661d99f2982ffd2ed4477"
+  digest = "1:ae3929019e5060626b476b292197bdec07a2f29a4a1837706370aacb7041bd44"
   name = "github.com/theplant/cldr"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "b97a4c2a76cf8ba21d1cb8ed2f4c8ee103371e2d"
 
 [[projects]]
-  digest = "1:5dba68a1600a235630e208cb7196b24e58fcbb77bb7a6bec08fcd23f081b0a58"
+  digest = "1:a4ef215bd846f9407d095f526879cb232330e1e7a748c70e384f775a6a64fd3e"
   name = "github.com/urfave/cli"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
   version = "v1.20.0"
 
 [[projects]]
-  digest = "1:3f9c5ba933aa01445e39e8e23389d8cd05de88a2ed4fd7eb02e949ea5e45c319"
+  digest = "1:53b917a6f703df4b810cf6c5d79b13c9a72b40a792dc28eb9945e452f11e745f"
   name = "github.com/vektah/gqlparser"
   packages = [
     ".",
@@ -265,35 +273,35 @@
     "validator",
     "validator/rules",
   ]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "e805d08bb209b1accdea76bd2327811858d81985"
   version = "v1.0.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:1a1ecfa7b54ca3f7a0115ab5c578d7d6a5d8b605839c549e80260468c42f8be7"
+  digest = "1:6a668f89e7e121bf970a6dc37c729f05f5261ae64e27945326d896ad158e5a10"
   name = "golang.org/x/net"
   packages = [
     "html",
     "html/atom",
   ]
-  pruneopts = "NUT"
-  revision = "e147a9138326bc0e9d4e179541ffd8af41cff8a9"
+  pruneopts = "T"
+  revision = "927f97764cc334a6575f4b7a1584a147864d5723"
 
 [[projects]]
-  digest = "1:740cec287074ade445ab57356e36f54d3e0d33c0d0ebf77047934da33af2c1c0"
+  digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
   name = "golang.org/x/text"
   packages = [
     "internal/gen",
     "unicode/cldr",
   ]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:24b916bf9d5211dbc922c2788356a8bee063e93275babaea7d03c28a69ecb956"
+  digest = "1:4edb7e8b3b69e7f3923c314406e797dddfc14f600d3edfcfb14c28252625ef12"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -301,6 +309,7 @@
     "go/gcexportdata",
     "go/internal/cgo",
     "go/internal/gcimporter",
+    "go/internal/packagesdriver",
     "go/loader",
     "go/packages",
     "go/types/typeutil",
@@ -309,14 +318,14 @@
     "internal/gopathwalk",
     "internal/semver",
   ]
-  pruneopts = "NUT"
-  revision = "3c39ce7b61056afe4473b651789da5f89d4aeb20"
+  pruneopts = "T"
+  revision = "498d95493402f719ce3de5c8cb60d1b50d0a1239"
 
 [[projects]]
-  digest = "1:18108594151654e9e696b27b181b953f9a90b16bf14d253dd1b397b025a1487f"
+  digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
   version = "v2.2.2"
 
@@ -328,9 +337,12 @@
     "github.com/99designs/gqlgen/graphql",
     "github.com/99designs/gqlgen/graphql/introspection",
     "github.com/99designs/gqlgen/handler",
+    "github.com/containous/go-bindata",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/qor/admin",
+    "github.com/qor/assetfs",
+    "github.com/qor/qor",
     "github.com/rs/cors",
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",

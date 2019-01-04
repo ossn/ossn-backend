@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"os"
 
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	// _ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/qor/admin"
 )
 
 var DBSession *gorm.DB
+var Admin *admin.Admin
 
 func init() {
 
@@ -19,6 +21,7 @@ func init() {
 	user := os.Getenv("DB_USER")
 	database := os.Getenv("DB_NAME")
 	DBSession, err = gorm.Open("postgres", "postgres://"+user+":"+password+"@"+host+"/"+database+"?sslmode=disable")
+	DBSession.LogMode(true)
 	if err != nil {
 		fmt.Println(err)
 		panic("failed to connect database")
@@ -33,6 +36,29 @@ func init() {
 		&ClubUserRole{},
 		&User{},
 	)
+
+	Admin = admin.New(&admin.AdminConfig{DB: DBSession, SiteName: "OSSN Admin"})
+	Admin.AddResource(&Event{})
+	Admin.AddResource(&Announcement{})
+	Admin.AddResource(&Location{})
+	Admin.AddResource(&Job{})
+	Admin.AddResource(&ClubUserRole{}, &admin.Config{Invisible: true})
+	Admin.AddResource(&Club{})
+	Admin.AddResource(&User{})
+
+	// .Meta(&admin.Meta{
+	// 	Name: "Clubs",
+	// 	// Valuer: func(record interface{}, c *qor.Context) interface{} {
+	// 	// 	u, ok :=record.(ClubUserRole)
+	// 	// 	fmt.Println(ok,u )
+	// 	// 	// c.SetDB(c.GetDB().Preload("Club"))
+	// 	// 	if ok && u.Club.Title != nil {
+	// 	// 		return *u.Club.Title
+	// 	// 	}
+	// 	// 	return record
+	// 	//  },
+	// 	Config: &admin.SelectManyConfig{SelectOneConfig: admin.SelectOneConfig{RemoteDataResource: c}},
+	// })
 
 	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
 	if err != nil {

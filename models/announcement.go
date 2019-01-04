@@ -6,7 +6,7 @@ import (
 )
 
 type Announcement struct {
-	*Model
+	Model
 	Description     *string    `json:"description" sql:"type:text;"`
 	SortDescription *string    `json:"sortDescription" sql:"type:text;"`
 	URL             *string    `json:"url" sql:"type:text;"`
