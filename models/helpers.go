@@ -1,6 +1,10 @@
 package models
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"strconv"
 
 	"github.com/jinzhu/gorm"
@@ -24,6 +28,25 @@ func (m *Model) UpdatedAtToString() string {
 func (m *Model) DeletedAtToString() *string {
 	str := strconv.FormatInt(m.DeletedAt.Unix(), 10)
 	return &str
+}
+
+func rebuildFrontEnd() {
+	requestByte, err := json.Marshal(struct{}{})
+	if err != nil {
+		fmt.Println("Error while rebuilding frontend", err)
+		return
+	}
+	http.Post("http://api.netlify.com/build_hooks/5c190a084e4723016c4b43af", "application/json", bytes.NewReader(requestByte))
+}
+
+func (m *Model) AfterCreate(scope *gorm.Scope) (err error) {
+	go rebuildFrontEnd()
+	return
+}
+
+func (m *Model) AfterUpdate(scope *gorm.Scope) (err error) {
+	go rebuildFrontEnd()
+	return
 }
 
 func TurnStringToRolename(name string) *RoleName {
