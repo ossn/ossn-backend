@@ -36,6 +36,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:6b014c67cb522566c30ef02116f9acb50cd60954708cf92c6654e2985696db18"
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
+
+[[projects]]
   digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
   name = "github.com/gorilla/context"
   packages = ["."]
@@ -85,6 +93,14 @@
   pruneopts = "T"
   revision = "20f1fb78b0740ba8c3cb143a61e86ba5c8669768"
   version = "v0.5.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:5c3444689562053b027ef3b96372e306adbe0d7d109b6cdd48d01eb80f8bab14"
+  name = "github.com/jinzhu/copier"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "7e38e58719c33e0d44d585c4ab477a30f8cb82dd"
 
 [[projects]]
   digest = "1:56889f4ced0f576272d91c67a63d90f32ae169aa069d75d3f55a40701a965593"
@@ -150,20 +166,20 @@
   version = "v1.0.2"
 
 [[projects]]
-  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
+  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
   name = "github.com/pkg/errors"
   packages = ["."]
   pruneopts = "T"
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
 
 [[projects]]
   branch = "master"
-  digest = "1:7b318f5b5903a6c752c294e353542a0211f758c8ba114b4a2e20616d52a590d7"
+  digest = "1:e300a95e9186c790deeb6a4541783603a47ca9db8f50a885f09524f53a86bf31"
   name = "github.com/qor/admin"
   packages = ["."]
   pruneopts = "T"
-  revision = "e550beeb4925ce4943cd44958b2a1b8b39c2f7aa"
+  revision = "f8782672c05b4ab73ffc6a5c3a8c4913709605d5"
 
 [[projects]]
   branch = "master"
@@ -172,6 +188,62 @@
   packages = ["."]
   pruneopts = "T"
   revision = "ff57fdc13a148d39c3e930cb27c7eaf82e376891"
+
+[[projects]]
+  branch = "master"
+  digest = "1:fd0a67bb6239a360c8bf19b07c2a75917b8ddd4c4fa4471e4f30de113da70e70"
+  name = "github.com/qor/auth"
+  packages = [
+    ".",
+    "auth_identity",
+    "claims",
+    "providers/password",
+    "providers/password/encryptor",
+    "providers/password/encryptor/bcrypt_encryptor",
+  ]
+  pruneopts = "T"
+  revision = "46aae9fa92fa8d86deb3a98c3080a598a1dace60"
+
+[[projects]]
+  branch = "master"
+  digest = "1:ce4e9a7dbf3cb43d5c82acd3b9edee08effb4ddf90c4a710652e09b757c8699e"
+  name = "github.com/qor/auth_themes"
+  packages = ["clean"]
+  pruneopts = "T"
+  revision = "000e8ac9b42dcc195af4267d33940b6c2ef02054"
+
+[[projects]]
+  digest = "1:4e22f19446d1d132f666af14ff1998c756fad22cb0d14a7aab027baf218197fb"
+  name = "github.com/qor/cache"
+  packages = [
+    ".",
+    "memory",
+  ]
+  pruneopts = "T"
+  revision = "e04154acb5d9d88cb9c33a72f1e9bad72059ae9c"
+  version = "v1.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:c5741967f55b97fae22ab94d9e5cdbf50f355f078f6d22a1899b63e35cbe858f"
+  name = "github.com/qor/i18n"
+  packages = [
+    ".",
+    "backends/yaml",
+  ]
+  pruneopts = "T"
+  revision = "f7206d223bcd503538783d387b61ed5720264b7b"
+
+[[projects]]
+  branch = "master"
+  digest = "1:f69dd8abd5f55d97f1d555c4d5a4f4ea378e040733c1276ba505d2ce5af89239"
+  name = "github.com/qor/mailer"
+  packages = [
+    ".",
+    "logger",
+  ]
+  pruneopts = "T"
+  revision = "0555e49f99acf5467a77747fc855d7e005d902c1"
 
 [[projects]]
   branch = "master"
@@ -192,6 +264,22 @@
   ]
   pruneopts = "T"
   revision = "49b2dd4f5840f58f43d6d83fdd32baf56ffb24b2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:0b7da06b62e3ca64cd6a6139910bb88cbd7395fb581a58fde841d99cb44bccb2"
+  name = "github.com/qor/redirect_back"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "b4161ed6f84819fb3a2d13d5c9e6872ef76d8128"
+
+[[projects]]
+  branch = "master"
+  digest = "1:51ddee132fde3b58869bb2669c7964f02c4c4ed78f198272387a24ca4a1622d0"
+  name = "github.com/qor/render"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "63566e46f01b134ae9882a59a06518e82a903231"
 
 [[projects]]
   digest = "1:4d7e309108709883ce2067c488982206ecc25b81835dd6911c6f63fecb4e767c"
@@ -279,14 +367,25 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6a668f89e7e121bf970a6dc37c729f05f5261ae64e27945326d896ad158e5a10"
+  digest = "1:5f6a40f74aa9639cfcdaccb526d14a6a7c18900ea8f339416a43a580beb32c34"
+  name = "golang.org/x/crypto"
+  packages = [
+    "bcrypt",
+    "blowfish",
+  ]
+  pruneopts = "T"
+  revision = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
+
+[[projects]]
+  branch = "master"
+  digest = "1:84bc104559b7238496472643bd207fa83bd6c810f2c04cc59376f5e4467101ed"
   name = "golang.org/x/net"
   packages = [
     "html",
     "html/atom",
   ]
   pruneopts = "T"
-  revision = "927f97764cc334a6575f4b7a1584a147864d5723"
+  revision = "45ffb0cd1ba084b73e26dee67e667e1be5acce83"
 
 [[projects]]
   digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
@@ -301,7 +400,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4edb7e8b3b69e7f3923c314406e797dddfc14f600d3edfcfb14c28252625ef12"
+  digest = "1:2330b4a4d0bc49508efbf67c5c9e96a53ab2eac5f3abb196f88042a1603d3ccd"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -319,7 +418,7 @@
     "internal/semver",
   ]
   pruneopts = "T"
-  revision = "498d95493402f719ce3de5c8cb60d1b50d0a1239"
+  revision = "e063def13b29c433b3c57fc99257c18c1f9399ce"
 
 [[projects]]
   digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
@@ -342,6 +441,8 @@
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/qor/admin",
     "github.com/qor/assetfs",
+    "github.com/qor/auth",
+    "github.com/qor/auth_themes/clean",
     "github.com/qor/qor",
     "github.com/rs/cors",
     "github.com/vektah/gqlparser",

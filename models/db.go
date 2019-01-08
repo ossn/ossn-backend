@@ -11,7 +11,7 @@ import (
 )
 
 var DBSession *gorm.DB
-var Admin *admin.Admin
+var AdminResource *admin.Admin
 
 func init() {
 
@@ -35,16 +35,19 @@ func init() {
 		&Job{},
 		&ClubUserRole{},
 		&User{},
+		&Admin{},
 	)
 
-	Admin = admin.New(&admin.AdminConfig{DB: DBSession, SiteName: "OSSN Admin"})
-	Admin.AddResource(&Event{})
-	Admin.AddResource(&Announcement{})
-	Admin.AddResource(&Location{})
-	Admin.AddResource(&Job{})
-	Admin.AddResource(&ClubUserRole{}, &admin.Config{Invisible: true})
-	Admin.AddResource(&Club{})
-	Admin.AddResource(&User{})
+
+	AdminResource = admin.New(&admin.AdminConfig{DB: DBSession, SiteName: "OSSN Admin"})
+	AdminResource.AddResource(&Event{})
+	AdminResource.AddResource(&Announcement{})
+	AdminResource.AddResource(&Location{})
+	AdminResource.AddResource(&Job{})
+	AdminResource.AddResource(&ClubUserRole{}, &admin.Config{Invisible: true})
+	AdminResource.AddResource(&Club{})
+	AdminResource.AddResource(&User{})
+	AdminResource.AddResource(&Admin{})
 
 	// .Meta(&admin.Meta{
 	// 	Name: "Clubs",

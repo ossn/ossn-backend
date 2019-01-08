@@ -34,19 +34,29 @@
   version = "1.9.2"
 
 [[constraint]]
+  name = "github.com/vektah/gqlparser"
+  version = "1.0.0"
+
+[[constraint]]
   name = "github.com/qor/admin"
   branch = "master"
 
 [[constraint]]
-  name = "github.com/vektah/gqlparser"
-  version = "1.0.0"
-
-[[override]]
   name = "github.com/qor/qor"
   branch = "master"
 [[override]]
   name = "github.com/qor/roles"
   branch = "master"
+[[constraint]]
+  name = "github.com/qor/auth_themes"
+  branch = "master"
+[[override]]
+  name="github.com/qor/render"
+  branch="master"
+[[override]]
+  name="github.com/qor/i18n"
+  branch = "master"
+
 [prune]
   go-tests = true
   [[prune.project]]
@@ -60,6 +70,3 @@
 
 
 
-[[constraint]]
-  branch = "master"
-  name = "github.com/qor/bindatafs"

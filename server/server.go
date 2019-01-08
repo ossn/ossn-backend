@@ -25,7 +25,7 @@ func main() {
 	mux.Handle("/", handler.Playground("GraphQL playground", "/query"))
 	mux.Handle("/query", handler.GraphQL(ossn_backend.NewExecutableSchema(ossn_backend.Config{Resolvers: &ossn_backend.Resolver{}})))
 
-	models.Admin.MountTo("/admin", mux)
+	models.AdminResource.MountTo("/admin", mux)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	handler := cors.Default().Handler(mux)
