@@ -326,14 +326,6 @@
   revision = "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c"
 
 [[projects]]
-  digest = "1:a8a03bca5a81878daa4958136f3372af00437c61129ca088a430b0b786b9378a"
-  name = "github.com/rs/cors"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "9a47f48565a795472d43519dd49aac781f3034fb"
-  version = "v1.6.0"
-
-[[projects]]
   branch = "master"
   digest = "1:ae3929019e5060626b476b292197bdec07a2f29a4a1837706370aacb7041bd44"
   name = "github.com/theplant/cldr"
@@ -378,14 +370,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:84bc104559b7238496472643bd207fa83bd6c810f2c04cc59376f5e4467101ed"
+  digest = "1:5be93c879e360e3a5a59fc463938c1761592cbf93664d29ca06970081a564a90"
   name = "golang.org/x/net"
   packages = [
     "html",
     "html/atom",
   ]
   pruneopts = "T"
-  revision = "45ffb0cd1ba084b73e26dee67e667e1be5acce83"
+  revision = "915654e7eabcea33ae277abbecf52f0d8b7a9fdc"
 
 [[projects]]
   digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
@@ -400,7 +392,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:2330b4a4d0bc49508efbf67c5c9e96a53ab2eac5f3abb196f88042a1603d3ccd"
+  digest = "1:a69d62a42bac16cc377cdcf29dcfd183595be21db62946a56f70ff336063f2c6"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -418,7 +410,7 @@
     "internal/semver",
   ]
   pruneopts = "T"
-  revision = "e063def13b29c433b3c57fc99257c18c1f9399ce"
+  revision = "fc1d57b08d7be19e6befb8d9a9405221faa3d5c9"
 
 [[projects]]
   digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
@@ -442,9 +434,10 @@
     "github.com/qor/admin",
     "github.com/qor/assetfs",
     "github.com/qor/auth",
+    "github.com/qor/auth/auth_identity",
     "github.com/qor/auth_themes/clean",
     "github.com/qor/qor",
-    "github.com/rs/cors",
+    "github.com/qor/session/manager",
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",
   ]
