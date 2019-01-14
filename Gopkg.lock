@@ -28,12 +28,20 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:2da9bf5781e0a88acb224c68ac7161578bca3b12a800865764a21effe5023844"
-  name = "github.com/containous/go-bindata"
+  digest = "1:e8859ab9dac9bc8cf02728fefcf7da80221a4fc6573374eb3a02d2d3eb66604e"
+  name = "github.com/bouk/httprouter"
   packages = ["."]
   pruneopts = "T"
-  revision = "532cb0b0736b109aefe85e24e37a2ef35eafc6a8"
-  version = "v1.0.0"
+  revision = "ee8b3818a7f51fbc94cc709b5744b52c2c725e91"
+  version = "v2.0"
+
+[[projects]]
+  digest = "1:6d027438b6c3ca751802d0024174d079d3fb7b0811a4e86212d2edc134c60a05"
+  name = "github.com/coreos/go-oidc"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "1180514eaf4d9f38d0d19eef639a1d695e066e72"
+  version = "v2.0.0"
 
 [[projects]]
   digest = "1:6b014c67cb522566c30ef02116f9acb50cd60954708cf92c6654e2985696db18"
@@ -42,6 +50,14 @@
   pruneopts = "T"
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
+
+[[projects]]
+  digest = "1:a2ecb56e5053d942aafc86738915fb94c9131bac848c543b8b6764365fd69080"
+  name = "github.com/golang/protobuf"
+  packages = ["proto"]
+  pruneopts = "T"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
@@ -172,6 +188,17 @@
   pruneopts = "T"
   revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
   version = "v0.8.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:a07bf85ed02c23e01eef834c30d9612d45ccab2507fcfd7340e2305376c94de4"
+  name = "github.com/pquerna/cachecontrol"
+  packages = [
+    ".",
+    "cacheobject",
+  ]
+  pruneopts = "T"
+  revision = "1555304b9b35fdd2b425bccf1a5613677705e7d0"
 
 [[projects]]
   branch = "master"
@@ -364,6 +391,9 @@
   packages = [
     "bcrypt",
     "blowfish",
+    "ed25519",
+    "ed25519/internal/edwards25519",
+    "pbkdf2",
   ]
   pruneopts = "T"
   revision = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
@@ -373,11 +403,24 @@
   digest = "1:5be93c879e360e3a5a59fc463938c1761592cbf93664d29ca06970081a564a90"
   name = "golang.org/x/net"
   packages = [
+    "context",
+    "context/ctxhttp",
     "html",
     "html/atom",
   ]
   pruneopts = "T"
   revision = "915654e7eabcea33ae277abbecf52f0d8b7a9fdc"
+
+[[projects]]
+  branch = "master"
+  digest = "1:c74a0bbbf455bd3fb120baed85d0583e073eb4abf4418dd7c31ac70594326011"
+  name = "golang.org/x/oauth2"
+  packages = [
+    ".",
+    "internal",
+  ]
+  pruneopts = "T"
+  revision = "36a7019397c4c86cf59eeab3bc0d188bac444277"
 
 [[projects]]
   digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
@@ -413,6 +456,34 @@
   revision = "fc1d57b08d7be19e6befb8d9a9405221faa3d5c9"
 
 [[projects]]
+  digest = "1:1469235a5a8e192cfe6a99c4804b883a02f0ff96a693cd1660515a3a3b94d5ac"
+  name = "google.golang.org/appengine"
+  packages = [
+    "internal",
+    "internal/base",
+    "internal/datastore",
+    "internal/log",
+    "internal/remote_api",
+    "internal/urlfetch",
+    "urlfetch",
+  ]
+  pruneopts = "T"
+  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
+  version = "v1.4.0"
+
+[[projects]]
+  digest = "1:0e107c42e4704bfa61957571b86f96c7611b0e747d36369ab675d9f6cfc5e40e"
+  name = "gopkg.in/square/go-jose.v2"
+  packages = [
+    ".",
+    "cipher",
+    "json",
+  ]
+  pruneopts = "T"
+  revision = "e94fb177d3668d35ab39c61cbb2f311550557e83"
+  version = "v2.2.2"
+
+[[projects]]
   digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -428,11 +499,11 @@
     "github.com/99designs/gqlgen/graphql",
     "github.com/99designs/gqlgen/graphql/introspection",
     "github.com/99designs/gqlgen/handler",
-    "github.com/containous/go-bindata",
+    "github.com/bouk/httprouter",
+    "github.com/coreos/go-oidc",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/qor/admin",
-    "github.com/qor/assetfs",
     "github.com/qor/auth",
     "github.com/qor/auth/auth_identity",
     "github.com/qor/auth_themes/clean",
@@ -440,6 +511,7 @@
     "github.com/qor/session/manager",
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",
+    "golang.org/x/oauth2",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
