@@ -71,8 +71,6 @@ func TurnStringToRolename(name string) *RoleName {
 	}
 }
 
-
-
 func seed() {
 	tx := DBSession.Begin()
 
@@ -91,14 +89,14 @@ func seed() {
 	ne := "nelson6855"
 	da := "http://danieldalonzo.com/mozilla-learning-club-collaboration/"
 	users := []User{
-		{Email: "test1@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username"},
-		{Email: "kevinvnle@gmail.com", FirstName: "Kevin Viet", LastName: "Le", Password: "test123", UserName: "le", PersonalURL: &le},
-		{FirstName: "Shadi Nasser", LastName: "Moustafa", Email: "snasser2015@my.fit.edu", Password: "test123", UserName: "mo", PersonalURL: &mo},
-		{Password: "test123", UserName: "nelson.perezliveedpun", FirstName: "Nelson", LastName: "Perez", Email: "nelson.perez@live.edpuniversity.edu", PersonalURL: &ne},
-		{Password: "test123", UserName: "dan", FirstName: "Daniel", LastName: "DAlonzo", Email: "founder@actionhorizon.institute", PersonalURL: &da},
-		{Password: "test123", UserName: "ve", FirstName: "Veronica", LastName: "Armour", Email: "veronica.armour@shu.edu"},
-		{FirstName: "Carla Rodriguez y", UserName: "CarlaRodriguezy", LastName: "Calderón", Email: "CarlaRodriguezy.Calderón@acm.com", Password: "test123"},
-		{Email: "test@test.com", FirstName: "Test", LastName: "Test", Password: "test123", UserName: "username1"},
+		{Email: "test1@test.com", Name: "Test Test", Password: "test123", UserName: "username"},
+		{Email: "kevinvnle@gmail.com", Name: "Kevin Viet Le", Password: "test123", UserName: "le", PersonalURL: &le},
+		{Name: "Shadi Nasser Moustafa", Email: "snasser2015@my.fit.edu", Password: "test123", UserName: "mo", PersonalURL: &mo},
+		{Password: "test123", UserName: "nelson.perezliveedpun", Name: "Nelson Perez", Email: "nelson.perez@live.edpuniversity.edu", PersonalURL: &ne},
+		{Password: "test123", UserName: "dan", Name: "Daniel DAlonzo", Email: "founder@actionhorizon.institute", PersonalURL: &da},
+		{Password: "test123", UserName: "ve", Name: "Veronica Armour", Email: "veronica.armour@shu.edu"},
+		{Name: "Carla Rodriguez y", UserName: "CarlaRodriguezy Calderón", Email: "CarlaRodriguezy.Calderón@acm.com", Password: "test123"},
+		{Email: "test@test.com", Name: "Test Test", Password: "test123", UserName: "username1"},
 	}
 	for i, u := range users {
 

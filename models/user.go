@@ -5,8 +5,7 @@ type User struct {
 	Email             string          `json:"email" gorm:"UNIQUE;"`
 	Password          string          `json:"password" sql:"not null"`
 	UserName          string          `json:"userName" gorm:"UNIQUE;" sql:"not null"`
-	FirstName         string          `json:"firstName" sql:"not null"`
-	LastName          string          `json:"lastName" sql:"not null"`
+	Name              string          `json:"lastName" sql:"not null"`
 	ImageURL          *string         `json:"imageUrl" sql:"type:text;"`
 	ReceiveNewsletter *bool           `json:"receiveNewsletter" gorm:"default:false;"`
 	Description       *string         `json:"description" sql:"type:text;"`

@@ -103,8 +103,7 @@ type User {
   id: ID!
   email: String!
   userName: String!
-  firstName: String!
-  lastName: String!
+  name: String!
   imageUrl: String
   receiveNewsletter: Boolean
   description: String
@@ -120,8 +119,7 @@ type UserWithRole {
   id: ID!
   email: String!
   userName: String!
-  firstName: String!
-  lastName: String!
+  name: String!
   imageUrl: String
   receiveNewsletter: Boolean
   description: String
@@ -186,8 +184,7 @@ input UserInput {
   email: String!
   password: String!
   userName: String!
-  firstName: String!
-  lastName: String!
+  name: String!
   imageUrl: String!
   receiveNewsletter: Boolean!
   description: String

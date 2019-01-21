@@ -179,8 +179,7 @@ type ComplexityRoot struct {
 		Id                func(childComplexity int) int
 		Email             func(childComplexity int) int
 		UserName          func(childComplexity int) int
-		FirstName         func(childComplexity int) int
-		LastName          func(childComplexity int) int
+		Name              func(childComplexity int) int
 		ImageUrl          func(childComplexity int) int
 		ReceiveNewsletter func(childComplexity int) int
 		Description       func(childComplexity int) int
@@ -196,8 +195,7 @@ type ComplexityRoot struct {
 		Id                func(childComplexity int) int
 		Email             func(childComplexity int) int
 		UserName          func(childComplexity int) int
-		FirstName         func(childComplexity int) int
-		LastName          func(childComplexity int) int
+		Name              func(childComplexity int) int
 		ImageUrl          func(childComplexity int) int
 		ReceiveNewsletter func(childComplexity int) int
 		Description       func(childComplexity int) int
@@ -1522,19 +1520,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.UserName(childComplexity), true
 
-	case "User.firstName":
-		if e.complexity.User.FirstName == nil {
+	case "User.name":
+		if e.complexity.User.Name == nil {
 			break
 		}
 
-		return e.complexity.User.FirstName(childComplexity), true
-
-	case "User.lastName":
-		if e.complexity.User.LastName == nil {
-			break
-		}
-
-		return e.complexity.User.LastName(childComplexity), true
+		return e.complexity.User.Name(childComplexity), true
 
 	case "User.imageUrl":
 		if e.complexity.User.ImageUrl == nil {
@@ -1620,19 +1611,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserWithRole.UserName(childComplexity), true
 
-	case "UserWithRole.firstName":
-		if e.complexity.UserWithRole.FirstName == nil {
+	case "UserWithRole.name":
+		if e.complexity.UserWithRole.Name == nil {
 			break
 		}
 
-		return e.complexity.UserWithRole.FirstName(childComplexity), true
-
-	case "UserWithRole.lastName":
-		if e.complexity.UserWithRole.LastName == nil {
-			break
-		}
-
-		return e.complexity.UserWithRole.LastName(childComplexity), true
+		return e.complexity.UserWithRole.Name(childComplexity), true
 
 	case "UserWithRole.imageUrl":
 		if e.complexity.UserWithRole.ImageUrl == nil {
@@ -5384,13 +5368,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
-		case "firstName":
-			out.Values[i] = ec._User_firstName(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "lastName":
-			out.Values[i] = ec._User_lastName(ctx, field, obj)
+		case "name":
+			out.Values[i] = ec._User_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
@@ -5523,7 +5502,7 @@ func (ec *executionContext) _User_userName(ctx context.Context, field graphql.Co
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _User_firstName(ctx context.Context, field graphql.CollectedField, obj *models.User) graphql.Marshaler {
+func (ec *executionContext) _User_name(ctx context.Context, field graphql.CollectedField, obj *models.User) graphql.Marshaler {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
 	rctx := &graphql.ResolverContext{
@@ -5535,34 +5514,7 @@ func (ec *executionContext) _User_firstName(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.FirstName, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return graphql.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _User_lastName(ctx context.Context, field graphql.CollectedField, obj *models.User) graphql.Marshaler {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
-	rctx := &graphql.ResolverContext{
-		Object: "User",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.LastName, nil
+		return obj.Name, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -5888,13 +5840,8 @@ func (ec *executionContext) _UserWithRole(ctx context.Context, sel ast.Selection
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
-		case "firstName":
-			out.Values[i] = ec._UserWithRole_firstName(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "lastName":
-			out.Values[i] = ec._UserWithRole_lastName(ctx, field, obj)
+		case "name":
+			out.Values[i] = ec._UserWithRole_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
@@ -6017,7 +5964,7 @@ func (ec *executionContext) _UserWithRole_userName(ctx context.Context, field gr
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _UserWithRole_firstName(ctx context.Context, field graphql.CollectedField, obj *models.UserWithRole) graphql.Marshaler {
+func (ec *executionContext) _UserWithRole_name(ctx context.Context, field graphql.CollectedField, obj *models.UserWithRole) graphql.Marshaler {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
 	rctx := &graphql.ResolverContext{
@@ -6029,34 +5976,7 @@ func (ec *executionContext) _UserWithRole_firstName(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.FirstName, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return graphql.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _UserWithRole_lastName(ctx context.Context, field graphql.CollectedField, obj *models.UserWithRole) graphql.Marshaler {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
-	rctx := &graphql.ResolverContext{
-		Object: "UserWithRole",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.LastName, nil
+		return obj.Name, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -8182,15 +8102,9 @@ func UnmarshalUserInput(v interface{}) (models.UserInput, error) {
 			if err != nil {
 				return it, err
 			}
-		case "firstName":
+		case "name":
 			var err error
-			it.FirstName, err = graphql.UnmarshalString(v)
-			if err != nil {
-				return it, err
-			}
-		case "lastName":
-			var err error
-			it.LastName, err = graphql.UnmarshalString(v)
+			it.Name, err = graphql.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -8408,8 +8322,7 @@ type User {
   id: ID!
   email: String!
   userName: String!
-  firstName: String!
-  lastName: String!
+  name: String!
   imageUrl: String
   receiveNewsletter: Boolean
   description: String
@@ -8425,8 +8338,7 @@ type UserWithRole {
   id: ID!
   email: String!
   userName: String!
-  firstName: String!
-  lastName: String!
+  name: String!
   imageUrl: String
   receiveNewsletter: Boolean
   description: String
@@ -8491,8 +8403,7 @@ input UserInput {
   email: String!
   password: String!
   userName: String!
-  firstName: String!
-  lastName: String!
+  name: String!
   imageUrl: String!
   receiveNewsletter: Boolean!
   description: String

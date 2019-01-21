@@ -87,8 +87,7 @@ func (r *clubResolver) Users(ctx context.Context, obj *models.Club) ([]*models.U
 			Description:       u.Description,
 			Clubs:             clubs,
 			UserName:          u.UserName,
-			FirstName:         u.FirstName,
-			LastName:          u.LastName,
+			Name:              u.Name,
 			ReceiveNewsletter: u.ReceiveNewsletter,
 			SortDescription:   u.SortDescription,
 			PersonalURL:       u.PersonalURL,
@@ -179,13 +178,13 @@ func (r *queryResolver) Users(ctx context.Context, first, last *int, before, aft
 	count := 0
 	if search != nil {
 		str := "%" + *search + "%"
-		query = query.Where("user_name LIKE ? OR first_name LIKE ? OR last_name LIKE ?", str, str, str)
+		query = query.Where("name LIKE ? OR last_name LIKE ?", str, str, str)
 	}
 	err = query.Find(&[]models.User{}).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
-	query, err = parseParams(query, first, last, after, before, "first_name")
+	query, err = parseParams(query, first, last, after, before, "name")
 	if err != nil {
 		return nil, err
 	}
@@ -456,20 +455,20 @@ func (r *userResolver) Clubs(ctx context.Context, obj *models.User) ([]*models.C
 			return clubWithRole, err
 		}
 		clubWithRole = append(clubWithRole, &models.ClubWithRole{
-			ID:            strconv.FormatUint(uint64(c.ID), 10),
-			Email:         c.Email,
-			Location:      c.Location,
-			Name:          c.Title,
-			ImageURL:      c.ImageURL,
-			Role:          models.TurnStringToRolename(club.Role),
-			GithubURL:     c.GithubURL,
-			UpdatedAt:     c.UpdatedAtToString(),
-			CreatedAt:     c.CreatedAtToString(),
-			Description:   c.Description,
-			CodeOfConduct: c.CodeOfConduct,
-			ClubURL:       c.ClubURL,
-			Events:        c.Events,
-			Users:         users,
+			ID:             strconv.FormatUint(uint64(c.ID), 10),
+			Email:          c.Email,
+			Location:       c.Location,
+			Name:           c.Title,
+			ImageURL:       c.ImageURL,
+			Role:           models.TurnStringToRolename(club.Role),
+			GithubURL:      c.GithubURL,
+			UpdatedAt:      c.UpdatedAtToString(),
+			CreatedAt:      c.CreatedAtToString(),
+			Description:    c.Description,
+			CodeOfConduct:  c.CodeOfConduct,
+			ClubURL:        c.ClubURL,
+			Events:         c.Events,
+			Users:          users,
 			BannerImageURL: c.BannerImageURL,
 		})
 	}

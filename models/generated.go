@@ -88,8 +88,7 @@ type UserInput struct {
 	Email             string   `json:"email"`
 	Password          string   `json:"password"`
 	UserName          string   `json:"userName"`
-	FirstName         string   `json:"firstName"`
-	LastName          string   `json:"lastName"`
+	Name              string   `json:"name"`
 	ImageURL          string   `json:"imageUrl"`
 	ReceiveNewsletter bool     `json:"receiveNewsletter"`
 	Description       *string  `json:"description"`
@@ -103,8 +102,7 @@ type UserWithRole struct {
 	ID                string          `json:"id"`
 	Email             string          `json:"email"`
 	UserName          string          `json:"userName"`
-	FirstName         string          `json:"firstName"`
-	LastName          string          `json:"lastName"`
+	Name              string          `json:"name"`
 	ImageURL          *string         `json:"imageUrl"`
 	ReceiveNewsletter *bool           `json:"receiveNewsletter"`
 	Description       *string         `json:"description"`
