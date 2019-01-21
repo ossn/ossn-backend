@@ -202,11 +202,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e300a95e9186c790deeb6a4541783603a47ca9db8f50a885f09524f53a86bf31"
+  digest = "1:f79d8662dd6ca12b8f2f05cdf44ee29f8836d26dbff3bbc6b6eda60bdc863c08"
   name = "github.com/qor/admin"
   packages = ["."]
   pruneopts = "T"
-  revision = "f8782672c05b4ab73ffc6a5c3a8c4913709605d5"
+  revision = "0f96b498bae72eba7eb244258a669793d50835c2"
 
 [[projects]]
   branch = "master"
@@ -400,7 +400,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5be93c879e360e3a5a59fc463938c1761592cbf93664d29ca06970081a564a90"
+  digest = "1:f758c83a22e6df9326129cfc7b8b6c0e6898c29ec64e8b6f99d8ca9208df4f06"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -409,18 +409,18 @@
     "html/atom",
   ]
   pruneopts = "T"
-  revision = "915654e7eabcea33ae277abbecf52f0d8b7a9fdc"
+  revision = "ed066c81e75eba56dd9bd2139ade88125b855585"
 
 [[projects]]
   branch = "master"
-  digest = "1:c74a0bbbf455bd3fb120baed85d0583e073eb4abf4418dd7c31ac70594326011"
+  digest = "1:5d4a7027851c079c926b9d49f260b9e24c4de7e79337efd3126b8279ca08a2e5"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = "T"
-  revision = "36a7019397c4c86cf59eeab3bc0d188bac444277"
+  revision = "5dab4167f31cbd76b407f1486c86b40748bc5073"
 
 [[projects]]
   digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
@@ -435,7 +435,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a69d62a42bac16cc377cdcf29dcfd183595be21db62946a56f70ff336063f2c6"
+  digest = "1:815eb2c2de054bc14e4c956ab34fe4335e192b32362c78aaf2da7c6df1978513"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -453,7 +453,7 @@
     "internal/semver",
   ]
   pruneopts = "T"
-  revision = "fc1d57b08d7be19e6befb8d9a9405221faa3d5c9"
+  revision = "16909d206f00da7d0d5ba28cd9dc7fb223648ecf"
 
 [[projects]]
   digest = "1:1469235a5a8e192cfe6a99c4804b883a02f0ff96a693cd1660515a3a3b94d5ac"
