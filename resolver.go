@@ -4,6 +4,7 @@ package ossn_backend
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/ossn/ossn-backend/models"
 )
@@ -177,8 +178,8 @@ func (r *queryResolver) Users(ctx context.Context, first, last *int, before, aft
 	query := models.DBSession
 	count := 0
 	if search != nil {
-		str := "%" + *search + "%"
-		query = query.Where("name LIKE ?", str, str, str)
+		str := "%" + strings.ToLower(*search) + "%"
+		query = query.Where("name ILIKE ? OR user_name ILIKE ?", str, str)
 	}
 	err = query.Find(&[]models.User{}).Count(&count).Error
 	if err != nil {
@@ -230,7 +231,7 @@ func (r *queryResolver) Clubs(ctx context.Context, first, last *int, userID *str
 
 	query := models.DBSession
 	if search != nil {
-		query = query.Where("title LIKE ?", "%"+*search+"%")
+		query = query.Where("title ILIKE ?", "%"+strings.ToLower(*search)+"%")
 	}
 	if len(safeIDS) > 0 {
 		query = query.Where("id in (?)", safeIDS)
