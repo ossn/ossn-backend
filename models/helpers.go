@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/jinzhu/gorm"
@@ -13,6 +14,8 @@ import (
 type Model struct {
 	gorm.Model
 }
+
+var rebuildURL = os.Getenv("REBUILD_URL")
 
 func (m *Model) IDToString() (string, error) {
 	return strconv.FormatUint(uint64(m.ID), 10), nil
@@ -36,17 +39,17 @@ func rebuildFrontEnd() {
 		fmt.Println("Error while rebuilding frontend", err)
 		return
 	}
-	http.Post("http://api.netlify.com/build_hooks/5c190a084e4723016c4b43af", "application/json", bytes.NewReader(requestByte))
+	http.Post(rebuildURL, "application/json", bytes.NewReader(requestByte))
 }
 
-func (m *Model) AfterCreate(scope *gorm.Scope) (err error) {
+func (m *Model) AfterCreate(*gorm.Scope) error {
 	go rebuildFrontEnd()
-	return
+	return nil
 }
 
-func (m *Model) AfterUpdate(scope *gorm.Scope) (err error) {
+func (m *Model) AfterUpdate(*gorm.Scope) error {
 	go rebuildFrontEnd()
-	return
+	return nil
 }
 
 func TurnStringToRolename(name string) *RoleName {
@@ -89,14 +92,14 @@ func seed() {
 	ne := "nelson6855"
 	da := "http://danieldalonzo.com/mozilla-learning-club-collaboration/"
 	users := []User{
-		{Email: "test1@test.com", Name: "Test Test",  UserName: "username", OIDCID:"username"},
-		{Email: "kevinvnle@gmail.com", Name: "Kevin Viet Le",  UserName: "le", PersonalURL: &le, OIDCID:"le"},
-		{Name: "Shadi Nasser Moustafa", Email: "snasser2015@my.fit.edu",  UserName: "mo", PersonalURL: &mo, OIDCID:"mo"},
-		{ UserName: "nelson.perezliveedpun", Name: "Nelson Perez", Email: "nelson.perez@live.edpuniversity.edu", PersonalURL: &ne, OIDCID:"nels"},
-		{ UserName: "dan", Name: "Daniel DAlonzo", Email: "founder@actionhorizon.institute", PersonalURL: &da, OIDCID:"dan"},
-		{ UserName: "ve", Name: "Veronica Armour", Email: "veronica.armour@shu.edu"},
-		{Name: "Carla Rodriguez y", UserName: "CarlaRodriguezy Calderón", Email: "CarlaRodriguezy.Calderón@acm.com", OIDCID:"ve"},
-		{Email: "test@test.com", Name: "Test Test",  UserName: "username1", OIDCID:"user"},
+		{Email: "test1@test.com", Name: "Test Test", UserName: "username", OIDCID: "username"},
+		{Email: "kevinvnle@gmail.com", Name: "Kevin Viet Le", UserName: "le", PersonalURL: &le, OIDCID: "le"},
+		{Name: "Shadi Nasser Moustafa", Email: "snasser2015@my.fit.edu", UserName: "mo", PersonalURL: &mo, OIDCID: "mo"},
+		{UserName: "nelson.perezliveedpun", Name: "Nelson Perez", Email: "nelson.perez@live.edpuniversity.edu", PersonalURL: &ne, OIDCID: "nels"},
+		{UserName: "dan", Name: "Daniel DAlonzo", Email: "founder@actionhorizon.institute", PersonalURL: &da, OIDCID: "dan"},
+		{UserName: "ve", Name: "Veronica Armour", Email: "veronica.armour@shu.edu"},
+		{Name: "Carla Rodriguez y", UserName: "CarlaRodriguezy Calderón", Email: "CarlaRodriguezy.Calderón@acm.com", OIDCID: "ve"},
+		{Email: "test@test.com", Name: "Test Test", UserName: "username1", OIDCID: "user"},
 	}
 	for i, u := range users {
 
