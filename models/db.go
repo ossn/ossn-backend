@@ -70,26 +70,38 @@ func init() {
 
 	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
+		fmt.Println("Error on foreign key creation: " + err.Error())
 		//TODO: Fix this
 		// panic(err)
 	}
 	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("club_id", "clubs(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
+		fmt.Println("Error on foreign key creation: " + err.Error())
 		//TODO: Fix this
 		// panic(err)
 	}
 	err = DBSession.Model(&Event{}).AddForeignKey("location_id", "locations(id)", "RESTRICT", "CASCADE").Error
 	if err != nil {
+		fmt.Println("Error on foreign key creation: " + err.Error())
 		//TODO: Fix this
 		// panic(err)
 	}
 	err = DBSession.Model(&Event{}).AddForeignKey("club_id", "clubs(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
+		fmt.Println("Error on foreign key creation: " + err.Error())
 		//TODO: Fix this
 		// panic(err)
 	}
 	err = DBSession.Model(&Club{}).AddForeignKey("location_id", "locations(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
+		fmt.Println("Error on foreign key creation: " + err.Error())
+		//TODO: Fix this
+		// panic(err)
+	}
+
+	err = DBSession.Model(&Session{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
+	if err != nil {
+		fmt.Println("Error on foreign key creation: " + err.Error())
 		//TODO: Fix this
 		// panic(err)
 	}
