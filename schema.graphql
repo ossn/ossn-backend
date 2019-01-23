@@ -216,6 +216,7 @@ input LocationInput {
 }
 
 type Mutation {
+  logout: Boolean
   createUser(input: UserInput!): User
   createClub(input: ClubInput!): Club
   createLocation(input: LocationInput): Location

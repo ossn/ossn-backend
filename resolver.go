@@ -164,6 +164,20 @@ func (r *mutationResolver) CreateClub(ctx context.Context, input models.ClubInpu
 func (r *mutationResolver) CreateLocation(ctx context.Context, input *models.LocationInput) (*models.Location, error) {
 	panic("not implemented")
 }
+func (r *mutationResolver) Logout(ctx context.Context) (*bool, error) {
+	// TODO: Call provider's logout
+	res := false
+	session, err := helpers.GetSessionFromContext(ctx)
+	if err != nil {
+		return &res, err
+	}
+	err = models.DBSession.Where("id = ?", session.ID).Delete(&models.Session{}).Error
+	if err != nil {
+		return &res, err
+	}
+	res = true
+	return &res, nil
+}
 
 type queryResolver struct{ *Resolver }
 

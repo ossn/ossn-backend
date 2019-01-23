@@ -54,6 +54,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		// put it in context
 		ctx := context.WithValue(r.Context(), helpers.UserCtxKey, user)
+		ctx = context.WithValue(ctx, helpers.SessionCtxKey, session)
 
 		// and call the next with our new context
 		r = r.WithContext(ctx)

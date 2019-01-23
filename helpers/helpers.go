@@ -27,8 +27,10 @@ const (
 )
 
 var (
-	AUTH_ERROR = errors.New("User not found")
-	UserCtxKey = &ContextKey{"user"}
+	AUTH_ERROR    = errors.New("User not found")
+	SESSION_ERROR = errors.New("Session not found")
+	UserCtxKey    = &ContextKey{"user"}
+	SessionCtxKey = &ContextKey{"session"}
 
 	// Redirect urls
 	FrontendURL = os.Getenv("FRONTEND_URL")
@@ -71,6 +73,16 @@ func GetUserFromContext(ctx context.Context) (*models.User, error) {
 		return nil, AUTH_ERROR
 	}
 	return user, nil
+}
+
+// GetSessionFromContext finds the session from the context.
+// REQUIRES Middleware to have run.
+func GetSessionFromContext(ctx context.Context) (*models.Session, error) {
+	session, ok := ctx.Value(SessionCtxKey).(*models.Session)
+	if !ok {
+		return nil, SESSION_ERROR
+	}
+	return session, nil
 }
 
 // RandStringBytesMaskImprSrc creates a random string of size n

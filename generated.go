@@ -151,6 +151,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		Logout         func(childComplexity int) int
 		CreateUser     func(childComplexity int, input models.UserInput) int
 		CreateClub     func(childComplexity int, input models.ClubInput) int
 		CreateLocation func(childComplexity int, input *models.LocationInput) int
@@ -256,6 +257,7 @@ type LocationResolver interface {
 	UpdatedAt(ctx context.Context, obj *models.Location) (string, error)
 }
 type MutationResolver interface {
+	Logout(ctx context.Context) (*bool, error)
 	CreateUser(ctx context.Context, input models.UserInput) (*models.User, error)
 	CreateClub(ctx context.Context, input models.ClubInput) (*models.Club, error)
 	CreateLocation(ctx context.Context, input *models.LocationInput) (*models.Location, error)
@@ -1333,6 +1335,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Location.UpdatedAt(childComplexity), true
+
+	case "Mutation.logout":
+		if e.complexity.Mutation.Logout == nil {
+			break
+		}
+
+		return e.complexity.Mutation.Logout(childComplexity), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -4610,6 +4619,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
+		case "logout":
+			out.Values[i] = ec._Mutation_logout(ctx, field)
 		case "createUser":
 			out.Values[i] = ec._Mutation_createUser(ctx, field)
 		case "createClub":
@@ -4625,6 +4636,34 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		return graphql.Null
 	}
 	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_logout(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().Logout(rctx)
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalBoolean(*res)
 }
 
 // nolint: vetshadow
@@ -8479,6 +8518,7 @@ input LocationInput {
 }
 
 type Mutation {
+  logout: Boolean
   createUser(input: UserInput!): User
   createClub(input: ClubInput!): Club
   createLocation(input: LocationInput): Location
