@@ -2,8 +2,6 @@ package middlewares
 
 import (
 	"context"
-	"database/sql"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -15,12 +13,10 @@ import (
 	"github.com/ossn/ossn-backend/models"
 )
 
-const AuthCookie = "auth-cookie"
+const AuthCookie = "sessionCookie"
 
 var (
-	userCtxKey = &contextKey{"user"}
-	AUTH_ERROR = errors.New("User not found")
-	jwtSecret  []byte
+	jwtSecret []byte
 )
 
 func init() {
@@ -29,59 +25,40 @@ func init() {
 	jwtSecret = []byte(secret)
 }
 
-type (
-	contextKey struct {
-		name string
-	}
-)
-
-func Middleware(db *sql.DB) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			c, err := r.Cookie(AuthCookie)
-
-			// Allow unauthenticated users in
-			if err != nil || c == nil {
-				next.ServeHTTP(w, r)
-				return
-			}
-			accessToken := r.Header.Get("X-Access-Token")
-			if len(accessToken) == 0 {
-				http.Error(w, "Invalid access token", http.StatusForbidden)
-				return
-			}
-			session := &models.Session{}
-			err = models.DBSession.Where("cookie = ? and access_token = ?", c, accessToken).First(session).Error
-
-			if err != nil || !ValidateToken(&session.Token) {
-				http.Error(w, "Invalid cookie or access token", http.StatusForbidden)
-				return
-			}
-
-			user := &models.Session{}
-			err = models.DBSession.Where("id = ?", session.UserID).First(user).Error
-			if err != nil {
-				http.Error(w, "Invalid cookie or access token", http.StatusForbidden)
-				return
-			}
-
-			// put it in context
-			ctx := context.WithValue(r.Context(), userCtxKey, user)
-
-			// and call the next with our new context
-			r = r.WithContext(ctx)
+func AuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		c, err := r.Cookie(AuthCookie)
+		// Allow unauthenticated users in
+		if err != nil || c == nil {
 			next.ServeHTTP(w, r)
-		})
-	}
-}
+			return
+		}
+		token := r.Header.Get("X-Access-Token")
+		if len(token) == 0 || len(c.Value) == 0 {
+			http.Error(w, "Invalid access token", http.StatusForbidden)
+			return
+		}
+		session := &models.Session{}
+		err = models.DBSession.Where("cookie = ? and token = ?", c.Value, token).First(session).Error
+		if err != nil || !ValidateToken(&session.Token) {
+			http.Error(w, "Invalid cookie or access token", http.StatusForbidden)
+			return
+		}
 
-// ForContext finds the user from the context. REQUIRES Middleware to have run.
-func ForContext(ctx context.Context) (*models.User, error) {
-	user, ok := ctx.Value(userCtxKey).(*models.User)
-	if !ok {
-		return nil, AUTH_ERROR
-	}
-	return user, nil
+		user := &models.User{}
+		err = models.DBSession.Where("id = ?", session.UserID).First(user).Error
+		if err != nil {
+			http.Error(w, "Invalid cookie or access token", http.StatusForbidden)
+			return
+		}
+
+		// put it in context
+		ctx := context.WithValue(r.Context(), helpers.UserCtxKey, user)
+
+		// and call the next with our new context
+		r = r.WithContext(ctx)
+		next.ServeHTTP(w, r)
+	})
 }
 
 func SignToken(user *models.User) (string, error) {

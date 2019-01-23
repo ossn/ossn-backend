@@ -5,15 +5,14 @@ import (
 	http "net/http"
 	os "os"
 
-	"github.com/ossn/ossn-backend/controllers"
-	"github.com/rs/cors"
-
+	handler "github.com/99designs/gqlgen/handler"
 	"github.com/bouk/httprouter"
+	ossn_backend "github.com/ossn/ossn-backend"
+	"github.com/ossn/ossn-backend/controllers"
+	"github.com/ossn/ossn-backend/middlewares"
 	"github.com/ossn/ossn-backend/models"
 	"github.com/qor/session/manager"
-
-	handler "github.com/99designs/gqlgen/handler"
-	ossn_backend "github.com/ossn/ossn-backend"
+	"github.com/rs/cors"
 )
 
 const (
@@ -57,9 +56,18 @@ func main() {
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 
-	sessionHandler := manager.SessionManager.Middleware(mux)
-	corsHandler := cors.Default().Handler(sessionHandler)
-	log.Fatal(http.ListenAndServe(":"+port, (corsHandler)))
+	middlewareHandler := manager.SessionManager.Middleware(mux)
+	middlewareHandler = middlewares.AuthMiddleware(middlewareHandler)
+
+	middlewareHandler = cors.New(cors.Options{
+		AllowCredentials: true,
+		AllowedMethods:   []string{"OPTIONS", "POST"},
+		AllowedOrigins:   []string{"http://localhost:8000", "https://dev.ossn.club"},
+		AllowedHeaders:   []string{"X-Access-Token", "Content-Type"},
+		ExposedHeaders:   []string{},
+	}).Handler(middlewareHandler)
+
+	log.Fatal(http.ListenAndServe(":"+port, (middlewareHandler)))
 }
 
 func registerAll(mux *httprouter.Router, path string, handler http.Handler) {

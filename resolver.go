@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ossn/ossn-backend/helpers"
+
 	"github.com/ossn/ossn-backend/models"
 )
 
@@ -165,11 +167,16 @@ func (r *mutationResolver) CreateLocation(ctx context.Context, input *models.Loc
 
 type queryResolver struct{ *Resolver }
 
+func (q *queryResolver) Session(ctx context.Context) (*models.User, error) {
+	return helpers.GetUserFromContext(ctx)
+}
+
 func (r *queryResolver) User(ctx context.Context, id string) (*models.User, error) {
 	user := &models.User{}
 	err := models.DBSession.Where("id = ?", id).First(user).Error
 	return user, err
 }
+
 func (r *queryResolver) Users(ctx context.Context, first, last *int, before, after, search *string) (*models.Users, error) {
 	err := validateFirstAndLast(first, last)
 	if err != nil {

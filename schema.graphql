@@ -178,6 +178,7 @@ type Query {
   event(id: ID!): Event
   jobs(first: Int, last: Int, before: ID, after: ID): Jobs
   announcements(first: Int, last: Int, before: ID, after: ID): Announcements
+  session: User
 }
 
 input UserInput {

@@ -173,6 +173,9 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 		Expires: time.Now().Add(15 * time.Second),
 		Name:    middlewares.AuthCookie,
 		Value:   cookie,
+		Path:    "/",
+		// Secure:   true,
+		// HttpOnly: true,
 	})
 
 	http.Redirect(w, r, helpers.LoginURL+token, http.StatusTemporaryRedirect)

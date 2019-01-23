@@ -2,7 +2,9 @@ package helpers
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -12,6 +14,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/ossn/ossn-backend/models"
 )
 
 const (
@@ -23,6 +27,9 @@ const (
 )
 
 var (
+	AUTH_ERROR = errors.New("User not found")
+	UserCtxKey = &ContextKey{"user"}
+
 	// Redirect urls
 	FrontendURL = os.Getenv("FRONTEND_URL")
 	LoginURL    string
@@ -42,12 +49,28 @@ func init() {
 	LoginURL = FrontendURL + "login?token="
 }
 
-type GithubRes struct {
-	Data struct {
-		User struct {
-			ID string `json:"id"`
-		} `json:"user"`
-	} `json:"data"`
+type (
+	GithubRes struct {
+		Data struct {
+			User struct {
+				ID string `json:"id"`
+			} `json:"user"`
+		} `json:"data"`
+	}
+
+	ContextKey struct {
+		name string
+	}
+)
+
+// GetUserFromContext finds the user from the context.
+// REQUIRES Middleware to have run.
+func GetUserFromContext(ctx context.Context) (*models.User, error) {
+	user, ok := ctx.Value(UserCtxKey).(*models.User)
+	if !ok {
+		return nil, AUTH_ERROR
+	}
+	return user, nil
 }
 
 // RandStringBytesMaskImprSrc creates a random string of size n

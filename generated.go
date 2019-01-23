@@ -173,6 +173,7 @@ type ComplexityRoot struct {
 		Event         func(childComplexity int, id string) int
 		Jobs          func(childComplexity int, first *int, last *int, before *string, after *string) int
 		Announcements func(childComplexity int, first *int, last *int, before *string, after *string) int
+		Session       func(childComplexity int) int
 	}
 
 	User struct {
@@ -268,6 +269,7 @@ type QueryResolver interface {
 	Event(ctx context.Context, id string) (*models.Event, error)
 	Jobs(ctx context.Context, first *int, last *int, before *string, after *string) (*models.Jobs, error)
 	Announcements(ctx context.Context, first *int, last *int, before *string, after *string) (*models.Announcements, error)
+	Session(ctx context.Context) (*models.User, error)
 }
 type UserResolver interface {
 	ID(ctx context.Context, obj *models.User) (string, error)
@@ -1498,6 +1500,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Announcements(childComplexity, args["first"].(*int), args["last"].(*int), args["before"].(*string), args["after"].(*string)), true
+
+	case "Query.session":
+		if e.complexity.Query.Session == nil {
+			break
+		}
+
+		return e.complexity.Query.Session(childComplexity), true
 
 	case "User.id":
 		if e.complexity.User.Id == nil {
@@ -4975,6 +4984,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_announcements(ctx, field)
 				wg.Done()
 			}(i, field)
+		case "session":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_session(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -5268,6 +5283,35 @@ func (ec *executionContext) _Query_announcements(ctx context.Context, field grap
 	}
 
 	return ec._Announcements(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_session(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Session(rctx)
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.User)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._User(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -8397,6 +8441,7 @@ type Query {
   event(id: ID!): Event
   jobs(first: Int, last: Int, before: ID, after: ID): Jobs
   announcements(first: Int, last: Int, before: ID, after: ID): Announcements
+  session: User
 }
 
 input UserInput {
