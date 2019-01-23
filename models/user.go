@@ -12,4 +12,5 @@ type User struct {
 	Clubs             []*ClubUserRole `json:"clubs" gorm:"many2many:club_user_roles"`
 	GithubURL         *string         `json:"githubUrl" sql:"type:text;"`
 	PersonalURL       *string         `json:"personalUrl" sql:"type:text;"`
+	OIDCID            string          `json:"oidcId" gorm:"index:idx_oidc_id;UNIQUE;column:oidc_id"`
 }

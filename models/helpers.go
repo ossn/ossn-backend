@@ -89,14 +89,14 @@ func seed() {
 	ne := "nelson6855"
 	da := "http://danieldalonzo.com/mozilla-learning-club-collaboration/"
 	users := []User{
-		{Email: "test1@test.com", Name: "Test Test", Password: "test123", UserName: "username"},
-		{Email: "kevinvnle@gmail.com", Name: "Kevin Viet Le", Password: "test123", UserName: "le", PersonalURL: &le},
-		{Name: "Shadi Nasser Moustafa", Email: "snasser2015@my.fit.edu", Password: "test123", UserName: "mo", PersonalURL: &mo},
-		{Password: "test123", UserName: "nelson.perezliveedpun", Name: "Nelson Perez", Email: "nelson.perez@live.edpuniversity.edu", PersonalURL: &ne},
-		{Password: "test123", UserName: "dan", Name: "Daniel DAlonzo", Email: "founder@actionhorizon.institute", PersonalURL: &da},
-		{Password: "test123", UserName: "ve", Name: "Veronica Armour", Email: "veronica.armour@shu.edu"},
-		{Name: "Carla Rodriguez y", UserName: "CarlaRodriguezy Calderón", Email: "CarlaRodriguezy.Calderón@acm.com", Password: "test123"},
-		{Email: "test@test.com", Name: "Test Test", Password: "test123", UserName: "username1"},
+		{Email: "test1@test.com", Name: "Test Test",  UserName: "username", OIDCID:"username"},
+		{Email: "kevinvnle@gmail.com", Name: "Kevin Viet Le",  UserName: "le", PersonalURL: &le, OIDCID:"le"},
+		{Name: "Shadi Nasser Moustafa", Email: "snasser2015@my.fit.edu",  UserName: "mo", PersonalURL: &mo, OIDCID:"mo"},
+		{ UserName: "nelson.perezliveedpun", Name: "Nelson Perez", Email: "nelson.perez@live.edpuniversity.edu", PersonalURL: &ne, OIDCID:"nels"},
+		{ UserName: "dan", Name: "Daniel DAlonzo", Email: "founder@actionhorizon.institute", PersonalURL: &da, OIDCID:"dan"},
+		{ UserName: "ve", Name: "Veronica Armour", Email: "veronica.armour@shu.edu"},
+		{Name: "Carla Rodriguez y", UserName: "CarlaRodriguezy Calderón", Email: "CarlaRodriguezy.Calderón@acm.com", OIDCID:"ve"},
+		{Email: "test@test.com", Name: "Test Test",  UserName: "username1", OIDCID:"user"},
 	}
 	for i, u := range users {
 

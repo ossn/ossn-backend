@@ -5,6 +5,7 @@ import (
 	http "net/http"
 	os "os"
 
+	"github.com/ossn/ossn-backend/controllers"
 	"github.com/rs/cors"
 
 	"github.com/bouk/httprouter"
@@ -42,11 +43,11 @@ func main() {
 	mux.GET(prefix+"/", handler.Playground("GraphQL playground", prefix+"/query"))
 	mux.POST(prefix+"/query", handler.GraphQL(ossn_backend.NewExecutableSchema(ossn_backend.Config{Resolvers: &ossn_backend.Resolver{}})))
 
-	// mux.GET(prefix+"/oidc/callback", controllers.HandleOAuth2Callback)
-	// mux.GET(prefix+"/oidc/login", controllers.HandleRedirect)
-	// //TODO: Remove this once Mozilla is ready
-	// mux.GET("/oidc/callback", controllers.HandleOAuth2Callback)
-	// mux.GET("/oidc/login", controllers.HandleRedirect)
+	mux.GET(prefix+"/oidc/callback", controllers.HandleOAuth2Callback)
+	mux.GET(prefix+"/oidc/login", controllers.HandleRedirect)
+	//TODO: Remove this once Mozilla is ready
+	mux.GET("/oidc/callback", controllers.HandleOAuth2Callback)
+	mux.GET("/oidc/login", controllers.HandleRedirect)
 
 	registerAll(mux, prefix+"/auth/*a", models.Auth.NewServeMux())
 	registerAll(mux, prefix+"/admin/*f", adminMux)
