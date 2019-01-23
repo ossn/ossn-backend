@@ -50,6 +50,7 @@ func init() {
 		&ClubUserRole{},
 		&User{},
 		&Admin{},
+		&Session{},
 	)
 
 	Auth = clean.New(&auth.Config{
