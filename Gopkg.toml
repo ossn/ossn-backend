@@ -24,41 +24,75 @@
 #   go-tests = true
 #   unused-packages = true
 
-
 [[constraint]]
   name = "github.com/99designs/gqlgen"
   version = "0.7.1"
+
+[[constraint]]
+  name = "github.com/bouk/httprouter"
+  version = "2.0.0"
+
+[[constraint]]
+  name = "github.com/coreos/go-oidc"
+  version = "2.0.0"
+
+[[constraint]]
+  name = "github.com/dgrijalva/jwt-go"
+  version = "3.2.0"
 
 [[constraint]]
   name = "github.com/jinzhu/gorm"
   version = "1.9.2"
 
 [[constraint]]
-  name = "github.com/vektah/gqlparser"
-  version = "1.0.0"
-
-[[constraint]]
   name = "github.com/qor/admin"
   branch = "master"
 
 [[constraint]]
+  branch = "master"
+  name = "github.com/qor/auth"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/qor/auth_themes"
+
+[[constraint]]
   name = "github.com/qor/qor"
   branch = "master"
-[[override]]
-  name = "github.com/qor/roles"
-  branch = "master"
+
 [[constraint]]
-  name = "github.com/qor/auth_themes"
   branch = "master"
+  name = "github.com/qor/session"
+
+[[constraint]]
+  name = "github.com/rs/cors"
+  version = "1.6.0"
+
+[[constraint]]
+  name = "github.com/satori/go.uuid"
+  branch = "master"
+
+[[constraint]]
+  name = "github.com/vektah/gqlparser"
+  version = "1.0.0"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/oauth2"
+
 [[override]]
   name="github.com/qor/render"
   branch="master"
 [[override]]
   name="github.com/qor/i18n"
   branch = "master"
+[[override]]
+  name = "github.com/qor/roles"
+  branch = "master"
 
 [prune]
   go-tests = true
+  unused-packages = true
   [[prune.project]]
       name = "github.com/qor/qor"
       non-go = false
@@ -67,6 +101,3 @@
     name = "github.com/qor/admin"
     non-go = false
     unused-packages = false
-
-
-
