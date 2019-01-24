@@ -182,11 +182,7 @@ type Query {
 }
 
 input UserInput {
-  email: String!
-  password: String!
-  userName: String!
   name: String!
-  imageUrl: String!
   receiveNewsletter: Boolean!
   description: String
   sortDescription: String
@@ -216,10 +212,11 @@ input LocationInput {
 }
 
 type Mutation {
-  logout: Boolean
-  createUser(input: UserInput!): User
-  createClub(input: ClubInput!): Club
-  createLocation(input: LocationInput): Location
+  logout: Boolean!
+  editUser(user: UserInput!): User
+  joinClub(clubId: ID!): Boolean!
+  createClub(club: ClubInput!): Club
+  createLocation(location: LocationInput!): Location
 }
 
 schema {

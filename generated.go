@@ -152,9 +152,10 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		Logout         func(childComplexity int) int
-		CreateUser     func(childComplexity int, input models.UserInput) int
-		CreateClub     func(childComplexity int, input models.ClubInput) int
-		CreateLocation func(childComplexity int, input *models.LocationInput) int
+		EditUser       func(childComplexity int, user models.UserInput) int
+		JoinClub       func(childComplexity int, clubId string) int
+		CreateClub     func(childComplexity int, club models.ClubInput) int
+		CreateLocation func(childComplexity int, location models.LocationInput) int
 	}
 
 	PageInfo struct {
@@ -257,10 +258,11 @@ type LocationResolver interface {
 	UpdatedAt(ctx context.Context, obj *models.Location) (string, error)
 }
 type MutationResolver interface {
-	Logout(ctx context.Context) (*bool, error)
-	CreateUser(ctx context.Context, input models.UserInput) (*models.User, error)
-	CreateClub(ctx context.Context, input models.ClubInput) (*models.Club, error)
-	CreateLocation(ctx context.Context, input *models.LocationInput) (*models.Location, error)
+	Logout(ctx context.Context) (bool, error)
+	EditUser(ctx context.Context, user models.UserInput) (*models.User, error)
+	JoinClub(ctx context.Context, clubId string) (bool, error)
+	CreateClub(ctx context.Context, club models.ClubInput) (*models.Club, error)
+	CreateLocation(ctx context.Context, location models.LocationInput) (*models.Location, error)
 }
 type QueryResolver interface {
 	User(ctx context.Context, id string) (*models.User, error)
@@ -282,17 +284,32 @@ type UserResolver interface {
 	UpdatedAt(ctx context.Context, obj *models.User) (string, error)
 }
 
-func field_Mutation_createUser_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func field_Mutation_editUser_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 models.UserInput
-	if tmp, ok := rawArgs["input"]; ok {
+	if tmp, ok := rawArgs["user"]; ok {
 		var err error
 		arg0, err = UnmarshalUserInput(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["user"] = arg0
+	return args, nil
+
+}
+
+func field_Mutation_joinClub_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["clubId"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["clubId"] = arg0
 	return args, nil
 
 }
@@ -300,34 +317,29 @@ func field_Mutation_createUser_args(rawArgs map[string]interface{}) (map[string]
 func field_Mutation_createClub_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 models.ClubInput
-	if tmp, ok := rawArgs["input"]; ok {
+	if tmp, ok := rawArgs["club"]; ok {
 		var err error
 		arg0, err = UnmarshalClubInput(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["club"] = arg0
 	return args, nil
 
 }
 
 func field_Mutation_createLocation_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
-	var arg0 *models.LocationInput
-	if tmp, ok := rawArgs["input"]; ok {
+	var arg0 models.LocationInput
+	if tmp, ok := rawArgs["location"]; ok {
 		var err error
-		var ptr1 models.LocationInput
-		if tmp != nil {
-			ptr1, err = UnmarshalLocationInput(tmp)
-			arg0 = &ptr1
-		}
-
+		arg0, err = UnmarshalLocationInput(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["location"] = arg0
 	return args, nil
 
 }
@@ -1343,17 +1355,29 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.Logout(childComplexity), true
 
-	case "Mutation.createUser":
-		if e.complexity.Mutation.CreateUser == nil {
+	case "Mutation.editUser":
+		if e.complexity.Mutation.EditUser == nil {
 			break
 		}
 
-		args, err := field_Mutation_createUser_args(rawArgs)
+		args, err := field_Mutation_editUser_args(rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(models.UserInput)), true
+		return e.complexity.Mutation.EditUser(childComplexity, args["user"].(models.UserInput)), true
+
+	case "Mutation.joinClub":
+		if e.complexity.Mutation.JoinClub == nil {
+			break
+		}
+
+		args, err := field_Mutation_joinClub_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.JoinClub(childComplexity, args["clubId"].(string)), true
 
 	case "Mutation.createClub":
 		if e.complexity.Mutation.CreateClub == nil {
@@ -1365,7 +1389,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateClub(childComplexity, args["input"].(models.ClubInput)), true
+		return e.complexity.Mutation.CreateClub(childComplexity, args["club"].(models.ClubInput)), true
 
 	case "Mutation.createLocation":
 		if e.complexity.Mutation.CreateLocation == nil {
@@ -1377,7 +1401,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateLocation(childComplexity, args["input"].(*models.LocationInput)), true
+		return e.complexity.Mutation.CreateLocation(childComplexity, args["location"].(models.LocationInput)), true
 
 	case "PageInfo.startCursor":
 		if e.complexity.PageInfo.StartCursor == nil {
@@ -4621,8 +4645,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "logout":
 			out.Values[i] = ec._Mutation_logout(ctx, field)
-		case "createUser":
-			out.Values[i] = ec._Mutation_createUser(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "editUser":
+			out.Values[i] = ec._Mutation_editUser(ctx, field)
+		case "joinClub":
+			out.Values[i] = ec._Mutation_joinClub(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "createClub":
 			out.Values[i] = ec._Mutation_createClub(ctx, field)
 		case "createLocation":
@@ -4654,24 +4686,23 @@ func (ec *executionContext) _Mutation_logout(ctx context.Context, field graphql.
 		return ec.resolvers.Mutation().Logout(rctx)
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-
-	if res == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalBoolean(*res)
+	return graphql.MarshalBoolean(res)
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _Mutation_createUser(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+func (ec *executionContext) _Mutation_editUser(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := field_Mutation_createUser_args(rawArgs)
+	args, err := field_Mutation_editUser_args(rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -4685,7 +4716,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateUser(rctx, args["input"].(models.UserInput))
+		return ec.resolvers.Mutation().EditUser(rctx, args["user"].(models.UserInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -4699,6 +4730,39 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	}
 
 	return ec._User(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_joinClub(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_joinClub_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().JoinClub(rctx, args["clubId"].(string))
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return graphql.MarshalBoolean(res)
 }
 
 // nolint: vetshadow
@@ -4720,7 +4784,7 @@ func (ec *executionContext) _Mutation_createClub(ctx context.Context, field grap
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateClub(rctx, args["input"].(models.ClubInput))
+		return ec.resolvers.Mutation().CreateClub(rctx, args["club"].(models.ClubInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -4755,7 +4819,7 @@ func (ec *executionContext) _Mutation_createLocation(ctx context.Context, field 
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateLocation(rctx, args["input"].(*models.LocationInput))
+		return ec.resolvers.Mutation().CreateLocation(rctx, args["location"].(models.LocationInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -8167,33 +8231,9 @@ func UnmarshalUserInput(v interface{}) (models.UserInput, error) {
 
 	for k, v := range asMap {
 		switch k {
-		case "email":
-			var err error
-			it.Email, err = graphql.UnmarshalString(v)
-			if err != nil {
-				return it, err
-			}
-		case "password":
-			var err error
-			it.Password, err = graphql.UnmarshalString(v)
-			if err != nil {
-				return it, err
-			}
-		case "userName":
-			var err error
-			it.UserName, err = graphql.UnmarshalString(v)
-			if err != nil {
-				return it, err
-			}
 		case "name":
 			var err error
 			it.Name, err = graphql.UnmarshalString(v)
-			if err != nil {
-				return it, err
-			}
-		case "imageUrl":
-			var err error
-			it.ImageURL, err = graphql.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -8484,11 +8524,7 @@ type Query {
 }
 
 input UserInput {
-  email: String!
-  password: String!
-  userName: String!
   name: String!
-  imageUrl: String!
   receiveNewsletter: Boolean!
   description: String
   sortDescription: String
@@ -8518,10 +8554,11 @@ input LocationInput {
 }
 
 type Mutation {
-  logout: Boolean
-  createUser(input: UserInput!): User
-  createClub(input: ClubInput!): Club
-  createLocation(input: LocationInput): Location
+  logout: Boolean!
+  editUser(user: UserInput!): User
+  joinClub(clubId: ID!): Boolean!
+  createClub(club: ClubInput!): Club
+  createLocation(location: LocationInput!): Location
 }
 
 schema {

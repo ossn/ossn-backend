@@ -85,11 +85,7 @@ type PageInfo struct {
 }
 
 type UserInput struct {
-	Email             string   `json:"email"`
-	Password          string   `json:"password"`
-	UserName          string   `json:"userName"`
 	Name              string   `json:"name"`
-	ImageURL          string   `json:"imageUrl"`
 	ReceiveNewsletter bool     `json:"receiveNewsletter"`
 	Description       *string  `json:"description"`
 	SortDescription   *string  `json:"sortDescription"`

@@ -155,28 +155,46 @@ func (r *locationResolver) UpdatedAt(ctx context.Context, obj *models.Location) 
 
 type mutationResolver struct{ *Resolver }
 
-func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInput) (*models.User, error) {
+func (r *mutationResolver) EditUser(ctx context.Context, input models.UserInput) (*models.User, error) {
 	panic("not implemented")
 }
 func (r *mutationResolver) CreateClub(ctx context.Context, input models.ClubInput) (*models.Club, error) {
 	panic("not implemented")
 }
-func (r *mutationResolver) CreateLocation(ctx context.Context, input *models.LocationInput) (*models.Location, error) {
+func (r *mutationResolver) CreateLocation(ctx context.Context, input models.LocationInput) (*models.Location, error) {
 	panic("not implemented")
 }
-func (r *mutationResolver) Logout(ctx context.Context) (*bool, error) {
-	// TODO: Call provider's logout
-	res := false
+func (r *mutationResolver) JoinClub(ctx context.Context, clubID string) (bool, error) {
+	id, err := strconv.Atoi(clubID)
+	if err != nil {
+		return false, err
+	}
+	user, err := helpers.GetUserFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	clubUser := &models.ClubUserRole{
+		UserID: user.ID,
+		ClubID: uint(id),
+		Role:   "member",
+	}
+	err = models.DBSession.Save(clubUser).Error
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func (r *mutationResolver) Logout(ctx context.Context) (bool, error) {
 	session, err := helpers.GetSessionFromContext(ctx)
 	if err != nil {
-		return &res, err
+		return false, err
 	}
 	err = models.DBSession.Where("id = ?", session.ID).Delete(&models.Session{}).Error
 	if err != nil {
-		return &res, err
+		return false, err
 	}
-	res = true
-	return &res, nil
+	return true, nil
 }
 
 type queryResolver struct{ *Resolver }
