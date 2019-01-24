@@ -20,11 +20,10 @@ type ClubInput struct {
 	Location        *LocationInput `json:"location"`
 	Name            string         `json:"name"`
 	ImageURL        *string        `json:"imageUrl"`
+	BannerImageURL  *string        `json:"bannerImageUrl"`
 	Description     string         `json:"description"`
 	CodeOfConduct   *string        `json:"codeOfConduct"`
 	SortDescription *string        `json:"sortDescription"`
-	Users           []string       `json:"users"`
-	Events          []string       `json:"events"`
 	GithubURL       *string        `json:"githubUrl"`
 	ClubURL         *string        `json:"clubUrl"`
 }
@@ -54,6 +53,17 @@ type Clubs struct {
 }
 
 func (Clubs) IsWithPagination() {}
+
+type EventInput struct {
+	Title           string  `json:"title"`
+	StartDate       *string `json:"startDate"`
+	EndDate         *string `json:"endDate"`
+	LocationID      *string `json:"locationID"`
+	ImageURL        *string `json:"imageUrl"`
+	Description     *string `json:"description"`
+	SortDescription *string `json:"sortDescription"`
+	ClubID          string  `json:"clubId"`
+}
 
 type Events struct {
 	Events   []Event  `json:"events"`

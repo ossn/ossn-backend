@@ -194,11 +194,10 @@ input ClubInput {
   location: LocationInput
   name: String!
   imageUrl: String
+  bannerImageUrl: String
   description: String!
   codeOfConduct: String
   sortDescription: String
-  users: [ID!]
-  events: [ID!]
   githubUrl: String
   clubUrl: String
 }
@@ -210,11 +209,23 @@ input LocationInput {
   lng: String
 }
 
+input EventInput {
+  title: String!
+  startDate: EpochTime
+  endDate: EpochTime
+  locationID: String
+  imageUrl: String
+  description: String
+  sortDescription: String
+  clubId: String!
+}
+
 type Mutation {
   logout: Boolean!
   editUser(user: UserInput!): User
   joinClub(clubId: ID!): Boolean!
-  createClub(club: ClubInput!): Club
+  editClub(clubId: ID!, club: ClubInput!): Club
+  event(eventId: ID, event: EventInput): Event
   createLocation(location: LocationInput!): Location
 }
 

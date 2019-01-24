@@ -154,7 +154,8 @@ type ComplexityRoot struct {
 		Logout         func(childComplexity int) int
 		EditUser       func(childComplexity int, user models.UserInput) int
 		JoinClub       func(childComplexity int, clubId string) int
-		CreateClub     func(childComplexity int, club models.ClubInput) int
+		EditClub       func(childComplexity int, clubId string, club models.ClubInput) int
+		Event          func(childComplexity int, eventId *string, event *models.EventInput) int
 		CreateLocation func(childComplexity int, location models.LocationInput) int
 	}
 
@@ -261,7 +262,8 @@ type MutationResolver interface {
 	Logout(ctx context.Context) (bool, error)
 	EditUser(ctx context.Context, user models.UserInput) (*models.User, error)
 	JoinClub(ctx context.Context, clubId string) (bool, error)
-	CreateClub(ctx context.Context, club models.ClubInput) (*models.Club, error)
+	EditClub(ctx context.Context, clubId string, club models.ClubInput) (*models.Club, error)
+	Event(ctx context.Context, eventId *string, event *models.EventInput) (*models.Event, error)
 	CreateLocation(ctx context.Context, location models.LocationInput) (*models.Location, error)
 }
 type QueryResolver interface {
@@ -314,17 +316,60 @@ func field_Mutation_joinClub_args(rawArgs map[string]interface{}) (map[string]in
 
 }
 
-func field_Mutation_createClub_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func field_Mutation_editClub_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
-	var arg0 models.ClubInput
-	if tmp, ok := rawArgs["club"]; ok {
+	var arg0 string
+	if tmp, ok := rawArgs["clubId"]; ok {
 		var err error
-		arg0, err = UnmarshalClubInput(tmp)
+		arg0, err = graphql.UnmarshalID(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["club"] = arg0
+	args["clubId"] = arg0
+	var arg1 models.ClubInput
+	if tmp, ok := rawArgs["club"]; ok {
+		var err error
+		arg1, err = UnmarshalClubInput(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["club"] = arg1
+	return args, nil
+
+}
+
+func field_Mutation_event_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["eventId"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = graphql.UnmarshalID(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["eventId"] = arg0
+	var arg1 *models.EventInput
+	if tmp, ok := rawArgs["event"]; ok {
+		var err error
+		var ptr1 models.EventInput
+		if tmp != nil {
+			ptr1, err = UnmarshalEventInput(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["event"] = arg1
 	return args, nil
 
 }
@@ -1379,17 +1424,29 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.JoinClub(childComplexity, args["clubId"].(string)), true
 
-	case "Mutation.createClub":
-		if e.complexity.Mutation.CreateClub == nil {
+	case "Mutation.editClub":
+		if e.complexity.Mutation.EditClub == nil {
 			break
 		}
 
-		args, err := field_Mutation_createClub_args(rawArgs)
+		args, err := field_Mutation_editClub_args(rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateClub(childComplexity, args["club"].(models.ClubInput)), true
+		return e.complexity.Mutation.EditClub(childComplexity, args["clubId"].(string), args["club"].(models.ClubInput)), true
+
+	case "Mutation.event":
+		if e.complexity.Mutation.Event == nil {
+			break
+		}
+
+		args, err := field_Mutation_event_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.Event(childComplexity, args["eventId"].(*string), args["event"].(*models.EventInput)), true
 
 	case "Mutation.createLocation":
 		if e.complexity.Mutation.CreateLocation == nil {
@@ -4655,8 +4712,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
-		case "createClub":
-			out.Values[i] = ec._Mutation_createClub(ctx, field)
+		case "editClub":
+			out.Values[i] = ec._Mutation_editClub(ctx, field)
+		case "event":
+			out.Values[i] = ec._Mutation_event(ctx, field)
 		case "createLocation":
 			out.Values[i] = ec._Mutation_createLocation(ctx, field)
 		default:
@@ -4766,11 +4825,11 @@ func (ec *executionContext) _Mutation_joinClub(ctx context.Context, field graphq
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _Mutation_createClub(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+func (ec *executionContext) _Mutation_editClub(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := field_Mutation_createClub_args(rawArgs)
+	args, err := field_Mutation_editClub_args(rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -4784,7 +4843,7 @@ func (ec *executionContext) _Mutation_createClub(ctx context.Context, field grap
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateClub(rctx, args["club"].(models.ClubInput))
+		return ec.resolvers.Mutation().EditClub(rctx, args["clubId"].(string), args["club"].(models.ClubInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -4798,6 +4857,41 @@ func (ec *executionContext) _Mutation_createClub(ctx context.Context, field grap
 	}
 
 	return ec._Club(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_event(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_event_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().Event(rctx, args["eventId"].(*string), args["event"].(*models.EventInput))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.Event)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._Event(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -8079,6 +8173,17 @@ func UnmarshalClubInput(v interface{}) (models.ClubInput, error) {
 			if err != nil {
 				return it, err
 			}
+		case "bannerImageUrl":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.BannerImageURL = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
 		case "description":
 			var err error
 			it.Description, err = graphql.UnmarshalString(v)
@@ -8107,40 +8212,6 @@ func UnmarshalClubInput(v interface{}) (models.ClubInput, error) {
 			if err != nil {
 				return it, err
 			}
-		case "users":
-			var err error
-			var rawIf1 []interface{}
-			if v != nil {
-				if tmp1, ok := v.([]interface{}); ok {
-					rawIf1 = tmp1
-				} else {
-					rawIf1 = []interface{}{v}
-				}
-			}
-			it.Users = make([]string, len(rawIf1))
-			for idx1 := range rawIf1 {
-				it.Users[idx1], err = graphql.UnmarshalID(rawIf1[idx1])
-			}
-			if err != nil {
-				return it, err
-			}
-		case "events":
-			var err error
-			var rawIf1 []interface{}
-			if v != nil {
-				if tmp1, ok := v.([]interface{}); ok {
-					rawIf1 = tmp1
-				} else {
-					rawIf1 = []interface{}{v}
-				}
-			}
-			it.Events = make([]string, len(rawIf1))
-			for idx1 := range rawIf1 {
-				it.Events[idx1], err = graphql.UnmarshalID(rawIf1[idx1])
-			}
-			if err != nil {
-				return it, err
-			}
 		case "githubUrl":
 			var err error
 			var ptr1 string
@@ -8160,6 +8231,96 @@ func UnmarshalClubInput(v interface{}) (models.ClubInput, error) {
 				it.ClubURL = &ptr1
 			}
 
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalEventInput(v interface{}) (models.EventInput, error) {
+	var it models.EventInput
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "title":
+			var err error
+			it.Title, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "startDate":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.StartDate = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
+		case "endDate":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.EndDate = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
+		case "locationID":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.LocationID = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
+		case "imageUrl":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.ImageURL = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
+		case "description":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.Description = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
+		case "sortDescription":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.SortDescription = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
+		case "clubId":
+			var err error
+			it.ClubID, err = graphql.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -8530,11 +8691,10 @@ input ClubInput {
   location: LocationInput
   name: String!
   imageUrl: String
+  bannerImageUrl: String
   description: String!
   codeOfConduct: String
   sortDescription: String
-  users: [ID!]
-  events: [ID!]
   githubUrl: String
   clubUrl: String
 }
@@ -8546,11 +8706,23 @@ input LocationInput {
   lng: String
 }
 
+input EventInput {
+  title: String!
+  startDate: EpochTime
+  endDate: EpochTime
+  locationID: String
+  imageUrl: String
+  description: String
+  sortDescription: String
+  clubId: String!
+}
+
 type Mutation {
   logout: Boolean!
   editUser(user: UserInput!): User
   joinClub(clubId: ID!): Boolean!
-  createClub(club: ClubInput!): Club
+  editClub(clubId: ID!, club: ClubInput!): Club
+  event(eventId: ID, event: EventInput): Event
   createLocation(location: LocationInput!): Location
 }
 
