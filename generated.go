@@ -8231,12 +8231,6 @@ func UnmarshalUserInput(v interface{}) (models.UserInput, error) {
 
 	for k, v := range asMap {
 		switch k {
-		case "name":
-			var err error
-			it.Name, err = graphql.UnmarshalString(v)
-			if err != nil {
-				return it, err
-			}
 		case "receiveNewsletter":
 			var err error
 			it.ReceiveNewsletter, err = graphql.UnmarshalBoolean(v)
@@ -8524,7 +8518,6 @@ type Query {
 }
 
 input UserInput {
-  name: String!
   receiveNewsletter: Boolean!
   description: String
   sortDescription: String

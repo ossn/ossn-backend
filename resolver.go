@@ -156,7 +156,65 @@ func (r *locationResolver) UpdatedAt(ctx context.Context, obj *models.Location) 
 type mutationResolver struct{ *Resolver }
 
 func (r *mutationResolver) EditUser(ctx context.Context, input models.UserInput) (*models.User, error) {
-	panic("not implemented")
+	user, err := helpers.GetUserFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	user.GithubURL = input.GithubURL
+	user.PersonalURL = input.PersonalURL
+	user.ReceiveNewsletter = &input.ReceiveNewsletter
+	user.SortDescription = input.SortDescription
+	user.Description = input.Description
+
+	tx := models.DBSession.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	err = tx.Save(&user).Error
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	err = tx.Unscoped().Where("user_id = ? and club_id NOT IN (?)", user.ID, input.Clubs).Delete(&models.ClubUserRole{}).Error
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	clubs := []*models.ClubUserRole{}
+	for _, clubID := range input.Clubs {
+		id, err := strconv.Atoi(clubID)
+		if err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+		club := models.ClubUserRole{
+			Role:   "member",
+			UserID: user.ID,
+			ClubID: uint(id),
+		}
+
+		err = tx.Preload("Club").Where("user_id = ? and club_id = ?", user.ID, id).FirstOrCreate(&club).Error
+		if err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+		club.User = *user
+		clubs = append(clubs, &club)
+	}
+
+	err = tx.Commit().Error
+	if err != nil {
+		return nil, err
+	}
+
+	user.Clubs = clubs
+	return user, nil
 }
 func (r *mutationResolver) CreateClub(ctx context.Context, input models.ClubInput) (*models.Club, error) {
 	panic("not implemented")
@@ -190,7 +248,7 @@ func (r *mutationResolver) Logout(ctx context.Context) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	err = models.DBSession.Where("id = ?", session.ID).Delete(&models.Session{}).Error
+	err = models.DBSession.Unscoped().Where("id = ?", session.ID).Delete(&models.Session{}).Error
 	if err != nil {
 		return false, err
 	}
