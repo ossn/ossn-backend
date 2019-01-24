@@ -6,12 +6,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/ossn/ossn-backend/helpers"
 	"github.com/ossn/ossn-backend/middlewares"
-
-	uuid "github.com/satori/go.uuid"
 
 	"github.com/jinzhu/gorm"
 
@@ -148,17 +145,17 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uuid, err := uuid.NewV4()
-	if err != nil {
-		helpers.HandleError(w, r, http.StatusInternalServerError, err)
-		return
-	}
-	cookie := uuid.String()
+	// uuid, err := uuid.NewV4()
+	// if err != nil {
+	// 	helpers.HandleError(w, r, http.StatusInternalServerError, err)
+	// 	return
+	// }
+	// cookie := uuid.String()
 
 	session := &models.Session{
-		UserID:      user.ID,
-		Token:       token,
-		Cookie:      cookie,
+		UserID: user.ID,
+		Token:  token,
+		// Cookie:      cookie,
 		AccessToken: oauth2Token.AccessToken,
 	}
 
@@ -169,14 +166,14 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//TODO: Make this http only
-	http.SetCookie(w, &http.Cookie{
-		Expires: time.Now().Add(15 * time.Second),
-		Name:    middlewares.AuthCookie,
-		Value:   cookie,
-		Path:    "/",
-		// Secure:   true,
-		// HttpOnly: true,
-	})
+	// http.SetCookie(w, &http.Cookie{
+	// 	Expires:  time.Now().Add(15 * time.Second),
+	// 	Name:     middlewares.AuthCookie,
+	// 	Value:    cookie,
+	// 	Path:     "/",
+	// 	HttpOnly: true,
+	// 	// Secure:   true,
+	// })
 
 	http.Redirect(w, r, helpers.LoginURL+token, http.StatusTemporaryRedirect)
 }

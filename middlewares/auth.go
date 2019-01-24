@@ -27,19 +27,20 @@ func init() {
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		c, err := r.Cookie(AuthCookie)
-		// Allow unauthenticated users in
-		if err != nil || c == nil {
+		// c, err := r.Cookie(AuthCookie)
+		// // Allow unauthenticated users in
+		// if err != nil || c == nil {
+		// 	next.ServeHTTP(w, r)
+		// 	return
+		// }
+		token := r.Header.Get("X-Access-Token")
+		if len(token) == 0 {
 			next.ServeHTTP(w, r)
 			return
 		}
-		token := r.Header.Get("X-Access-Token")
-		if len(token) == 0 || len(c.Value) == 0 {
-			http.Error(w, "Invalid access token", http.StatusForbidden)
-			return
-		}
+
 		session := &models.Session{}
-		err = models.DBSession.Where("cookie = ? and token = ?", c.Value, token).First(session).Error
+		err := models.DBSession.Where("token = ?", token).First(session).Error
 		if err != nil || !ValidateToken(&session.Token) {
 			http.Error(w, "Invalid cookie or access token", http.StatusForbidden)
 			return
