@@ -36,7 +36,11 @@ func (r *mutationResolver) EditUser(ctx context.Context, input models.UserInput)
 		return nil, err
 	}
 
-	err = tx.Unscoped().Where("user_id = ? and club_id NOT IN (?)", user.ID, input.Clubs).Delete(&models.ClubUserRole{}).Error
+	if len(input.Clubs) == 0 {
+		err = tx.Unscoped().Where("user_id = ?", user.ID).Delete(&models.ClubUserRole{}).Error
+	} else {
+		err = tx.Unscoped().Where("user_id = ? and club_id NOT IN (?)", user.ID, input.Clubs).Delete(&models.ClubUserRole{}).Error
+	}
 	if err != nil {
 		tx.Rollback()
 		return nil, err
