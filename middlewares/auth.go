@@ -33,6 +33,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		// 	next.ServeHTTP(w, r)
 		// 	return
 		// }
+
 		token := r.Header.Get("X-Access-Token")
 		if len(token) == 0 {
 			next.ServeHTTP(w, r)
@@ -95,6 +96,29 @@ func ValidateToken(tokenString *string) bool {
 	if err != nil {
 		return false
 	}
-	_, ok := token.Claims.(jwt.MapClaims)
-	return ok && token.Valid
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return false
+	}
+
+	now := time.Now()
+
+	nbf, ok := claims["nbf"].(time.Time)
+	if !ok || now.Before(nbf) {
+		return false
+	}
+
+	iat, ok := claims["iat"].(time.Time)
+	if !ok || now.Before(iat) {
+		return false
+	}
+
+	exp, ok := claims["exp"].(time.Time)
+	if !ok || now.After(exp) {
+		return false
+	}
+
+	return true
+
 }
