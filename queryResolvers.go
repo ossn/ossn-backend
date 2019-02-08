@@ -100,7 +100,7 @@ func (r *queryResolver) Clubs(ctx context.Context, first, last *int, userID *str
 	}
 	clubs := []models.Club{}
 
-	err = query.Find(&clubs).Error
+	err = query.Preload("Location").Find(&clubs).Error
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +131,7 @@ func (r *queryResolver) Clubs(ctx context.Context, first, last *int, userID *str
 
 func (r *queryResolver) Club(ctx context.Context, id string) (*models.Club, error) {
 	club := &models.Club{}
-	err := models.DBSession.Where("id = ?", id).First(club).Error
+	err := models.DBSession.Where("id = ?", id).Preload("Location").Preload("Events").First(club).Error
 	return club, err
 }
 
