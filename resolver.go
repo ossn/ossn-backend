@@ -72,7 +72,7 @@ func (r *clubResolver) Users(ctx context.Context, obj *models.Club) ([]*models.U
 		u := &user.User
 		// TODO: Improve this
 		clubs := []*models.ClubWithRole{}
-		err := models.DBSession.Raw("SELECT * FROM users where id IN (SELECT user_id from club_user_roles where club_id = ?)", u.ID).Scan(&clubs).Error
+		err := models.DBSession.Raw("Select * from clubs where id IN (SELECT club_id from club_user_roles where user_id = ?)", u.ID).Scan(&clubs).Error
 		if err != nil {
 			return usersWithRole, err
 		}
