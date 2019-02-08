@@ -13,4 +13,4 @@ RUN curl -fsSL -o /usr/local/bin/dep $(curl -s https://api.github.com/repos/gola
 COPY . .
 RUN dep ensure
 EXPOSE 8080
-CMD go run server/server.go
+CMD go run main/server.go
