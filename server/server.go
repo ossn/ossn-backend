@@ -62,7 +62,7 @@ func main() {
 	middlewareHandler = cors.New(cors.Options{
 		AllowCredentials: true,
 		AllowedMethods:   []string{"OPTIONS", "POST"},
-		AllowedOrigins:   []string{"http://localhost:8000", "https://dev.ossn.club"},
+		AllowedOrigins:   []string{"http://localhost:8000", "https://dev.ossn.club", "https://ossn.club"},
 		AllowedHeaders:   []string{"X-Access-Token", "Content-Type"},
 		ExposedHeaders:   []string{},
 	}).Handler(middlewareHandler)
