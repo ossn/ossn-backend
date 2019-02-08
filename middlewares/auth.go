@@ -121,18 +121,18 @@ func ValidateToken(tokenString *string) bool {
 
 	now := time.Now()
 
-	nbf, ok := claims["nbf"].(time.Time)
-	if !ok || now.Before(nbf) {
+	nbf, err := time.Parse(time.RFC3339, claims["nbf"].(string))
+	if err != nil || now.Before(nbf) {
 		return false
 	}
 
-	iat, ok := claims["iat"].(time.Time)
-	if !ok || now.Before(iat) {
+	iat, err := time.Parse(time.RFC3339, claims["iat"].(string))
+	if err != nil || now.Before(iat) {
 		return false
 	}
 
-	exp, ok := claims["exp"].(time.Time)
-	if !ok || now.After(exp) {
+	exp, err := time.Parse(time.RFC3339, claims["exp"].(string))
+	if err != nil || now.After(exp) {
 		return false
 	}
 
