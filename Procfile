@@ -1,1 +1,1 @@
-web: ossn-backend
+web: bin/main
