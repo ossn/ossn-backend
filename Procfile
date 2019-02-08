@@ -1,1 +1,1 @@
-web: go run server/server.go
+web: ossn-backend
