@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -16,13 +17,19 @@ import (
 const AuthCookie = "sessionCookie"
 
 var (
-	jwtSecret []byte
+	jwtSecret          []byte
+	invalidJWTResponse []byte
 )
 
 func init() {
 	secret := os.Getenv("JWT_SECRET")
 	helpers.CheckEnvVariable(&secret, "JWT_SECRET")
 	jwtSecret = []byte(secret)
+	var err error
+	invalidJWTResponse, err = json.Marshal(map[string]string{"error": "Invalid access token"})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func AuthMiddleware(next http.Handler) http.Handler {
@@ -43,14 +50,24 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		session := &models.Session{}
 		err := models.DBSession.Where("token = ?", token).First(session).Error
 		if err != nil || !ValidateToken(&session.Token) {
-			http.Error(w, "Invalid cookie or access token", http.StatusForbidden)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusForbidden)
+			_, err := w.Write(invalidJWTResponse)
+			if err != nil {
+				fmt.Println(err)
+			}
 			return
 		}
 
 		user := &models.User{}
 		err = models.DBSession.Where("id = ?", session.UserID).First(user).Error
 		if err != nil {
-			http.Error(w, "Invalid cookie or access token", http.StatusForbidden)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusForbidden)
+			_, err := w.Write(invalidJWTResponse)
+			if err != nil {
+				fmt.Println(err)
+			}
 			return
 		}
 
