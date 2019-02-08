@@ -92,3 +92,7 @@
 
 [prune]
   go-tests = true
+
+
+[metadata.heroku]
+  root-package = "github.com/ossn/ossn-backend"

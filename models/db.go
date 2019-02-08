@@ -16,6 +16,7 @@ var (
 	DBSession     *gorm.DB
 	AdminResource *admin.Admin
 	Auth          *auth.Auth
+	dbURL         = os.Getenv("DATABASE_URL")
 	dbPassword    = os.Getenv("DB_PASSWORD")
 	host          = os.Getenv("DB_HOST")
 	user          = os.Getenv("DB_USER")
@@ -30,8 +31,11 @@ func (hotfixedAuthIdentity) TableName() string { return "basics" }
 func init() {
 
 	var err error
+	if len(dbURL) < 1 {
+		dbURL = "postgres://" + user + ":" + dbPassword + "@" + host + "/" + database + "?sslmode=disable"
+	}
 
-	DBSession, err = gorm.Open("postgres", "postgres://"+user+":"+dbPassword+"@"+host+"/"+database+"?sslmode=disable")
+	DBSession, err = gorm.Open("postgres", dbURL)
 
 	// DBSession.LogMode(true)
 
