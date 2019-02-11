@@ -28,28 +28,18 @@ func main() {
 
 	mux := httprouter.New()
 
-	adminMux := http.NewServeMux()
-	models.AdminResource.MountTo(prefix+"/admin", adminMux)
-
-	//TODO: Remove this once migration is done
-	models.AdminResource.MountTo("/admin", adminMux)
-
-	//TODO: Remove this once migration is done
-	mux.GET("/", handler.Playground("GraphQL playground", prefix+"/query"))
-	mux.POST("/query", handler.GraphQL(ossn_backend.NewExecutableSchema(ossn_backend.Config{Resolvers: &ossn_backend.Resolver{}})))
-
+	// GraphQL route
 	mux.GET(prefix+"/", handler.Playground("GraphQL playground", prefix+"/query"))
 	mux.POST(prefix+"/query", handler.GraphQL(ossn_backend.NewExecutableSchema(ossn_backend.Config{Resolvers: &ossn_backend.Resolver{}})))
 
+	// Open ID Connect routes
 	mux.GET(prefix+"/oidc/callback", controllers.HandleOAuth2Callback)
 	mux.GET(prefix+"/oidc/login", controllers.HandleRedirect)
-	//TODO: Remove this once Mozilla is ready
-	mux.GET("/oidc/callback", controllers.HandleOAuth2Callback)
-	mux.GET("/oidc/login", controllers.HandleRedirect)
 
-	registerAll(mux, prefix+"/admin/*f", adminMux)
-	//TODO: Remove this once migration is done
-	registerAll(mux, "/admin/*f", adminMux)
+	// Admin Routes
+	adminMux := http.NewServeMux()
+	models.AdminResource.MountTo("/admin", adminMux)
+	registerAll(mux, "/admin/*f", middlewares.BasicAuth(adminMux))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 
