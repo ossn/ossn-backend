@@ -68,10 +68,10 @@ func init() {
 	AdminResource.AddResource(&Announcement{})
 	AdminResource.AddResource(&Location{})
 	AdminResource.AddResource(&Job{})
-	AdminResource.AddResource(&ClubUserRole{}, &admin.Config{Invisible: true})
+	AdminResource.AddResource(&ClubUserRole{})
 	AdminResource.AddResource(&Club{})
 	AdminResource.AddResource(&User{})
-	AdminResource.AddResource(&Admin{}, &admin.Config{Invisible: true})
+	AdminResource.AddResource(&Admin{})
 
 	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
