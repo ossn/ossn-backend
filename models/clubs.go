@@ -10,8 +10,8 @@ type Club struct {
 	Description     *string         `json:"description" sql:"type:text;"`
 	CodeOfConduct   *string         `json:"codeOfConduct" sql:"type:text;"`
 	SortDescription *string         `json:"sortDescription" sql:"type:text;"`
-	Users           []*ClubUserRole `json:"users" gorm:"many2many:club_user_roles;association_foreignkey:ID;foreignkey:ID;association_jointable_foreignkey:user_id;jointable_foreignkey:club_id"`
-	Events          []*Event        `json:"events" gorm:"many2many:club_events;"`
+	Users           []*ClubUserRole `json:"users"`
+	Events          []*Event        `json:"events"`
 	GithubURL       *string         `json:"githubUrl" sql:"type:text;" gorm:"UNIQUE;"`
 	ClubURL         *string         `json:"clubUrl" sql:"type:text;" gorm:"UNIQUE;"`
 	BannerImageURL  *string         `json:"bannerImageUrl" sql:"type:text;"`
