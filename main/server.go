@@ -11,7 +11,6 @@ import (
 	"github.com/ossn/ossn-backend/controllers"
 	"github.com/ossn/ossn-backend/middlewares"
 	"github.com/ossn/ossn-backend/models"
-	"github.com/qor/session/manager"
 	"github.com/rs/cors"
 )
 
@@ -48,16 +47,13 @@ func main() {
 	mux.GET("/oidc/callback", controllers.HandleOAuth2Callback)
 	mux.GET("/oidc/login", controllers.HandleRedirect)
 
-	registerAll(mux, prefix+"/auth/*a", models.Auth.NewServeMux())
 	registerAll(mux, prefix+"/admin/*f", adminMux)
 	//TODO: Remove this once migration is done
-	registerAll(mux, "/auth/*a", models.Auth.NewServeMux())
 	registerAll(mux, "/admin/*f", adminMux)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 
-	middlewareHandler := manager.SessionManager.Middleware(mux)
-	middlewareHandler = middlewares.AuthMiddleware(middlewareHandler)
+	middlewareHandler := middlewares.AuthMiddleware(mux)
 
 	middlewareHandler = cors.New(cors.Options{
 		AllowCredentials: true,

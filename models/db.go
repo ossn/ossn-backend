@@ -57,13 +57,9 @@ func init() {
 		&Session{},
 	)
 
-	Auth = clean.New(&auth.Config{
-		DB:                DBSession,
-		UserModel:         &Admin{},
-		AuthIdentityModel: &hotfixedAuthIdentity{},
-	})
+	Auth = clean.New(&auth.Config{DB: DBSession})
 
-	AdminResource = admin.New(&admin.AdminConfig{DB: DBSession, SiteName: "OSSN Admin", Auth: AdminAuth{}})
+	AdminResource = admin.New(&admin.AdminConfig{DB: DBSession, SiteName: "OSSN Admin"})
 	AdminResource.AddResource(&Event{})
 	AdminResource.AddResource(&Announcement{})
 	AdminResource.AddResource(&Location{})
