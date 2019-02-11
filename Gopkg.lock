@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:aec0c5028124281efb9d9d5ca47efe0e008a6a095d28402f85d47d93386e2d1b"
+  digest = "1:343a2c2958fc4ac937ef548a969ca4c70f1ac9f812ff2404db1ef7c0d16a3e48"
   name = "github.com/99designs/gqlgen"
   packages = [
     "cmd",
@@ -16,8 +16,8 @@
     "internal/imports",
   ]
   pruneopts = "T"
-  revision = "3a7f37c7e22a8fedce430c4d340ad5c1351198f4"
-  version = "v0.7.1"
+  revision = "da1e07f5876c0fb79cbad19006f7135be08590d6"
+  version = "v0.7.2"
 
 [[projects]]
   digest = "1:00ecbe13acec4f32404360b186d54feaa578f11cf5cd504de8e38ec6245f380e"
@@ -362,14 +362,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a3b8912deeef29007fab9a13a9f21b9e9b59c621a2ed61e2fe7b37320a71fbd5"
-  name = "github.com/satori/go.uuid"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "b2ce2384e17bbe0c6d34077efa39dbab3e09123b"
-
-[[projects]]
-  branch = "master"
   digest = "1:ae3929019e5060626b476b292197bdec07a2f29a4a1837706370aacb7041bd44"
   name = "github.com/theplant/cldr"
   packages = ["."]
@@ -385,7 +377,7 @@
   version = "v1.20.0"
 
 [[projects]]
-  digest = "1:53b917a6f703df4b810cf6c5d79b13c9a72b40a792dc28eb9945e452f11e745f"
+  digest = "1:e692778e40260d86a02ffb0eefc7e5964b9a2530449df12b4e45a5012a92b914"
   name = "github.com/vektah/gqlparser"
   packages = [
     ".",
@@ -397,12 +389,12 @@
     "validator/rules",
   ]
   pruneopts = "T"
-  revision = "e805d08bb209b1accdea76bd2327811858d81985"
-  version = "v1.0.0"
+  revision = "b850e94a0bf8eab2820054638d96def671b7ae4e"
+  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:9597e9892bc4371fca72784a74b189acb44087f4ee29f19bac9ab2d65edb712c"
+  digest = "1:d153577f655cf6a13047c1bdee3484897464ebaa6d1c896f10d30ea1127b0e91"
   name = "golang.org/x/crypto"
   packages = [
     "bcrypt",
@@ -412,11 +404,11 @@
     "pbkdf2",
   ]
   pruneopts = "T"
-  revision = "057139ce5d2bdbe6fe73c53679e24e9cf007f637"
+  revision = "74369b46fc6756741c016591724fd1cb8e26845f"
 
 [[projects]]
   branch = "master"
-  digest = "1:f758c83a22e6df9326129cfc7b8b6c0e6898c29ec64e8b6f99d8ca9208df4f06"
+  digest = "1:a88bdbfd3d7f9750a3b3c6947f2d0f8f1fbbb0b65c38128cbc6548189eaf756b"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -425,18 +417,18 @@
     "html/atom",
   ]
   pruneopts = "T"
-  revision = "ed066c81e75eba56dd9bd2139ade88125b855585"
+  revision = "65e2d4e15006aab9813ff8769e768bbf4bb667a0"
 
 [[projects]]
   branch = "master"
-  digest = "1:5d4a7027851c079c926b9d49f260b9e24c4de7e79337efd3126b8279ca08a2e5"
+  digest = "1:51a1d83cef842c1b36e88008a6d82722d2302545b277b4c81e533994618988df"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = "T"
-  revision = "5dab4167f31cbd76b407f1486c86b40748bc5073"
+  revision = "80673b4a4bfc6c2c58a0b44cf9106913fe293994"
 
 [[projects]]
   digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
@@ -451,7 +443,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:9b1361806c0b127c32e7175d6b8468a889b08d2dd82fd62c86c921dcc9091f18"
+  digest = "1:a7567b45e39a6dab945098fd17f8fc6df4940583a4374affdfa87562a6250cf9"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -470,7 +462,7 @@
     "internal/semver",
   ]
   pruneopts = "T"
-  revision = "78ee07aa9465da43bde6d5044c687571ab4362d6"
+  revision = "657755b003d86beb7f1e59808a410123ce89b15b"
 
 [[projects]]
   digest = "1:1469235a5a8e192cfe6a99c4804b883a02f0ff96a693cd1660515a3a3b94d5ac"
@@ -528,7 +520,6 @@
     "github.com/qor/qor",
     "github.com/qor/session/manager",
     "github.com/rs/cors",
-    "github.com/satori/go.uuid",
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",
     "golang.org/x/oauth2",
