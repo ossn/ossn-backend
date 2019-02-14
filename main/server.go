@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
 	log "log"
 	http "net/http"
 	os "os"
+	"os/signal"
+	"syscall"
 
 	handler "github.com/99designs/gqlgen/handler"
 	"github.com/bouk/httprouter"
@@ -33,6 +36,7 @@ func main() {
 	mux.POST(prefix+"/query", handler.GraphQL(ossn_backend.NewExecutableSchema(ossn_backend.Config{Resolvers: &ossn_backend.Resolver{}})))
 
 	// Open ID Connect routes
+	mux.GET("/oidc/callback", controllers.HandleOAuth2Callback)
 	mux.GET(prefix+"/oidc/callback", controllers.HandleOAuth2Callback)
 	mux.GET(prefix+"/oidc/login", controllers.HandleRedirect)
 
@@ -52,6 +56,24 @@ func main() {
 		AllowedHeaders:   []string{"X-Access-Token", "Content-Type"},
 		ExposedHeaders:   []string{},
 	}).Handler(middlewareHandler)
+
+	// Gracefull shutdown
+	var gracefulStop = make(chan os.Signal)
+	signal.Notify(gracefulStop, syscall.SIGTERM)
+	signal.Notify(gracefulStop, syscall.SIGINT)
+	go func() {
+		<-gracefulStop
+		controllers.CancelOpenIDContext()
+		err := models.DBSession.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+		err = models.RedisClient.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+		os.Exit(0)
+	}()
 
 	log.Fatal(http.ListenAndServe(":"+port, (middlewareHandler)))
 }
