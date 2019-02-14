@@ -60,6 +60,17 @@
   version = "v1.2.0"
 
 [[projects]]
+  digest = "1:eca5b59a68125905e4f62d6f5072f01740a7648a808e93f6d76c5334ff948601"
+  name = "github.com/gomodule/redigo"
+  packages = [
+    "internal",
+    "redis",
+  ]
+  pruneopts = "T"
+  revision = "9c11da706d9b7902c6da69c592f75637793fe121"
+  version = "v2.0.0"
+
+[[projects]]
   digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
   name = "github.com/gorilla/context"
   packages = ["."]
@@ -408,7 +419,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a88bdbfd3d7f9750a3b3c6947f2d0f8f1fbbb0b65c38128cbc6548189eaf756b"
+  digest = "1:0db0b6c7b274d9dabc601ad561684eb9920c227935a50bae55299671120c089e"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -417,18 +428,18 @@
     "html/atom",
   ]
   pruneopts = "T"
-  revision = "65e2d4e15006aab9813ff8769e768bbf4bb667a0"
+  revision = "3a22650c66bd7f4fb6d1e8072ffd7b75c8a27898"
 
 [[projects]]
   branch = "master"
-  digest = "1:51a1d83cef842c1b36e88008a6d82722d2302545b277b4c81e533994618988df"
+  digest = "1:0e7daa40947bf901c8aaaa6d5f41c21d8986dc6e4343a479c82eeebcd25c1e28"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = "T"
-  revision = "80673b4a4bfc6c2c58a0b44cf9106913fe293994"
+  revision = "3e8b2be1363542a95c52ea0796d4a40dacfb5b95"
 
 [[projects]]
   digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
@@ -443,7 +454,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a7567b45e39a6dab945098fd17f8fc6df4940583a4374affdfa87562a6250cf9"
+  digest = "1:0f7d9e8a3d208f6faecdd7f47118436723ae8e0a9085d651040c61c7ced6a56a"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -462,7 +473,7 @@
     "internal/semver",
   ]
   pruneopts = "T"
-  revision = "657755b003d86beb7f1e59808a410123ce89b15b"
+  revision = "508f945e1a9bd8b5e3a9444bb2cdd13d0896132e"
 
 [[projects]]
   digest = "1:1469235a5a8e192cfe6a99c4804b883a02f0ff96a693cd1660515a3a3b94d5ac"
@@ -511,6 +522,7 @@
     "github.com/bouk/httprouter",
     "github.com/coreos/go-oidc",
     "github.com/dgrijalva/jwt-go",
+    "github.com/gomodule/redigo/redis",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/qor/admin",
@@ -518,7 +530,6 @@
     "github.com/qor/auth/auth_identity",
     "github.com/qor/auth_themes/clean",
     "github.com/qor/qor",
-    "github.com/qor/session/manager",
     "github.com/rs/cors",
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",

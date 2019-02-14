@@ -7,6 +7,8 @@ package lsp
 import (
 	"context"
 	"fmt"
+	"go/ast"
+	"go/parser"
 	"go/token"
 	"net"
 	"os"
@@ -31,8 +33,14 @@ func RunServer(ctx context.Context, stream jsonrpc2.Stream, opts ...interface{})
 // RunServerOnPort starts an LSP server on the given port and does not exit.
 // This function exists for debugging purposes.
 func RunServerOnPort(ctx context.Context, port int, opts ...interface{}) error {
+	return RunServerOnAddress(ctx, fmt.Sprintf(":%v", port))
+}
+
+// RunServerOnPort starts an LSP server on the given port and does not exit.
+// This function exists for debugging purposes.
+func RunServerOnAddress(ctx context.Context, addr string, opts ...interface{}) error {
 	s := &server{}
-	ln, err := net.Listen("tcp", fmt.Sprintf(":%v", port))
+	ln, err := net.Listen("tcp", addr)
 	if err != nil {
 		return err
 	}
@@ -89,11 +97,15 @@ func (s *server) Initialize(ctx context.Context, params *protocol.InitializePara
 	}
 
 	s.view = cache.NewView(&packages.Config{
+		Context: ctx,
 		Dir:     rootPath,
 		Mode:    packages.LoadImports,
 		Fset:    token.NewFileSet(),
-		Tests:   true,
 		Overlay: make(map[string][]byte),
+		ParseFile: func(fset *token.FileSet, filename string, src []byte) (*ast.File, error) {
+			return parser.ParseFile(fset, filename, src, parser.AllErrors|parser.ParseComments)
+		},
+		Tests: true,
 	})
 
 	return &protocol.InitializeResult{
@@ -208,10 +220,7 @@ func (s *server) Completion(ctx context.Context, params *protocol.CompletionPara
 	if err != nil {
 		return nil, err
 	}
-	tok, err := f.GetToken()
-	if err != nil {
-		return nil, err
-	}
+	tok := f.GetToken()
 	pos := fromProtocolPosition(tok, params.Position)
 	items, prefix, err := source.Completion(ctx, f, pos)
 	if err != nil {
@@ -236,10 +245,7 @@ func (s *server) Hover(ctx context.Context, params *protocol.TextDocumentPositio
 	if err != nil {
 		return nil, err
 	}
-	tok, err := f.GetToken()
-	if err != nil {
-		return nil, err
-	}
+	tok := f.GetToken()
 	pos := fromProtocolPosition(tok, params.Position)
 	ident, err := source.Identifier(ctx, s.view, f, pos)
 	if err != nil {
@@ -268,10 +274,7 @@ func (s *server) SignatureHelp(ctx context.Context, params *protocol.TextDocumen
 	if err != nil {
 		return nil, err
 	}
-	tok, err := f.GetToken()
-	if err != nil {
-		return nil, err
-	}
+	tok := f.GetToken()
 	pos := fromProtocolPosition(tok, params.Position)
 	info, err := source.SignatureHelp(ctx, f, pos)
 	if err != nil {
@@ -289,10 +292,7 @@ func (s *server) Definition(ctx context.Context, params *protocol.TextDocumentPo
 	if err != nil {
 		return nil, err
 	}
-	tok, err := f.GetToken()
-	if err != nil {
-		return nil, err
-	}
+	tok := f.GetToken()
 	pos := fromProtocolPosition(tok, params.Position)
 	ident, err := source.Identifier(ctx, s.view, f, pos)
 	if err != nil {
@@ -310,10 +310,7 @@ func (s *server) TypeDefinition(ctx context.Context, params *protocol.TextDocume
 	if err != nil {
 		return nil, err
 	}
-	tok, err := f.GetToken()
-	if err != nil {
-		return nil, err
-	}
+	tok := f.GetToken()
 	pos := fromProtocolPosition(tok, params.Position)
 	ident, err := source.Identifier(ctx, s.view, f, pos)
 	if err != nil {

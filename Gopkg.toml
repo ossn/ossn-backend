@@ -61,16 +61,8 @@
   branch = "master"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/qor/session"
-
-[[constraint]]
   name = "github.com/rs/cors"
   version = "1.6.0"
-
-[[constraint]]
-  name = "github.com/satori/go.uuid"
-  branch = "master"
 
 [[constraint]]
   name = "github.com/vektah/gqlparser"
@@ -97,3 +89,7 @@
 [metadata.heroku]
   root-package = "github.com/ossn/ossn-backend"
   install = [ "./main" ]
+
+[[constraint]]
+  name = "github.com/go-redis/redis"
+  version = "6.15.1"
