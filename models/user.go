@@ -13,4 +13,5 @@ type User struct {
 	GithubURL         *string         `json:"githubUrl" sql:"type:text;"`
 	PersonalURL       *string         `json:"personalUrl" sql:"type:text;"`
 	OIDCID            string          `json:"oidcId" gorm:"index:idx_oidc_id;UNIQUE;column:oidc_id"`
+	AccessToken       string          `json:"accessToken" gorm:"not null; index:idx_access_token"`
 }

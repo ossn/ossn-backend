@@ -54,7 +54,6 @@ func init() {
 		&ClubUserRole{},
 		&User{},
 		&Admin{},
-		&Session{},
 	)
 
 	Auth = clean.New(&auth.Config{DB: DBSession})
@@ -94,13 +93,6 @@ func init() {
 		// panic(err)
 	}
 	err = DBSession.Model(&Club{}).AddForeignKey("location_id", "locations(id)", "CASCADE", "CASCADE").Error
-	if err != nil {
-		fmt.Println("Error on foreign key creation: " + err.Error())
-		//TODO: Fix this
-		// panic(err)
-	}
-
-	err = DBSession.Model(&Session{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
 		fmt.Println("Error on foreign key creation: " + err.Error())
 		//TODO: Fix this

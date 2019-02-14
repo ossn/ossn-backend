@@ -34,22 +34,14 @@ func init() {
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// c, err := r.Cookie(AuthCookie)
-		// // Allow unauthenticated users in
-		// if err != nil || c == nil {
-		// 	next.ServeHTTP(w, r)
-		// 	return
-		// }
-
 		token := r.Header.Get("X-Access-Token")
 		if len(token) == 0 {
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		session := &models.Session{}
-		err := models.DBSession.Where("token = ?", token).First(session).Error
-		if err != nil || !ValidateToken(&session.Token) {
+		userID, err := models.RedisClient.Get(token).Uint64()
+		if err != nil || !ValidateToken(&token) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
 			_, err := w.Write(invalidJWTResponse)
@@ -60,7 +52,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		}
 
 		user := &models.User{}
-		err = models.DBSession.Where("id = ?", session.UserID).First(user).Error
+		err = models.DBSession.Where("id = ?", userID).First(user).Error
 		if err != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
@@ -73,7 +65,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		// put it in context
 		ctx := context.WithValue(r.Context(), helpers.UserCtxKey, user)
-		ctx = context.WithValue(ctx, helpers.SessionCtxKey, session)
+
+		session := models.Session{
+			UserID: user.ID,
+			Token:  token,
+		}
+		ctx = context.WithValue(ctx, helpers.SessionCtxKey, &session)
 
 		// and call the next with our new context
 		r = r.WithContext(ctx)

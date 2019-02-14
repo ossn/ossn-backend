@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/ossn/ossn-backend/helpers"
 	"github.com/ossn/ossn-backend/middlewares"
@@ -20,14 +21,14 @@ import (
 
 var (
 	// OpenID Connect vars
-	clientID     = os.Getenv("OPEN_ID_CLIENT_ID")
-	clientSecret = os.Getenv("OPEN_ID_CLIENT_SECRET")
-	providerURL  = os.Getenv("OPEN_ID_DOMAIN")
-	oauth2Config oauth2.Config
-	verifier     *oidc.IDTokenVerifier
-	ctx          context.Context
-	provider     *oidc.Provider
-	state        = helpers.RandStringBytesMaskImprSrc(15)
+	clientID                 = os.Getenv("OPEN_ID_CLIENT_ID")
+	clientSecret             = os.Getenv("OPEN_ID_CLIENT_SECRET")
+	providerURL              = os.Getenv("OPEN_ID_DOMAIN")
+	oauth2Config             oauth2.Config
+	verifier                 *oidc.IDTokenVerifier
+	provider                 *oidc.Provider
+	state                    = helpers.RandStringBytesMaskImprSrc(15)
+	ctx, CancelOpenIDContext = context.WithCancel(context.Background())
 )
 
 type Claims struct {
@@ -40,7 +41,6 @@ type Claims struct {
 }
 
 func init() {
-	ctx = context.Background()
 
 	var err error
 	provider, err = oidc.NewProvider(ctx, providerURL)
@@ -136,6 +136,7 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 	user.OIDCID = userInfo.Subject
 	user.Name = claims.Name
 	user.UserName = claims.Username
+	user.AccessToken = oauth2Token.AccessToken
 
 	models.DBSession.Save(user)
 
@@ -145,35 +146,11 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// uuid, err := uuid.NewV4()
-	// if err != nil {
-	// 	helpers.HandleError(w, r, http.StatusInternalServerError, err)
-	// 	return
-	// }
-	// cookie := uuid.String()
-
-	session := &models.Session{
-		UserID: user.ID,
-		Token:  token,
-		// Cookie:      cookie,
-		AccessToken: oauth2Token.AccessToken,
-	}
-
-	err = models.DBSession.Create(session).Error
+	err = models.RedisClient.Set(token, user.ID, time.Minute*15).Err()
 	if err != nil {
 		helpers.HandleError(w, r, http.StatusInternalServerError, err)
 		return
 	}
-
-	//TODO: Make this http only
-	// http.SetCookie(w, &http.Cookie{
-	// 	Expires:  time.Now().Add(15 * time.Second),
-	// 	Name:     middlewares.AuthCookie,
-	// 	Value:    cookie,
-	// 	Path:     "/",
-	// 	HttpOnly: true,
-	// 	// Secure:   true,
-	// })
 
 	http.Redirect(w, r, helpers.LoginURL+token, http.StatusTemporaryRedirect)
 }

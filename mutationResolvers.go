@@ -169,7 +169,7 @@ func (r *mutationResolver) Logout(ctx context.Context) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	err = models.DBSession.Unscoped().Where("id = ?", session.ID).Delete(&models.Session{}).Error
+	err = models.RedisClient.Del(session.Token).Err()
 	if err != nil {
 		return false, err
 	}
