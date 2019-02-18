@@ -52,23 +52,28 @@
   version = "v3.2.0"
 
 [[projects]]
+  digest = "1:05b084702d7416f6f5daa9a2929d157116327bfd11aef8c5d07cce51bf8974dd"
+  name = "github.com/go-redis/redis"
+  packages = [
+    ".",
+    "internal",
+    "internal/consistenthash",
+    "internal/hashtag",
+    "internal/pool",
+    "internal/proto",
+    "internal/util",
+  ]
+  pruneopts = "T"
+  revision = "22be8a3eaf992c828cecb69dc07348313bf08d2e"
+  version = "v6.15.1"
+
+[[projects]]
   digest = "1:a2ecb56e5053d942aafc86738915fb94c9131bac848c543b8b6764365fd69080"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   pruneopts = "T"
   revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
   version = "v1.2.0"
-
-[[projects]]
-  digest = "1:eca5b59a68125905e4f62d6f5072f01740a7648a808e93f6d76c5334ff948601"
-  name = "github.com/gomodule/redigo"
-  packages = [
-    "internal",
-    "redis",
-  ]
-  pruneopts = "T"
-  revision = "9c11da706d9b7902c6da69c592f75637793fe121"
-  version = "v2.0.0"
 
 [[projects]]
   digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
@@ -149,12 +154,12 @@
   revision = "04140366298a54a039076d798123ffa108fff46c"
 
 [[projects]]
-  branch = "master"
   digest = "1:20bfc9287db8b7fb8f12d31468dab57187fd7e320e76d73d1865b7d1327e8424"
   name = "github.com/jinzhu/now"
   packages = ["."]
   pruneopts = "T"
   revision = "8ec929ed50c3ac25ce77ba4486e1f277c552c591"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:ca955a9cd5b50b0f43d2cc3aeb35c951473eeca41b34eb67507f1dbcc0542394"
@@ -213,11 +218,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f79d8662dd6ca12b8f2f05cdf44ee29f8836d26dbff3bbc6b6eda60bdc863c08"
+  digest = "1:f8e4469bf60a4fc0d4c6d92046e6878bf0973216407e6257613bb0a5e6b7ac65"
   name = "github.com/qor/admin"
   packages = ["."]
   pruneopts = "T"
-  revision = "0f96b498bae72eba7eb244258a669793d50835c2"
+  revision = "0b7d57c9d6030ab6e330028dec83e00628ffcea4"
 
 [[projects]]
   branch = "master"
@@ -388,7 +393,7 @@
   version = "v1.20.0"
 
 [[projects]]
-  digest = "1:e692778e40260d86a02ffb0eefc7e5964b9a2530449df12b4e45a5012a92b914"
+  digest = "1:0bf3358bfa819a3f93f7d0ad09a9478fdfef5fdebbed52adbb01adaa5c872ae0"
   name = "github.com/vektah/gqlparser"
   packages = [
     ".",
@@ -400,8 +405,8 @@
     "validator/rules",
   ]
   pruneopts = "T"
-  revision = "b850e94a0bf8eab2820054638d96def671b7ae4e"
-  version = "v1.1.0"
+  revision = "9541c8b6420ab8919446721a3d7bf1db3146a4dc"
+  version = "v1.1.1"
 
 [[projects]]
   branch = "master"
@@ -454,7 +459,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0f7d9e8a3d208f6faecdd7f47118436723ae8e0a9085d651040c61c7ced6a56a"
+  digest = "1:f996ca80ef7aac95556419d32d4184e6b9264166305de7327b9d0aa46f46aa4f"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -473,7 +478,7 @@
     "internal/semver",
   ]
   pruneopts = "T"
-  revision = "508f945e1a9bd8b5e3a9444bb2cdd13d0896132e"
+  revision = "8dcb7bc8c7fe0a895995c76c721cef79419ac98a"
 
 [[projects]]
   digest = "1:1469235a5a8e192cfe6a99c4804b883a02f0ff96a693cd1660515a3a3b94d5ac"
@@ -522,7 +527,7 @@
     "github.com/bouk/httprouter",
     "github.com/coreos/go-oidc",
     "github.com/dgrijalva/jwt-go",
-    "github.com/gomodule/redigo/redis",
+    "github.com/go-redis/redis",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/qor/admin",
