@@ -152,11 +152,22 @@ func (r *mutationResolver) JoinClub(ctx context.Context, clubID string) (bool, e
 	if err != nil {
 		return false, err
 	}
+
+	count := 0
+	err = models.DBSession.Where("user_id = ? and club_id = ?", user.ID, clubID).Table("club_user_roles").Count(&count).Error
+	if err != nil {
+		return false, errors.New("You don't have permission to edit this club")
+	}
+	if count > 0 {
+		return false, errors.New("User is already a member of this club")
+	}
+
 	clubUser := &models.ClubUserRole{
 		UserID: user.ID,
 		ClubID: uint(id),
 		Role:   "member",
 	}
+
 	err = models.DBSession.Save(clubUser).Error
 	if err != nil {
 		return false, err
