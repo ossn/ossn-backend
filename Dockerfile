@@ -1,6 +1,6 @@
 FROM golang:1-alpine
 
-RUN apk add --no-cache --update git openssh jq curl gcc g++ sqlite
+RUN apk add --no-cache --update git openssh jq curl gcc g++
 RUN mkdir -p $GOPATH/src/github.com/ossn/ossn-backend
 WORKDIR $GOPATH/src/github.com/ossn/ossn-backend
 RUN mkdir ~/.ssh && \
@@ -13,4 +13,5 @@ RUN curl -fsSL -o /usr/local/bin/dep $(curl -s https://api.github.com/repos/gola
 COPY . .
 RUN dep ensure
 EXPOSE 8080
-CMD go run main/server.go
+RUN go build -ldflags="-s -w" -i -o bin/main main/server.go
+CMD ["bin/main"]
