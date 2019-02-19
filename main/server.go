@@ -6,6 +6,7 @@ import (
 	http "net/http"
 	os "os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	handler "github.com/99designs/gqlgen/handler"
@@ -14,6 +15,7 @@ import (
 	"github.com/ossn/ossn-backend/controllers"
 	"github.com/ossn/ossn-backend/middlewares"
 	"github.com/ossn/ossn-backend/models"
+	"github.com/qor/admin"
 	"github.com/rs/cors"
 )
 
@@ -43,6 +45,9 @@ func main() {
 	// Admin Routes
 	adminMux := http.NewServeMux()
 	models.AdminResource.MountTo("/admin", adminMux)
+	if strings.EqualFold(os.Getenv("ENV"), "DEV") {
+		models.AdminResource.GetRouter().GetMiddleware("csrf_check").Handler = func(context *admin.Context, middleware *admin.Middleware) { middleware.Next(context) }
+	}
 	registerAll(mux, "/admin/*f", middlewares.BasicAuth(adminMux))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
