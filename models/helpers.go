@@ -171,8 +171,8 @@ func seed() {
 	}
 
 	curs := []ClubUserRole{
-		{ClubID: clubs[0].ID, UserID: users[0].ID, Role: "user"},
-		{ClubID: clubs[0].ID, UserID: users[7].ID, Role: "admin"},
+		{ClubID: clubs[0].ID, UserID: users[0].ID, Role: "member"},
+		{ClubID: clubs[0].ID, UserID: users[7].ID, Role: "club_owner"},
 		{ClubID: clubs[4].ID, UserID: users[1].ID, Role: "member"},
 		{ClubID: clubs[3].ID, UserID: users[2].ID, Role: "member"},
 		{ClubID: clubs[5].ID, UserID: users[3].ID, Role: "member"},
