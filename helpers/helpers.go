@@ -51,6 +51,10 @@ func init() {
 	LoginURL = FrontendURL + "login?token="
 }
 
+func GetProfileURL(id, token string) string {
+	return FrontendURL + "members/" + id + "/?edit=true&token=" + token
+}
+
 type (
 	GithubRes struct {
 		Data struct {

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/ossn/ossn-backend/helpers"
@@ -157,6 +158,10 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if userErr == gorm.ErrRecordNotFound {
+		http.Redirect(w, r, helpers.GetProfileURL(strconv.Itoa(int(user.ID)), token), http.StatusTemporaryRedirect)
+		return
+	}
 	http.Redirect(w, r, helpers.LoginURL+token, http.StatusTemporaryRedirect)
 }
 
