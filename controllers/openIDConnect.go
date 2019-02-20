@@ -110,9 +110,14 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := &models.User{}
-	userErr := models.DBSession.Where("oidc_id = ?", userInfo.Subject).First(user).Error
+	userErr := models.DBSession.Unscoped().Where("oidc_id = ?", userInfo.Subject).First(user).Error
 	if userErr != nil && userErr != gorm.ErrRecordNotFound {
 		helpers.HandleError(w, r, http.StatusInternalServerError, err)
+		return
+	}
+
+	if user.DeletedAt != nil {
+		helpers.HandleError(w, r, http.StatusUnprocessableEntity, errors.New("There is an issue with your account please contant an administrator"))
 		return
 	}
 
