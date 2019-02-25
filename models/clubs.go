@@ -2,7 +2,7 @@ package models
 
 type Club struct {
 	Model
-	Email           *string   `json:"email" gorm:"UNIQUE;"`
+	Email           *string   `json:"email" gorm:"UNIQUE;not null"`
 	Location        *Location `json:"location" gorm:"foreignkey:LocationID"`
 	LocationID      *uint
 	Title           *string         `json:"name"`
@@ -12,7 +12,7 @@ type Club struct {
 	SortDescription *string         `json:"sortDescription" sql:"type:text;"`
 	Users           []*ClubUserRole `json:"users"`
 	Events          []*Event        `json:"events"`
-	GithubURL       *string         `json:"githubUrl" sql:"type:text;" gorm:"UNIQUE;"`
-	ClubURL         *string         `json:"clubUrl" sql:"type:text;" gorm:"UNIQUE;"`
+	GithubURL       *string         `json:"githubUrl" sql:"type:text;"`
+	ClubURL         *string         `json:"clubUrl" sql:"type:text;"`
 	BannerImageURL  *string         `json:"bannerImageUrl" sql:"type:text;"`
 }
