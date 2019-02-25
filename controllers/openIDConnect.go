@@ -137,11 +137,14 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 		}()
 	}
 
+	if len(user.Name) < 1 {
+		user.Name = claims.Name
+	}
+
+	user.UserName = claims.Username
 	user.Email = userInfo.Email
 	user.ImageURL = &claims.Picture
 	user.OIDCID = userInfo.Subject
-	user.Name = claims.Name
-	user.UserName = claims.Username
 	user.AccessToken = oauth2Token.AccessToken
 
 	models.DBSession.Save(user)

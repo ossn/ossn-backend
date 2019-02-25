@@ -95,6 +95,7 @@ type PageInfo struct {
 }
 
 type UserInput struct {
+	Name              string   `json:"name"`
 	ReceiveNewsletter bool     `json:"receiveNewsletter"`
 	Description       *string  `json:"description"`
 	SortDescription   *string  `json:"sortDescription"`

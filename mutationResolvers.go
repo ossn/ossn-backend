@@ -16,7 +16,7 @@ func (r *mutationResolver) EditUser(ctx context.Context, input models.UserInput)
 	if err != nil {
 		return nil, err
 	}
-
+	user.Name = input.Name
 	user.GithubURL = input.GithubURL
 	user.PersonalURL = input.PersonalURL
 	user.ReceiveNewsletter = &input.ReceiveNewsletter

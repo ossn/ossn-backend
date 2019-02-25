@@ -182,6 +182,7 @@ type Query {
 }
 
 input UserInput {
+  name: String!
   receiveNewsletter: Boolean!
   description: String
   sortDescription: String
