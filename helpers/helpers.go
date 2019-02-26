@@ -52,7 +52,7 @@ func init() {
 }
 
 func GetProfileURL(id, token string) string {
-	return FrontendURL + "members/" + id + "/?edit=true&token=" + token
+	return FrontendURL + "members/" + id + "/?edit=true&initial=true&token=" + token
 }
 
 type (
