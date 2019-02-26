@@ -49,18 +49,6 @@
   branch = "master"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/qor/auth"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/qor/auth_themes"
-
-[[constraint]]
-  name = "github.com/qor/qor"
-  branch = "master"
-
-[[constraint]]
   name = "github.com/rs/cors"
   version = "1.6.0"
 
@@ -73,11 +61,25 @@
   name = "golang.org/x/oauth2"
 
 [[override]]
+  name = "github.com/qor/qor"
+  branch = "master"
+
+[[override]]
+  branch = "master"
+  name = "github.com/qor/auth"
+
+[[override]]
+  branch = "master"
+  name = "github.com/qor/auth_themes"
+
+[[override]]
   name="github.com/qor/render"
   branch="master"
+
 [[override]]
   name="github.com/qor/i18n"
   branch = "master"
+
 [[override]]
   name = "github.com/qor/roles"
   branch = "master"
