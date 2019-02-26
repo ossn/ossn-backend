@@ -9,15 +9,11 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/qor/admin"
-	"github.com/qor/auth"
-	"github.com/qor/auth/auth_identity"
-	"github.com/qor/auth_themes/clean"
 )
 
 var (
 	DBSession     *gorm.DB
 	AdminResource *admin.Admin
-	Auth          *auth.Auth
 	dbURL         = os.Getenv("DATABASE_URL")
 	dbPassword    = os.Getenv("DB_PASSWORD")
 	host          = os.Getenv("DB_HOST")
@@ -25,11 +21,6 @@ var (
 	database      = os.Getenv("DB_NAME")
 	validate      *validator.Validate
 )
-
-// hotfix for https://github.com/qor/auth/issues/16
-type hotfixedAuthIdentity auth_identity.AuthIdentity
-
-func (hotfixedAuthIdentity) TableName() string { return "basics" }
 
 func init() {
 
@@ -62,10 +53,7 @@ func init() {
 		&Job{},
 		&ClubUserRole{},
 		&User{},
-		&Admin{},
 	)
-
-	Auth = clean.New(&auth.Config{DB: DBSession})
 
 	AdminResource = admin.New(&admin.AdminConfig{DB: DBSession, SiteName: "OSSN Admin"})
 	AdminResource.AddResource(&Event{})
@@ -75,7 +63,6 @@ func init() {
 	AdminResource.AddResource(&ClubUserRole{})
 	AdminResource.AddResource(&Club{})
 	AdminResource.AddResource(&User{})
-	AdminResource.AddResource(&Admin{})
 
 	err = DBSession.Model(&ClubUserRole{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
