@@ -52,6 +52,25 @@
   version = "v3.2.0"
 
 [[projects]]
+  digest = "1:9786ddd8ff742e4ad1d8b68f9b1d551584fac49009d5a1680bfb8f812ed1c0ff"
+  name = "github.com/go-playground/locales"
+  packages = [
+    ".",
+    "currency",
+  ]
+  pruneopts = "T"
+  revision = "f63010822830b6fe52288ee52d5a1151088ce039"
+  version = "v0.12.1"
+
+[[projects]]
+  digest = "1:c7965197b6ef4e3f0464248b6a4a6db0b5678e68ed0c7e6aeced022b0c62ac74"
+  name = "github.com/go-playground/universal-translator"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
+  version = "v0.16.0"
+
+[[projects]]
   digest = "1:05b084702d7416f6f5daa9a2929d157116327bfd11aef8c5d07cce51bf8974dd"
   name = "github.com/go-redis/redis"
   packages = [
@@ -176,6 +195,14 @@
   pruneopts = "T"
   revision = "e2ffdb16a802fe2bb95e2e35ff34f0e53aeef34f"
   version = "v0.1.0"
+
+[[projects]]
+  digest = "1:6782ffc812e8e700e6952ede1e60487ff1fd9da489eff762985be662a7cfc431"
+  name = "github.com/leodido/go-urn"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "70078a794e8ea4b497ba7c19a78cd60f90ccf0f4"
+  version = "v1.1.0"
 
 [[projects]]
   digest = "1:2106821001befed6a5783b54950030dd0614257d18bef539e46cae9afd02b89b"
@@ -497,6 +524,14 @@
   version = "v1.4.0"
 
 [[projects]]
+  digest = "1:f5af5a8de3fa35cf6d26efd6dec7a0d1f090f5b519a7bc63b3934d8bdfef759b"
+  name = "gopkg.in/go-playground/validator.v9"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "b199fa0642d29caca62b6a99d65cc981ba5edc3b"
+  version = "v9.27.0"
+
+[[projects]]
   digest = "1:0e107c42e4704bfa61957571b86f96c7611b0e747d36369ab675d9f6cfc5e40e"
   name = "gopkg.in/square/go-jose.v2"
   packages = [
@@ -539,6 +574,7 @@
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",
     "golang.org/x/oauth2",
+    "gopkg.in/go-playground/validator.v9",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

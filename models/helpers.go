@@ -7,8 +7,10 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/jinzhu/gorm"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type Model struct {
@@ -47,9 +49,8 @@ func (m *Model) AfterCreate(*gorm.Scope) error {
 	return nil
 }
 
-func (m *Model) AfterUpdate(*gorm.Scope) error {
-	go rebuildFrontEnd()
-	return nil
+func nonEmptyValidation(fl validator.FieldLevel) bool {
+	return len(strings.TrimSpace(fl.Field().String())) > 0
 }
 
 func TurnStringToRolename(name string) *RoleName {

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"gopkg.in/go-playground/validator.v9"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/qor/admin"
@@ -21,6 +23,7 @@ var (
 	host          = os.Getenv("DB_HOST")
 	user          = os.Getenv("DB_USER")
 	database      = os.Getenv("DB_NAME")
+	validate      *validator.Validate
 )
 
 // hotfix for https://github.com/qor/auth/issues/16
@@ -42,6 +45,12 @@ func init() {
 	if err != nil {
 		fmt.Println(err)
 		panic("failed to connect database")
+	}
+
+	validate = validator.New()
+	err = validate.RegisterValidation("notblank", nonEmptyValidation)
+	if err != nil {
+		fmt.Println("Error on registering validation: " + err.Error())
 	}
 
 	// Migrate the schema

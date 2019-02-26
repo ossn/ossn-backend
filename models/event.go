@@ -1,13 +1,16 @@
 package models
 
 import (
+	"errors"
 	"strconv"
 	"time"
+
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type Event struct {
 	Model
-	Title           string     `json:"title" sql:"not null"`
+	Title           string     `json:"title" sql:"not null"  validate:"notblank"`
 	StartDate       *time.Time `json:"startDate"`
 	EndDate         *time.Time `json:"endDate"`
 	Location        *Location  `json:"location" gorm:"foreignkey:LocationID;association_foreignkey:ID"`
@@ -18,6 +21,15 @@ type Event struct {
 	Club            *Club      `json:"club" gorm:"foreignkey:ClubID;"`
 	ClubID          *uint      `json:"clubId"`
 	PublishedAt     *time.Time `json:"publishedAt" gorm:"index:event_published_at"`
+}
+
+func (e *Event) BeforeSave() error {
+	err := validate.Struct(e)
+	if err != nil {
+		validationErrors := err.(validator.ValidationErrors)
+		return errors.New(validationErrors.Error())
+	}
+	return nil
 }
 
 func (e *Event) StartDateToString() (*string, error) {
