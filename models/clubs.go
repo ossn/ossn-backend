@@ -1,5 +1,7 @@
 package models
 
+import "github.com/jinzhu/gorm"
+
 type Club struct {
 	Model
 	Email           *string   `json:"email" gorm:"UNIQUE;not null"`
@@ -15,4 +17,8 @@ type Club struct {
 	GithubURL       *string         `json:"githubUrl" sql:"type:text;"`
 	ClubURL         *string         `json:"clubUrl" sql:"type:text;"`
 	BannerImageURL  *string         `json:"bannerImageUrl" sql:"type:text;"`
+}
+
+func (c *Club) AfterDelete(tx *gorm.DB) (err error) {
+	return tx.Unscoped().Where("club_id = ?", c.ID).Delete(&ClubUserRole{}).Error
 }
