@@ -41,10 +41,14 @@ func rebuildFrontEnd() {
 		fmt.Println("Error while rebuilding frontend", err)
 		return
 	}
-	http.Post(rebuildURL, "application/json", bytes.NewReader(requestByte))
+	_, err = http.Post(rebuildURL, "application/json", bytes.NewReader(requestByte))
+
+	if err != nil {
+		fmt.Println("Error while rebuilding frontend", err)
+	}
 }
 
-func (m *Model) AfterCreate(*gorm.Scope) error {
+func (m *Model) AfterSave(*gorm.Scope) error {
 	go rebuildFrontEnd()
 	return nil
 }
@@ -71,7 +75,6 @@ func TurnStringToRolename(name string) *RoleName {
 		return &str
 	default:
 		return nil
-
 	}
 }
 
