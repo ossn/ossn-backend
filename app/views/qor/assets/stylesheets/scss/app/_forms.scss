@@ -118,8 +118,9 @@
 .qor-field__block {
     display: block;
     padding-bottom: 20px;
-    position: static;
+    position: relative;
 }
+
 
 .chosen-container {
     margin-top: 8px;

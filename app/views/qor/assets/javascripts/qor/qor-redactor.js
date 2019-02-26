@@ -326,6 +326,8 @@
           buttons: editorButtons,
           linkNewTab: true,
           linkTitle: true,
+          autoparsePaste: false,
+          autoparseLinks: false,
           toolbarFixedTarget:
             !$this.closest(".qor-slideout").length &&
             !$this.closest(".qor-bottomsheets").length

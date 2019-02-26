@@ -6,11 +6,43 @@
   position: static;
 }
 
+.redactor-component[data-redactor-type="table"] td[data-active],
+.redactor-component[data-redactor-type="table"] th[data-active] {
+  background-color: rgba(14, 101, 235, 0.1);
+}
+
+.redactor-component-table-line {
+  width: 1px;
+  height: 100%;
+  background-color: rgba(44, 165, 242, 0.5);
+  position: absolute;
+  top: 0;
+}
+
 .redactor-styles {
   position: static;
   font-family: 'Roboto', Helvetica, Arial, sans-serif !important;
   border: 0;
   min-height: 200px;
+
+  table {
+
+    td,
+    th {
+      box-sizing: border-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
+      word-break: break-all;
+    }
+
+    tr {
+      td:last-child,
+      th:last-child {
+        cursor: default !important;
+      }
+    }
+  }
 
   iframe.qor-video-container {
     height: 380px;
@@ -62,6 +94,7 @@
     margin-bottom: 10px;
   }
 
+  // for text alignment
   .rd-text-justify {
     text-align: justify;
   }

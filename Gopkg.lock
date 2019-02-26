@@ -218,11 +218,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f8e4469bf60a4fc0d4c6d92046e6878bf0973216407e6257613bb0a5e6b7ac65"
+  digest = "1:1d410af9df1452722c11608c28270d7371e8259baa0e84fcacb8e524fe75488c"
   name = "github.com/qor/admin"
   packages = ["."]
   pruneopts = "T"
-  revision = "0b7d57c9d6030ab6e330028dec83e00628ffcea4"
+  revision = "fdf69a0f6f3244b958df68cdb8f199bfe8405f5d"
 
 [[projects]]
   branch = "master"
@@ -298,7 +298,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f7066dcfd5bc22de1637796c3cde7b4f1216e22328427eca4b08e5b977cb73ce"
+  digest = "1:097e7667055c5bbd92b1c6c1f18c270f76d38c25b0257a7bc17baefe3173374c"
   name = "github.com/qor/qor"
   packages = [
     ".",
@@ -306,7 +306,7 @@
     "utils",
   ]
   pruneopts = "T"
-  revision = "49b2dd4f5840f58f43d6d83fdd32baf56ffb24b2"
+  revision = "444beedfc95a21bb87eda2419d301b0c3d755fd2"
 
 [[projects]]
   branch = "master"
@@ -410,7 +410,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:d153577f655cf6a13047c1bdee3484897464ebaa6d1c896f10d30ea1127b0e91"
+  digest = "1:214dc62bc053a6f4f7e4cb6c6393920fcc213c80994a7725fcb35974992d7ccd"
   name = "golang.org/x/crypto"
   packages = [
     "bcrypt",
@@ -420,11 +420,11 @@
     "pbkdf2",
   ]
   pruneopts = "T"
-  revision = "74369b46fc6756741c016591724fd1cb8e26845f"
+  revision = "7f87c0fbb88b590338857bcb720678c2583d4dea"
 
 [[projects]]
   branch = "master"
-  digest = "1:0db0b6c7b274d9dabc601ad561684eb9920c227935a50bae55299671120c089e"
+  digest = "1:5ceeb7feba82cfa2ef0ff7562892c114fcfdbf3a86debd0ed54cac80544e2666"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -433,18 +433,18 @@
     "html/atom",
   ]
   pruneopts = "T"
-  revision = "3a22650c66bd7f4fb6d1e8072ffd7b75c8a27898"
+  revision = "fe579d43d83210096a79b46dcca0e3721058393a"
 
 [[projects]]
   branch = "master"
-  digest = "1:0e7daa40947bf901c8aaaa6d5f41c21d8986dc6e4343a479c82eeebcd25c1e28"
+  digest = "1:1a93f2432e49f9bce7aa6d545d27df41c1fac437a6a7ff6c88efe9c48f6e763b"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = "T"
-  revision = "3e8b2be1363542a95c52ea0796d4a40dacfb5b95"
+  revision = "9b3c75971fc92dd27c6436a37c05c831498658f1"
 
 [[projects]]
   digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
@@ -459,7 +459,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f996ca80ef7aac95556419d32d4184e6b9264166305de7327b9d0aa46f46aa4f"
+  digest = "1:e855b9df7f101e74af62d4c4d1e0de04827e21175a9ab1db52f6ae2dd8dcc82d"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -478,7 +478,7 @@
     "internal/semver",
   ]
   pruneopts = "T"
-  revision = "8dcb7bc8c7fe0a895995c76c721cef79419ac98a"
+  revision = "2dc4ef2775b8122dd5afe2c18fd6f775e87f89e5"
 
 [[projects]]
   digest = "1:1469235a5a8e192cfe6a99c4804b883a02f0ff96a693cd1660515a3a3b94d5ac"
