@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"errors"
 
 	"github.com/jinzhu/gorm"
@@ -9,19 +10,19 @@ import (
 
 type Club struct {
 	Model
-	Email           *string   `json:"email" gorm:"UNIQUE;not null"  validate:"required,email"`
+	Email           *string   `json:"email" gorm:"UNIQUE;not null" mod:"trim" validate:"required,email"`
 	Location        *Location `json:"location" gorm:"foreignkey:LocationID"`
 	LocationID      *uint
-	Title           *string         `json:"name" validate:"notblank" gorm:"UNIQUE;not null"`
-	ImageURL        *string         `json:"imageUrl" sql:"type:text;"`
+	Title           *string         `json:"name" validate:"required,notblank" gorm:"UNIQUE;not null"`
+	ImageURL        *string         `json:"imageUrl" mod:"trim" sql:"type:text;"`
 	Description     *string         `json:"description" sql:"type:text;"`
 	CodeOfConduct   *string         `json:"codeOfConduct" sql:"type:text;"`
 	SortDescription *string         `json:"sortDescription" sql:"type:text;"`
 	Users           []*ClubUserRole `json:"users"`
 	Events          []*Event        `json:"events"`
-	GithubURL       *string         `json:"githubUrl" sql:"type:text;"`
-	ClubURL         *string         `json:"clubUrl" sql:"type:text;"`
-	BannerImageURL  *string         `json:"bannerImageUrl" sql:"type:text;"`
+	GithubURL       *string         `json:"githubUrl" mod:"trim" sql:"type:text;"`
+	ClubURL         *string         `json:"clubUrl" mod:"trim" sql:"type:text"`
+	BannerImageURL  *string         `json:"bannerImageUrl" mod:"trim" sql:"type:text;"`
 }
 
 func (c *Club) AfterDelete(tx *gorm.DB) (err error) {
@@ -29,7 +30,12 @@ func (c *Club) AfterDelete(tx *gorm.DB) (err error) {
 }
 
 func (c *Club) BeforeSave() error {
-	err := validateHttp(c.GithubURL, "Github url", false, false)
+	err := transformer.Struct(context.Background(), c)
+	if err != nil {
+		return err
+	}
+
+	err = validateHttp(c.GithubURL, "Github url", false, false)
 	if err != nil {
 		return err
 	}

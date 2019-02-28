@@ -442,6 +442,14 @@
   version = "v1.4.0"
 
 [[projects]]
+  digest = "1:e46081fea0067e08f18fb64f3151f014725acbb248a48615f79b84dc464b92d1"
+  name = "gopkg.in/go-playground/mold.v2"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "6bc20ce40733e8e04c2fda4523a957dd8e198948"
+  version = "v2.2.0"
+
+[[projects]]
   digest = "1:f5af5a8de3fa35cf6d26efd6dec7a0d1f090f5b519a7bc63b3934d8bdfef759b"
   name = "gopkg.in/go-playground/validator.v9"
   packages = ["."]
@@ -488,6 +496,7 @@
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",
     "golang.org/x/oauth2",
+    "gopkg.in/go-playground/mold.v2",
     "gopkg.in/go-playground/validator.v9",
   ]
   solver-name = "gps-cdcl"

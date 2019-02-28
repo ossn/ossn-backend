@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"errors"
 
 	"github.com/jinzhu/gorm"
@@ -28,8 +29,12 @@ func (u *User) AfterDelete(tx *gorm.DB) (err error) {
 }
 
 func (u *User) BeforeSave() error {
+	err := transformer.Struct(context.Background(), u)
+	if err != nil {
+		return err
+	}
 
-	err := validateHttp(u.ImageURL, "Image url", false, false)
+	err = validateHttp(u.ImageURL, "Image url", false, false)
 	if err != nil {
 		return err
 	}

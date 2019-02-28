@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"gopkg.in/go-playground/mold.v2"
 	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/jinzhu/gorm"
@@ -20,10 +21,10 @@ var (
 	user          = os.Getenv("DB_USER")
 	database      = os.Getenv("DB_NAME")
 	validate      *validator.Validate
+	transformer   *mold.Transformer
 )
 
 func init() {
-
 	var err error
 	if len(dbURL) < 1 {
 		dbURL = "postgres://" + user + ":" + dbPassword + "@" + host + "/" + database + "?sslmode=disable"
@@ -38,6 +39,8 @@ func init() {
 		panic("failed to connect database")
 	}
 
+	transformer = mold.New()
+	// Initialize validator
 	validate = validator.New()
 
 	err = validate.RegisterValidation("notblank", notBlankValidation)

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"errors"
 	"strconv"
 	"time"
@@ -15,7 +16,7 @@ type Event struct {
 	EndDate         *time.Time `json:"endDate"`
 	Location        *Location  `json:"location" gorm:"foreignkey:LocationID;association_foreignkey:ID"`
 	LocationID      *uint      `json:"locationId"`
-	ImageURL        *string    `json:"imageUrl" sql:"type:text;"`
+	ImageURL        *string    `json:"imageUrl" sql:"type:text;" mod:"trim"`
 	Description     *string    `json:"description" sql:"type:text;"`
 	SortDescription *string    `json:"sortDescription" sql:"type:text;"`
 	Club            *Club      `json:"club" gorm:"foreignkey:ClubID;"`
@@ -24,8 +25,12 @@ type Event struct {
 }
 
 func (e *Event) BeforeSave() error {
+	err := transformer.Struct(context.Background(), e)
+	if err != nil {
+		return err
+	}
 
-	err := validateHttp(e.ImageURL, "Image url", true, true)
+	err = validateHttp(e.ImageURL, "Image url", true, true)
 	if err != nil {
 		return err
 	}
