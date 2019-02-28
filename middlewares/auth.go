@@ -40,7 +40,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		userID, err := models.RedisClient.Get(token).Uint64()
+		userID, err := models.RedisClient.Get(models.SESSION_PREFIX + token).Uint64()
 		if err != nil || !ValidateToken(&token) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)

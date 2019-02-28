@@ -155,7 +155,7 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = models.RedisClient.Set(token, user.ID, time.Minute*15).Err()
+	err = models.RedisClient.Set(models.SESSION_PREFIX+token, user.ID, time.Minute*15).Err()
 	if err != nil {
 		helpers.HandleError(w, r, http.StatusInternalServerError, err)
 		return

@@ -9,6 +9,8 @@ import (
 	"github.com/go-redis/redis"
 )
 
+const SESSION_PREFIX = "ses-"
+
 var RedisClient *redis.Client
 
 func init() {

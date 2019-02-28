@@ -180,7 +180,7 @@ func (r *mutationResolver) Logout(ctx context.Context) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	err = models.RedisClient.Del(session.Token).Err()
+	err = models.RedisClient.Del(models.SESSION_PREFIX + session.Token).Err()
 	if err != nil {
 		return false, err
 	}
