@@ -2,10 +2,8 @@ package models
 
 import (
 	"context"
-	"errors"
 
 	"github.com/jinzhu/gorm"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 type User struct {
@@ -49,10 +47,5 @@ func (u *User) BeforeSave() error {
 		return err
 	}
 
-	err = validate.Struct(u)
-	if err != nil {
-		validationErrors := err.(validator.ValidationErrors)
-		return errors.New(validationErrors.Error())
-	}
-	return nil
+	return transformValidationError(validate.Struct(u))
 }

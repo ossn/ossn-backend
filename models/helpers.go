@@ -84,6 +84,14 @@ func validateHttp(value *string, field string, strict, local bool) error {
 	return nil
 }
 
+func transformValidationError(err error) error {
+	if err != nil {
+		validationErrors := err.(validator.ValidationErrors)
+		return errors.New(validationErrors.Error())
+	}
+	return nil
+}
+
 func TurnStringToRolename(name string) *RoleName {
 	switch name {
 	case "admin":

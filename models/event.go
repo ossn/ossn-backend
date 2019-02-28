@@ -2,11 +2,8 @@ package models
 
 import (
 	"context"
-	"errors"
 	"strconv"
 	"time"
-
-	"gopkg.in/go-playground/validator.v9"
 )
 
 type Event struct {
@@ -35,12 +32,7 @@ func (e *Event) BeforeSave() error {
 		return err
 	}
 
-	err = validate.Struct(e)
-	if err != nil {
-		validationErrors := err.(validator.ValidationErrors)
-		return errors.New(validationErrors.Error())
-	}
-	return nil
+	return transformValidationError(validate.Struct(e))
 }
 
 func (e *Event) StartDateToString() (*string, error) {

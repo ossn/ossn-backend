@@ -2,10 +2,8 @@ package models
 
 import (
 	"context"
-	"errors"
 
 	"github.com/jinzhu/gorm"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 type Club struct {
@@ -55,10 +53,5 @@ func (c *Club) BeforeSave() error {
 		return err
 	}
 
-	err = validate.Struct(c)
-	if err != nil {
-		validationErrors := err.(validator.ValidationErrors)
-		return errors.New(validationErrors.Error())
-	}
-	return nil
+	return transformValidationError(validate.Struct(c))
 }
