@@ -39,9 +39,10 @@ func init() {
 	}
 
 	validate = validator.New()
-	err = validate.RegisterValidation("notblank", nonEmptyValidation)
+
+	err = validate.RegisterValidation("notblank", notBlankValidation)
 	if err != nil {
-		fmt.Println("Error on registering validation: " + err.Error())
+		fmt.Println("Error on registering non-blank validation: " + err.Error())
 	}
 
 	// Migrate the schema

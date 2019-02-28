@@ -55,7 +55,7 @@ func (m *Model) AfterSave(*gorm.Scope) error {
 	return nil
 }
 
-func nonEmptyValidation(fl validator.FieldLevel) bool {
+func notBlankValidation(fl validator.FieldLevel) bool {
 	return len(strings.TrimSpace(fl.Field().String())) > 0
 }
 
