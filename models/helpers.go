@@ -3,8 +3,10 @@ package models
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -55,6 +57,31 @@ func (m *Model) AfterSave(*gorm.Scope) error {
 
 func nonEmptyValidation(fl validator.FieldLevel) bool {
 	return len(strings.TrimSpace(fl.Field().String())) > 0
+}
+
+func validateHttp(value *string, field string, strict, local bool) error {
+	if value == nil {
+		return nil
+	}
+
+	_, err := url.ParseRequestURI(*value)
+	if err != nil {
+		return errors.New("Please provide a valid url for " + field)
+	}
+
+	if strict {
+		if !strings.HasPrefix(*value, "https://") {
+			return errors.New("Please provide a valid https url for " + field)
+		}
+	}
+
+	if !local {
+		if strings.HasPrefix(*value, "/") {
+			return errors.New("Please provide a full url for " + field)
+		}
+	}
+
+	return nil
 }
 
 func TurnStringToRolename(name string) *RoleName {

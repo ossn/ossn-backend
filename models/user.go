@@ -28,7 +28,23 @@ func (u *User) AfterDelete(tx *gorm.DB) (err error) {
 }
 
 func (u *User) BeforeSave() error {
-	err := validate.Struct(u)
+
+	err := validateHttp(u.ImageURL, "Image url", false, false)
+	if err != nil {
+		return err
+	}
+
+	err = validateHttp(u.GithubURL, "Github url", false, false)
+	if err != nil {
+		return err
+	}
+
+	err = validateHttp(u.PersonalURL, "Personal url", false, false)
+	if err != nil {
+		return err
+	}
+
+	err = validate.Struct(u)
 	if err != nil {
 		validationErrors := err.(validator.ValidationErrors)
 		return errors.New(validationErrors.Error())

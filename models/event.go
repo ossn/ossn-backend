@@ -24,7 +24,13 @@ type Event struct {
 }
 
 func (e *Event) BeforeSave() error {
-	err := validate.Struct(e)
+
+	err := validateHttp(e.ImageURL, "Image url", true, true)
+	if err != nil {
+		return err
+	}
+
+	err = validate.Struct(e)
 	if err != nil {
 		validationErrors := err.(validator.ValidationErrors)
 		return errors.New(validationErrors.Error())

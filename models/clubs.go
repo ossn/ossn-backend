@@ -29,7 +29,27 @@ func (c *Club) AfterDelete(tx *gorm.DB) (err error) {
 }
 
 func (c *Club) BeforeSave() error {
-	err := validate.Struct(c)
+	err := validateHttp(c.GithubURL, "Github url", false, false)
+	if err != nil {
+		return err
+	}
+
+	err = validateHttp(c.ImageURL, "Image url", true, true)
+	if err != nil {
+		return err
+	}
+
+	err = validateHttp(c.BannerImageURL, "Banner image url", true, true)
+	if err != nil {
+		return err
+	}
+
+	err = validateHttp(c.ClubURL, "Club url", false, false)
+	if err != nil {
+		return err
+	}
+
+	err = validate.Struct(c)
 	if err != nil {
 		validationErrors := err.(validator.ValidationErrors)
 		return errors.New(validationErrors.Error())

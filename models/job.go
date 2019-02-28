@@ -14,6 +14,20 @@ type Job struct {
 	PublishedAt     *time.Time `json:"publishedAt" gorm:"index:job_published_at"`
 }
 
+func (j *Job) BeforeSave() error {
+	err := validateHttp(j.ImageURL, "Image url", true, true)
+	if err != nil {
+		return err
+	}
+
+	err = validateHttp(j.URL, "Url", false, false)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (j *Job) PublishedAtToString() (*string, error) {
 	if j.PublishedAt == nil {
 		return nil, nil
