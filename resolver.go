@@ -77,20 +77,21 @@ func (r *clubResolver) Users(ctx context.Context, obj *models.Club) ([]*models.U
 			return usersWithRole, err
 		}
 		usersWithRole = append(usersWithRole, &models.UserWithRole{
-			ID:                strconv.FormatUint(uint64(u.ID), 10),
-			Email:             u.Email,
-			ImageURL:          u.ImageURL,
-			Role:              models.TurnStringToRolename(user.Role),
-			GithubURL:         u.GithubURL,
-			UpdatedAt:         u.UpdatedAtToString(),
-			CreatedAt:         u.CreatedAtToString(),
-			Description:       u.Description,
-			Clubs:             clubs,
-			UserName:          u.UserName,
-			Name:              u.Name,
-			ReceiveNewsletter: u.ReceiveNewsletter,
-			SortDescription:   u.SortDescription,
-			PersonalURL:       u.PersonalURL,
+			ID:                  strconv.FormatUint(uint64(u.ID), 10),
+			Email:               u.Email,
+			ImageURL:            u.ImageURL,
+			Role:                models.TurnStringToRolename(user.Role),
+			GithubURL:           u.GithubURL,
+			UpdatedAt:           u.UpdatedAtToString(),
+			CreatedAt:           u.CreatedAtToString(),
+			Description:         u.Description,
+			Clubs:               clubs,
+			UserName:            u.UserName,
+			Name:                u.Name,
+			ReceiveNewsletter:   u.ReceiveNewsletter,
+			SortDescription:     u.SortDescription,
+			PersonalURL:         u.PersonalURL,
+			IsOverTheLegalLimit: u.IsOverTheLegalLimit,
 		})
 	}
 	return usersWithRole, nil

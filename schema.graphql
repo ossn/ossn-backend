@@ -113,6 +113,7 @@ type User {
   personalUrl: String
   createdAt: EpochTime!
   updatedAt: EpochTime!
+  isOverTheLegalLimit: Boolean!
 }
 
 type UserWithRole {
@@ -129,6 +130,7 @@ type UserWithRole {
   personalUrl: String
   createdAt: EpochTime!
   updatedAt: EpochTime!
+  isOverTheLegalLimit: Boolean!
   role: RoleName
 }
 
@@ -189,6 +191,7 @@ input UserInput {
   clubs: [ID!]
   githubUrl: String
   personalUrl: String
+  IsOverTheLegalLimit: Boolean!
 }
 input ClubInput {
   email: String!

@@ -95,30 +95,32 @@ type PageInfo struct {
 }
 
 type UserInput struct {
-	Name              string   `json:"name"`
-	ReceiveNewsletter bool     `json:"receiveNewsletter"`
-	Description       *string  `json:"description"`
-	SortDescription   *string  `json:"sortDescription"`
-	Clubs             []string `json:"clubs"`
-	GithubURL         *string  `json:"githubUrl"`
-	PersonalURL       *string  `json:"personalUrl"`
+	Name                string   `json:"name"`
+	ReceiveNewsletter   bool     `json:"receiveNewsletter"`
+	Description         *string  `json:"description"`
+	SortDescription     *string  `json:"sortDescription"`
+	Clubs               []string `json:"clubs"`
+	GithubURL           *string  `json:"githubUrl"`
+	PersonalURL         *string  `json:"personalUrl"`
+	IsOverTheLegalLimit bool     `json:"IsOverTheLegalLimit"`
 }
 
 type UserWithRole struct {
-	ID                string          `json:"id"`
-	Email             string          `json:"email"`
-	UserName          string          `json:"userName"`
-	Name              string          `json:"name"`
-	ImageURL          *string         `json:"imageUrl"`
-	ReceiveNewsletter *bool           `json:"receiveNewsletter"`
-	Description       *string         `json:"description"`
-	SortDescription   *string         `json:"sortDescription"`
-	Clubs             []*ClubWithRole `json:"clubs"`
-	GithubURL         *string         `json:"githubUrl"`
-	PersonalURL       *string         `json:"personalUrl"`
-	CreatedAt         string          `json:"createdAt"`
-	UpdatedAt         string          `json:"updatedAt"`
-	Role              *RoleName       `json:"role"`
+	ID                  string          `json:"id"`
+	Email               string          `json:"email"`
+	UserName            string          `json:"userName"`
+	Name                string          `json:"name"`
+	ImageURL            *string         `json:"imageUrl"`
+	ReceiveNewsletter   *bool           `json:"receiveNewsletter"`
+	Description         *string         `json:"description"`
+	SortDescription     *string         `json:"sortDescription"`
+	Clubs               []*ClubWithRole `json:"clubs"`
+	GithubURL           *string         `json:"githubUrl"`
+	PersonalURL         *string         `json:"personalUrl"`
+	CreatedAt           string          `json:"createdAt"`
+	UpdatedAt           string          `json:"updatedAt"`
+	IsOverTheLegalLimit bool            `json:"isOverTheLegalLimit"`
+	Role                *RoleName       `json:"role"`
 }
 
 type Users struct {

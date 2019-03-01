@@ -22,6 +22,7 @@ func (r *mutationResolver) EditUser(ctx context.Context, input models.UserInput)
 	user.ReceiveNewsletter = &input.ReceiveNewsletter
 	user.SortDescription = input.SortDescription
 	user.Description = input.Description
+	user.IsOverTheLegalLimit = input.IsOverTheLegalLimit
 
 	tx := models.DBSession.Begin()
 	defer func() {

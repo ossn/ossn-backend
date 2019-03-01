@@ -180,36 +180,38 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		Id                func(childComplexity int) int
-		Email             func(childComplexity int) int
-		UserName          func(childComplexity int) int
-		Name              func(childComplexity int) int
-		ImageUrl          func(childComplexity int) int
-		ReceiveNewsletter func(childComplexity int) int
-		Description       func(childComplexity int) int
-		SortDescription   func(childComplexity int) int
-		Clubs             func(childComplexity int) int
-		GithubUrl         func(childComplexity int) int
-		PersonalUrl       func(childComplexity int) int
-		CreatedAt         func(childComplexity int) int
-		UpdatedAt         func(childComplexity int) int
+		Id                  func(childComplexity int) int
+		Email               func(childComplexity int) int
+		UserName            func(childComplexity int) int
+		Name                func(childComplexity int) int
+		ImageUrl            func(childComplexity int) int
+		ReceiveNewsletter   func(childComplexity int) int
+		Description         func(childComplexity int) int
+		SortDescription     func(childComplexity int) int
+		Clubs               func(childComplexity int) int
+		GithubUrl           func(childComplexity int) int
+		PersonalUrl         func(childComplexity int) int
+		CreatedAt           func(childComplexity int) int
+		UpdatedAt           func(childComplexity int) int
+		IsOverTheLegalLimit func(childComplexity int) int
 	}
 
 	UserWithRole struct {
-		Id                func(childComplexity int) int
-		Email             func(childComplexity int) int
-		UserName          func(childComplexity int) int
-		Name              func(childComplexity int) int
-		ImageUrl          func(childComplexity int) int
-		ReceiveNewsletter func(childComplexity int) int
-		Description       func(childComplexity int) int
-		SortDescription   func(childComplexity int) int
-		Clubs             func(childComplexity int) int
-		GithubUrl         func(childComplexity int) int
-		PersonalUrl       func(childComplexity int) int
-		CreatedAt         func(childComplexity int) int
-		UpdatedAt         func(childComplexity int) int
-		Role              func(childComplexity int) int
+		Id                  func(childComplexity int) int
+		Email               func(childComplexity int) int
+		UserName            func(childComplexity int) int
+		Name                func(childComplexity int) int
+		ImageUrl            func(childComplexity int) int
+		ReceiveNewsletter   func(childComplexity int) int
+		Description         func(childComplexity int) int
+		SortDescription     func(childComplexity int) int
+		Clubs               func(childComplexity int) int
+		GithubUrl           func(childComplexity int) int
+		PersonalUrl         func(childComplexity int) int
+		CreatedAt           func(childComplexity int) int
+		UpdatedAt           func(childComplexity int) int
+		IsOverTheLegalLimit func(childComplexity int) int
+		Role                func(childComplexity int) int
 	}
 
 	Users struct {
@@ -1689,6 +1691,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.UpdatedAt(childComplexity), true
 
+	case "User.isOverTheLegalLimit":
+		if e.complexity.User.IsOverTheLegalLimit == nil {
+			break
+		}
+
+		return e.complexity.User.IsOverTheLegalLimit(childComplexity), true
+
 	case "UserWithRole.id":
 		if e.complexity.UserWithRole.Id == nil {
 			break
@@ -1779,6 +1788,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.UserWithRole.UpdatedAt(childComplexity), true
+
+	case "UserWithRole.isOverTheLegalLimit":
+		if e.complexity.UserWithRole.IsOverTheLegalLimit == nil {
+			break
+		}
+
+		return e.complexity.UserWithRole.IsOverTheLegalLimit(childComplexity), true
 
 	case "UserWithRole.role":
 		if e.complexity.UserWithRole.Role == nil {
@@ -5650,6 +5666,11 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 				}
 				wg.Done()
 			}(i, field)
+		case "isOverTheLegalLimit":
+			out.Values[i] = ec._User_isOverTheLegalLimit(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6052,6 +6073,33 @@ func (ec *executionContext) _User_updatedAt(ctx context.Context, field graphql.C
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
+func (ec *executionContext) _User_isOverTheLegalLimit(ctx context.Context, field graphql.CollectedField, obj *models.User) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rctx := &graphql.ResolverContext{
+		Object: "User",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsOverTheLegalLimit, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return graphql.MarshalBoolean(res)
+}
+
 var userWithRoleImplementors = []string{"UserWithRole"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -6107,6 +6155,11 @@ func (ec *executionContext) _UserWithRole(ctx context.Context, sel ast.Selection
 			}
 		case "updatedAt":
 			out.Values[i] = ec._UserWithRole_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "isOverTheLegalLimit":
+			out.Values[i] = ec._UserWithRole_isOverTheLegalLimit(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
@@ -6512,6 +6565,33 @@ func (ec *executionContext) _UserWithRole_updatedAt(ctx context.Context, field g
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return graphql.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _UserWithRole_isOverTheLegalLimit(ctx context.Context, field graphql.CollectedField, obj *models.UserWithRole) graphql.Marshaler {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() { ec.Tracer.EndFieldExecution(ctx) }()
+	rctx := &graphql.ResolverContext{
+		Object: "UserWithRole",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsOverTheLegalLimit, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return graphql.MarshalBoolean(res)
 }
 
 // nolint: vetshadow
@@ -8465,6 +8545,12 @@ func UnmarshalUserInput(v interface{}) (models.UserInput, error) {
 			if err != nil {
 				return it, err
 			}
+		case "IsOverTheLegalLimit":
+			var err error
+			it.IsOverTheLegalLimit, err = graphql.UnmarshalBoolean(v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -8616,6 +8702,7 @@ type User {
   personalUrl: String
   createdAt: EpochTime!
   updatedAt: EpochTime!
+  isOverTheLegalLimit: Boolean!
 }
 
 type UserWithRole {
@@ -8632,6 +8719,7 @@ type UserWithRole {
   personalUrl: String
   createdAt: EpochTime!
   updatedAt: EpochTime!
+  isOverTheLegalLimit: Boolean!
   role: RoleName
 }
 
@@ -8692,6 +8780,7 @@ input UserInput {
   clubs: [ID!]
   githubUrl: String
   personalUrl: String
+  IsOverTheLegalLimit: Boolean!
 }
 input ClubInput {
   email: String!
