@@ -60,7 +60,7 @@ func notBlankValidation(fl validator.FieldLevel) bool {
 }
 
 func validateHttp(value *string, field string, strict, local bool) error {
-	if value == nil {
+	if value == nil || len(*value) < 1 {
 		return nil
 	}
 
