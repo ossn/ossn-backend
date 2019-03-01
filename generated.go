@@ -8545,7 +8545,7 @@ func UnmarshalUserInput(v interface{}) (models.UserInput, error) {
 			if err != nil {
 				return it, err
 			}
-		case "IsOverTheLegalLimit":
+		case "isOverTheLegalLimit":
 			var err error
 			it.IsOverTheLegalLimit, err = graphql.UnmarshalBoolean(v)
 			if err != nil {
@@ -8780,7 +8780,7 @@ input UserInput {
   clubs: [ID!]
   githubUrl: String
   personalUrl: String
-  IsOverTheLegalLimit: Boolean!
+  isOverTheLegalLimit: Boolean!
 }
 input ClubInput {
   email: String!

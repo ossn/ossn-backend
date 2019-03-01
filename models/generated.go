@@ -102,7 +102,7 @@ type UserInput struct {
 	Clubs               []string `json:"clubs"`
 	GithubURL           *string  `json:"githubUrl"`
 	PersonalURL         *string  `json:"personalUrl"`
-	IsOverTheLegalLimit bool     `json:"IsOverTheLegalLimit"`
+	IsOverTheLegalLimit bool     `json:"isOverTheLegalLimit"`
 }
 
 type UserWithRole struct {

@@ -191,7 +191,7 @@ input UserInput {
   clubs: [ID!]
   githubUrl: String
   personalUrl: String
-  IsOverTheLegalLimit: Boolean!
+  isOverTheLegalLimit: Boolean!
 }
 input ClubInput {
   email: String!
