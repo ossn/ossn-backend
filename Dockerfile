@@ -13,5 +13,5 @@ RUN curl -fsSL -o /usr/local/bin/dep $(curl -s https://api.github.com/repos/gola
 COPY . .
 RUN dep ensure
 EXPOSE 8080
-RUN go build -ldflags="-s -w" -i -o bin/main main/server.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags="-s -w -extldflags -static" -i -o bin/main main/server.go
 CMD ["bin/main"]
