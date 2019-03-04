@@ -100,7 +100,7 @@ func (r *queryResolver) Clubs(ctx context.Context, first, last *int, userID *str
 	}
 	clubs := []models.Club{}
 
-	err = query.Preload("Location").Find(&clubs).Error
+	err = query.Preload("Location").Preload("Events").Preload("Events.Location").Find(&clubs).Error
 	if err != nil {
 		return nil, err
 	}
