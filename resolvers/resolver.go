@@ -1,5 +1,4 @@
-//go:generate go run scripts/gqlgen.go -v
-package ossn_backend
+package resolvers
 
 import (
 	"context"

@@ -1,4 +1,4 @@
-package ossn_backend
+package resolvers
 
 import (
 	"encoding/base64"

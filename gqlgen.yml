@@ -6,9 +6,13 @@
 schema:
   - schema.graphql
 exec:
-  filename: generated.go
+  filename: resolvers/generated.go
+  package: resolvers
+
 model:
   filename: models/generated.go
+  package: models
+
 models:
   Event:
     model: github.com/ossn/ossn-backend/models.Event
@@ -24,5 +28,5 @@ models:
     model: github.com/ossn/ossn-backend/models.Club
 
 resolver:
-  filename: resolver.go
+  filename: resolvers/resolver.go
   type: Resolver

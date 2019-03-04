@@ -9,9 +9,10 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/ossn/ossn-backend/resolvers"
+
 	handler "github.com/99designs/gqlgen/handler"
 	"github.com/bouk/httprouter"
-	ossn_backend "github.com/ossn/ossn-backend"
 	"github.com/ossn/ossn-backend/controllers"
 	"github.com/ossn/ossn-backend/middlewares"
 	"github.com/ossn/ossn-backend/models"
@@ -35,7 +36,7 @@ func main() {
 
 	// GraphQL route
 	mux.GET(prefix+"/", handler.Playground("GraphQL playground", prefix+"/query"))
-	mux.POST(prefix+"/query", handler.GraphQL(ossn_backend.NewExecutableSchema(ossn_backend.Config{Resolvers: &ossn_backend.Resolver{}})))
+	mux.POST(prefix+"/query", handler.GraphQL(resolvers.NewExecutableSchema(resolvers.Config{Resolvers: &resolvers.Resolver{}})))
 
 	// Open ID Connect routes
 	mux.GET("/oidc/callback", controllers.HandleOAuth2Callback)
