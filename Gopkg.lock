@@ -71,7 +71,7 @@
   version = "v0.16.0"
 
 [[projects]]
-  digest = "1:05b084702d7416f6f5daa9a2929d157116327bfd11aef8c5d07cce51bf8974dd"
+  digest = "1:19a4d1c7e0df2c11ac937d9960d190522ef1a98d5f0f5098ae4dc7eacc6dd173"
   name = "github.com/go-redis/redis"
   packages = [
     ".",
@@ -83,16 +83,16 @@
     "internal/util",
   ]
   pruneopts = "T"
-  revision = "22be8a3eaf992c828cecb69dc07348313bf08d2e"
-  version = "v6.15.1"
+  revision = "d22fde8721cc915a55aeb6b00944a76a92bfeb6e"
+  version = "v6.15.2"
 
 [[projects]]
-  digest = "1:a2ecb56e5053d942aafc86738915fb94c9131bac848c543b8b6764365fd69080"
+  digest = "1:c795e0cc7758dd26ce30bdeb2e32348f50260f6134619ed054379df82d3b2e2e"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   pruneopts = "T"
-  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
-  version = "v1.2.0"
+  revision = "c823c79ea1570fb5ff454033735a8e68575d1d0f"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
@@ -135,15 +135,15 @@
   version = "v1.4.2"
 
 [[projects]]
-  digest = "1:8ec8d88c248041a6df5f6574b87bc00e7e0b493881dad2e7ef47b11dc69093b5"
+  digest = "1:d15ee511aa0f56baacc1eb4c6b922fa1c03b38413b6be18166b996d82a0156ea"
   name = "github.com/hashicorp/golang-lru"
   packages = [
     ".",
     "simplelru",
   ]
   pruneopts = "T"
-  revision = "20f1fb78b0740ba8c3cb143a61e86ba5c8669768"
-  version = "v0.5.0"
+  revision = "7087cb70de9f7a8bc0a10c375cb0d2280a8edf9c"
+  version = "v0.5.1"
 
 [[projects]]
   digest = "1:56889f4ced0f576272d91c67a63d90f32ae169aa069d75d3f55a40701a965593"
@@ -261,7 +261,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:097e7667055c5bbd92b1c6c1f18c270f76d38c25b0257a7bc17baefe3173374c"
+  digest = "1:f1964c6feb63d7ea5f2d0005ccf395c0382ea8293c9cda5aaaa3c0cc63adb051"
   name = "github.com/qor/qor"
   packages = [
     ".",
@@ -269,7 +269,7 @@
     "utils",
   ]
   pruneopts = "T"
-  revision = "444beedfc95a21bb87eda2419d301b0c3d755fd2"
+  revision = "c46a49344c9388f2adbd95981bedd79ff60d0b29"
 
 [[projects]]
   digest = "1:4d7e309108709883ce2067c488982206ecc25b81835dd6911c6f63fecb4e767c"
@@ -357,7 +357,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:214dc62bc053a6f4f7e4cb6c6393920fcc213c80994a7725fcb35974992d7ccd"
+  digest = "1:c362ce2b0991d51f0d7ffab42a9c21f26318baf9391c33935e1c8ddba05bf3d3"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -365,11 +365,11 @@
     "pbkdf2",
   ]
   pruneopts = "T"
-  revision = "7f87c0fbb88b590338857bcb720678c2583d4dea"
+  revision = "8dd112bcdc25174059e45e07517d9fc663123347"
 
 [[projects]]
   branch = "master"
-  digest = "1:cde337a515c1bedf0999e2a9f141cfc0080802af1a2cd98815e6f4a9dd9e19f3"
+  digest = "1:f2c7b980d5181c063276826818ce15de69182405ebbdca0a0780eb413761dc31"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -378,18 +378,18 @@
     "html/atom",
   ]
   pruneopts = "T"
-  revision = "66a96c8a540e84140eaf74e38bb3a0a2ff5e5c53"
+  revision = "16b79f2e4e95ea23b2bf9903c9809ff7b013ce85"
 
 [[projects]]
   branch = "master"
-  digest = "1:848a2d0d74f3e88b5cf05cdd5647bc8ea73479c102946120bfb298fe50b588f4"
+  digest = "1:40ff935e3d9fbb1f3778559cfd5353428785f5f8de6e36287dc11aa62a8166a3"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = "T"
-  revision = "529b322ea34655aa15fb32e063f3d4d3cf803cac"
+  revision = "e64efc72b421e893cbf63f17ba2221e7d6d0b0f3"
 
 [[projects]]
   digest = "1:6164911cb5e94e8d8d5131d646613ff82c14f5a8ce869de2f6d80d9889df8c5a"
@@ -404,7 +404,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e855b9df7f101e74af62d4c4d1e0de04827e21175a9ab1db52f6ae2dd8dcc82d"
+  digest = "1:77633f3ddb7f6e881db0e9ff4167c55cc287a475cd6eefd56a97c0099d61cac7"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -423,7 +423,7 @@
     "internal/semver",
   ]
   pruneopts = "T"
-  revision = "2dc4ef2775b8122dd5afe2c18fd6f775e87f89e5"
+  revision = "589c23e65e65055d47b9ad4a99723bc389136265"
 
 [[projects]]
   digest = "1:1469235a5a8e192cfe6a99c4804b883a02f0ff96a693cd1660515a3a3b94d5ac"
@@ -458,7 +458,7 @@
   version = "v9.27.0"
 
 [[projects]]
-  digest = "1:0e107c42e4704bfa61957571b86f96c7611b0e747d36369ab675d9f6cfc5e40e"
+  digest = "1:3effe4e6f8af2d27c9cd6070c7c332344490cbeeaa5476ae2bc9e05eb1079f0c"
   name = "gopkg.in/square/go-jose.v2"
   packages = [
     ".",
@@ -466,8 +466,8 @@
     "json",
   ]
   pruneopts = "T"
-  revision = "e94fb177d3668d35ab39c61cbb2f311550557e83"
-  version = "v2.2.2"
+  revision = "628223f44a71f715d2881ea69afc795a1e9c01be"
+  version = "v2.3.0"
 
 [[projects]]
   digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
@@ -482,8 +482,6 @@
   analyzer-version = 1
   input-imports = [
     "github.com/99designs/gqlgen/cmd",
-    "github.com/99designs/gqlgen/graphql",
-    "github.com/99designs/gqlgen/graphql/introspection",
     "github.com/99designs/gqlgen/handler",
     "github.com/bouk/httprouter",
     "github.com/coreos/go-oidc",
@@ -493,8 +491,6 @@
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/qor/admin",
     "github.com/rs/cors",
-    "github.com/vektah/gqlparser",
-    "github.com/vektah/gqlparser/ast",
     "golang.org/x/oauth2",
     "gopkg.in/go-playground/mold.v2",
     "gopkg.in/go-playground/validator.v9",
