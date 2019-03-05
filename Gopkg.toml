@@ -91,6 +91,7 @@
 [metadata.heroku]
   root-package = "github.com/ossn/ossn-backend"
   install = [ "./main" ]
+  go-version = 1.12
 
 [[constraint]]
   name = "github.com/go-redis/redis"
