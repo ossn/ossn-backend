@@ -81,7 +81,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	log.Fatal(http.ListenAndServe(":"+port, (middlewareHandler)))
+	log.Fatal(http.ListenAndServe(":"+port, middlewares.Gzip(middlewareHandler)))
 }
 
 func registerAll(mux *httprouter.Router, path string, handler http.Handler) {
